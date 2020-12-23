@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2fd32bbc-7f39-4a32-9176-4982f35852b9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Readme.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../debug.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../images/gotcha.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../images/gotcha.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../images/gotcha_400x303.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/lattice.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/flowFunc.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/flowMultipleValues_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/flow_helper.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/flow_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/parser.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/parser_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/ssaValMock.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/taintLattice.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/taintLatticePointer.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/taintLattice_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lattice/taint/taintValue_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rmTxtStatFiles.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sourcesAndSinks.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sqlInjection.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ssabuilder/build.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ssabuilder/chanSend.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ssabuilder/ssaHelper.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../start.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/.LinkedList_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/.gorc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/basics_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/bench_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/channels_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/cmd_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/cov_tests.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/aliasingThroughFields.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/aliasingThroughFields2.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/chanClosureChangeValue.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/chanClosureChangeValueBeforeClosure.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/chanClosureNestedChangeValue.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/chanPaper.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/chanPaper0.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/chanPaper1.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/chanPaper2.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/chanPaper3.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/contextsenPtr.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/dummy.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/dummy2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/exampleThesis.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/h/linkedList.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/h/sinkSource.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/hello.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/hello2.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/idom.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/multipleChan.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/newValueContext.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/pointerChan.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/pointerToFunc.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/readFile.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/simpleLinkedList.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/simpleLinkedList0.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/simpleLinkedListOnlyTaint.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/simpleLinkedListTestAllElements.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/sinkSourceSimple.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/sinkSourceV2.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/sinkSourceV2ChangeOrder.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/sinkSourceV2NewVariable.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/sinkSourceV3.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/structTest.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/structTestV2.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/structTestV3Ref.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/structTestV3RefSimple.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/structTestV3Val.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/exampleCode/structTestV4.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/helper.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/mem0.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/mem1.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/numberReportedFlows_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/pointers_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/report.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/sourcesAndSinksTest.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/test_coverage_test.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tests/tests" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transferFunction/semanticer.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../vendor/vendor.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/contextCallSite.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/conveyThesis_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/convey_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/initContext_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/transition.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/valueContext.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/valueContext_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/wlHelper.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/wlHelper_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/wlMap.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/wlMap_test_old.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/wlinit.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/worklist.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worklist/worklist_test.go" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" path="/usr/local/golang/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1lmCM5eoGvnG324kvXTIyJCLyij" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="configurable.Global.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Module.GOPATH.is.expanded" value="false" />
+    <property name="configurable.Project.GOPATH.is.expanded" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.goide.configuration.GoLibrariesConfigurableProvider" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/code" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="go build github.com/akwick/gotcha" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="gotcha" />
+      <working_directory value="$PROJECT_DIR$" />
+      <parameters value="-src=&quot;code/main.go&quot; -pkgs=&quot;log&quot;" />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/start.go" />
+      <package value="github.com/akwick/gotcha" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build github.com/akwick/gotcha" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="290" y="275" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608206598382">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state x="290" y="275" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608206598382" />
+    <state width="1866" height="324" key="GridCell.Tab.0.bottom" timestamp="1608218997131">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state width="1866" height="324" key="GridCell.Tab.0.bottom/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608218997131" />
+    <state width="1866" height="324" key="GridCell.Tab.0.center" timestamp="1608218997131">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state width="1866" height="324" key="GridCell.Tab.0.center/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608218997131" />
+    <state width="1866" height="324" key="GridCell.Tab.0.left" timestamp="1608218997131">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state width="1866" height="324" key="GridCell.Tab.0.left/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608218997131" />
+    <state width="1866" height="324" key="GridCell.Tab.0.right" timestamp="1608218997131">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state width="1866" height="324" key="GridCell.Tab.0.right/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608218997131" />
+    <state width="1866" height="324" key="GridCell.Tab.1.bottom" timestamp="1608218997131">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state width="1866" height="324" key="GridCell.Tab.1.bottom/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608218997131" />
+    <state width="1866" height="324" key="GridCell.Tab.1.center" timestamp="1608218997131">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state width="1866" height="324" key="GridCell.Tab.1.center/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608218997131" />
+    <state width="1866" height="324" key="GridCell.Tab.1.left" timestamp="1608218997131">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state width="1866" height="324" key="GridCell.Tab.1.left/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608218997131" />
+    <state width="1866" height="324" key="GridCell.Tab.1.right" timestamp="1608218997131">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state width="1866" height="324" key="GridCell.Tab.1.right/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608218997131" />
+    <state x="441" y="189" width="1037" height="731" key="SettingsEditor" timestamp="1608193062537">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state x="441" y="189" width="1037" height="731" key="SettingsEditor/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608193062537" />
+    <state width="960" height="526" key="XDebugger.FullValuePopup" timestamp="1608210054917">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state width="960" height="526" key="XDebugger.FullValuePopup/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608210054917" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/lattice/taint/flowFunc.go</url>
+          <line>95</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/../../../../pkg/mod/golang.org/x/tools@v0.0.0-20201215192005-fa10ef0b8743/go/ssa/ssautil/load.go</url>
+          <line>115</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/lattice/lattice.go</url>
+          <line>57</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

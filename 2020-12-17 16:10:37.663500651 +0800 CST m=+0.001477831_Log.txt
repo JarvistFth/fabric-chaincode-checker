@@ -1,0 +1,23 @@
+/opt/gopath/src/github.com/akwick/gotcha/worklist/wlinit.go:39: sources: [func() int math/rand.Int]
+/opt/gopath/src/github.com/akwick/gotcha/worklist/wlinit.go:40: sinks: [func(format string, v ...interface{}) log.Printf]
+/opt/gopath/src/github.com/akwick/gotcha/worklist/wlinit.go:47: mainpkg package chaincode-checker
+/opt/gopath/src/github.com/akwick/gotcha/worklist/wlinit.go:65: Analyze: 1 : packages([package chaincode-checker])
+/opt/gopath/src/github.com/akwick/gotcha/worklist/valueContext.go:115: s string func(format string, v ...interface{}) log.Printf
+/opt/gopath/src/github.com/akwick/gotcha/worklist/valueContext.go:129:   new vc:  [0] Method: chaincode-checker.main 
+ entryValue (Lattice) : LatticePointer:  
+ exitValue (Lattice) : LatticePointer: 
+# Name: chaincode-checker.main
+# Package: chaincode-checker
+# Location: /home/jarvist/go/src/chaincode-checker/main.go:19:6
+func main():
+0:                                                                entry P:0 S:0
+	t0 = math/rand.Int()                                                int
+	t1 = new [1]interface{} (varargs)                       *[1]interface{}
+	t2 = &t1[0:int]                                            *interface{}
+	t3 = make interface{} <- int (t0)                           interface{}
+	*t2 = t3
+	t4 = slice t1[:]                                          []interface{}
+	t5 = log.Printf("%d":string, t4...)                                  ()
+	return
+
+/opt/gopath/src/github.com/akwick/gotcha/worklist/valueContext.go:115: s string func(format string, v ...interface{}) log.Printf
