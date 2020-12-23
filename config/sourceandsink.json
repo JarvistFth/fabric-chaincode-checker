@@ -1,0 +1,21 @@
+{
+  "sources": [
+    {
+      "source_type": "function",
+      "signature": "func() int",
+      "callee": "math/rand.Int",
+      "is_interface": false
+    },
+    {
+      "source_type": "global",
+      "name": "k"
+    }
+  ],
+  "sinks": [
+    {
+      "signature": "func(format string, v ...interface{})",
+      "callee": "log.Printf",
+      "is_interface": false
+    }
+  ]
+}

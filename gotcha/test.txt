@@ -1,3 +1,0 @@
-<func() int; math/rand.Int> -> _SOURCE_
-<func(format string, v ...interface{}) ; log.Printf > -> _SINK_
-%<func(n int) int; github.com/akwick/gotcha.source > -> _SINK_
