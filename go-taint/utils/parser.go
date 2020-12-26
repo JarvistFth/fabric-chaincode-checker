@@ -7,11 +7,13 @@ import (
 	"log"
 )
 
-var Sinks = make([]*taint.TaintData,0)
-var Sources = make([]*taint.TaintData,0)
-
 const sourcetypeglobal = "global"
 const sourcetypefunc = "function"
+
+type SinkAndSources struct {
+	Sinks []*taint.TaintData
+	Sources []*taint.TaintData
+}
 
 type Config struct {
 	Sources []Source `json:"sources"`
@@ -34,47 +36,39 @@ type Sink struct {
 	IsInterface bool	`json:"is_interface"`
 }
 
-func ParseSourceAndSinkFile(path string) error {
+func ParseSourceAndSinkFile(path string) (*SinkAndSources, error) {
 	bytes,err := ioutil.ReadFile(path)
 	if err != nil{
 		log.Fatalf(err.Error())
-		return err
+		return nil,err
 	}
 
 	var sourceAndSinkConfig Config
+	ss := &SinkAndSources{
+		Sinks:   make([]*taint.TaintData, 0),
+		Sources: make([]*taint.TaintData, 0),
+	}
 
 	err = json.Unmarshal(bytes,&sourceAndSinkConfig)
 	if err != nil{
 		log.Fatal(err.Error())
-		return err
+		return nil,err
 	}
 
 	var td *taint.TaintData
 	for _,e := range sourceAndSinkConfig.Sources{
+		td = taint.NewTaintData(e.Signature,e.Callee,e.Name,e.SourceType == sourcetypeglobal,e.IsInterface)
 
-		td = &taint.TaintData{
-			Sig:         e.Signature,
-			Callee:      e.Callee,
-			IsGlobal:    e.SourceType == sourcetypeglobal,
-			IsInterface: e.IsInterface,
-			Name:        e.Name,
-		}
-
-		Sources = append(Sources,td)
+		ss.Sources = append(ss.Sources,td)
 	}
 
 	for _,e := range sourceAndSinkConfig.Sinks{
-		td = &taint.TaintData{
-			Sig:         e.Signature,
-			Callee:      e.Callee,
-			IsGlobal:    false,
-			IsInterface: e.IsInterface,
-			Name:        "",
-		}
-		Sinks = append(Sinks,td)
+
+		td = taint.NewTaintData(e.Signature,e.Callee,"",false,e.IsInterface)
+		ss.Sinks = append(ss.Sinks,td)
 	}
 
 	log.Printf("end")
-	return nil
+	return ss,nil
 
 }
