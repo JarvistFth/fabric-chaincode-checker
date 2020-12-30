@@ -27,7 +27,7 @@ func (t LatticeTag) LeastUpperBound(t1 LatticeTag) LatticeTag {
 	return t | t1
 }
 
-func (t LatticeTag) GreatestUpperBound(t1 LatticeTag) LatticeTag  {
+func (t LatticeTag) GreatestLowerBound(t1 LatticeTag) LatticeTag  {
 	return t & t1
 }
 
@@ -72,6 +72,4 @@ func (t LatticeTag) String() string {
 	}
 }
 
-func (t LatticeTag) Error() string {
-	panic("implement me")
-}
+

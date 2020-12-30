@@ -62,7 +62,7 @@ func (v *ValueContext) NewEntryValue(entry lattice.Lattice) {
 	v.ValueIndent.SetIn(l)
 }
 
-func (v ValueContext) NewExitValue(exit lattice.Lattice) {
+func (v *ValueContext) NewExitValue(exit lattice.Lattice) {
 	v.ExitValue,_ = v.ExitValue.LeastUpperBound(exit)
 }
 

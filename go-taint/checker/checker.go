@@ -2,13 +2,14 @@ package checker
 
 import (
 	"chaincode-checker/go-taint/context"
-	"chaincode-checker/go-taint/flows"
 	"chaincode-checker/go-taint/lattice"
 	"chaincode-checker/go-taint/taint"
 	"chaincode-checker/go-taint/utils"
+	"github.com/pkg/errors"
 	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 	"log"
+	"os"
 )
 
 var idCounter = 0
@@ -18,7 +19,7 @@ type Checker struct {
 	MainFunc *ssa.Function
 	Program *ssa.Program
 
-	ss *utils.SinkAndSources
+
 
 
 	pointerResult *pointer.Result
@@ -42,10 +43,13 @@ type Checker struct {
 	ContextPkgs       []*ssa.Package
 	ContextCallSuites []*context.ContextCallSuite
 	Transitions       []*context.Transitions
-	ValueCtxMap       context.ValueContextMap
+	ValueCtxMap       *context.ValueContextMap
 	ValToPtr          map[ssa.Value]pointer.Pointer
 
-	ErrFlows *flows.ErrInFlows
+	ErrFlows *lattice.ErrInFlows
+	taskList *TaskList
+
+	logfile *os.File
 	
 }
 
@@ -65,7 +69,6 @@ func NewChecker(path string, sourcefiles []string, sourceAndSinkFile string, all
 	ck := &Checker{
 		checkerCfg: cc,
 	}
-	
 	return ck
 }
 
@@ -96,7 +99,7 @@ func(ck *Checker) NewValueContext(function *ssa.Function) *context.ValueContext 
 
 }
 
-func (ck *Checker) NewCtxCallSuites(isPtr bool, ctx *context.ValueContext, node ssa.Instruction) *context.ContextCallSuite {
+func (ck *Checker) NewCtxCallSuites(ctx *context.ValueContext, node ssa.Instruction) *context.ContextCallSuite {
 
 	if ctx == nil || node == nil{
 		return nil
@@ -104,7 +107,7 @@ func (ck *Checker) NewCtxCallSuites(isPtr bool, ctx *context.ValueContext, node 
 
 	var l1,l2 lattice.Lattice
 
-	if isPtr{
+	if ck.checkerCfg.IsPtr{
 		l1 = lattice.NewLatticePointer(0,ck.ValToPtr)
 		l2 = lattice.NewLatticePointer(0,ck.ValToPtr)
 	}else{
@@ -141,7 +144,7 @@ func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lca
 		return nil
 		//TODO global value callee is not specify
 	}
-	latEntry := matchParams(pcaller,lcaller,callee,isClosure,ck.checkerCfg.IsPtr,ck.ValToPtr)
+	latEntry := ck.matchParams(pcaller,lcaller,callee,isClosure)
 	{
 		c := ck.ValueCtxMap.FindInContext(callee,latEntry)
 		if c != nil{
@@ -152,8 +155,8 @@ func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lca
 
 	{
 		var sinkAndSources []*taint.TaintData
-		sinkAndSources = ck.ss.Sinks
-		sinkAndSources = append(sinkAndSources,ck.ss.Sources...)
+		sinkAndSources = utils.SS.Sources
+		sinkAndSources = append(sinkAndSources, utils.SS.Sinks...)
 
 		for i,s := range sinkAndSources{
 			if s.IsInterface() {
@@ -176,47 +179,73 @@ func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lca
 	ck.ValueCtxMap.AddToContext(vc)
 	log.Printf("new valuectx: %s",vc.String())
 	//TODO init
-	//initCtxVC(callee,vc)
+	ck.initCtxVC(callee,vc)
 	return vc
 }
 
 
 
-func matchParams(pcaller []ssa.Value, lcaller lattice.Lattice, callee *ssa.Function, isClosure bool, isPtr bool, valToPtr map[ssa.Value]pointer.Pointer) lattice.Lattice {
 
 
-	var pcallee []ssa.Value
 
-	if isClosure{
-		fvs := callee.FreeVars
-		pcallee = make([]ssa.Value,len(fvs))
-		for i,fv := range fvs{
-			pcallee[i] = fv
+func (ck *Checker) StartAnalyzing() error {
+	for !ck.taskList.Empty(){
+		ccs := ck.taskList.RemoveFirstCCS()
+		//log.Printf("nextccs: %s",ccs.String())
+
+		//TODO UPDATE
+		err := ck.updateEntryContext(ccs)
+
+		if err != nil{
+			return errors.Wrapf(err,"failed update Entry ctx, %s",ccs.String())
 		}
-	}else{
-		params := callee.Params
-		pcallee = make([]ssa.Value,len(params))
-		for i,p := range params{
-			pcallee[i] = p
+		//TODO FLOW
+		if err := ck.Flow(ccs);err != nil{
+			return errors.Wrap(err,"failed flow at function")
 		}
+
+		//TODO CHECK HANDLE CHANGE
+		if err := ck.checkAndHandleChange(ccs);err != nil{
+			return errors.Wrap(err,"error at checkAndHandleChange")
+		}
+
+		ck.checkAndHandleReturn(ccs)
 	}
 
-	var ret lattice.Lattice
-
-	if isPtr{
-		ret = lattice.NewLatticePointer(0,valToPtr)
-	}else{
-		ret = lattice.NewLattice(0)
+	if ck.ErrFlows.NumberOfFlows() > 0 {
+		return ck.ErrFlows
 	}
-
-	for i,val := range pcaller{
-		ret.SetTag(pcallee[i],lcaller.GetTag(val))
-	}
-
-	return ret
-
+	return nil
 }
 
 
+
+// An analysis state for the main function will be created.
+// The context gets a value context for the main function. The entry and exit value is a empty lattice.
+// The worklist consists of all instructions of the main function.
+func(ck *Checker) initCtxVC(ssaFun *ssa.Function, vc *context.ValueContext) {
+	pkg := ssaFun.Package()
+	analyze := false
+	// check whether the pkg is defined within the packages which should analyzed
+ctxtfor:
+	for _, p := range ck.ContextPkgs {
+		if p == pkg {
+			analyze = true
+			break ctxtfor
+		}
+	}
+	// only add the blocks and instructions if the package should be analyzed.
+	if analyze {
+		ssaFun.WriteTo(ck.logfile)
+		for _, block := range ssaFun.Blocks {
+			for _, instr := range block.Instrs {
+				// build a new context call site for every instruction within the main value context
+				c := ck.NewCtxCallSuites(vc, instr)
+				ck.taskList.Add(c)
+				//	ccsPool = append(ccsPool, c)
+			}
+		}
+	}
+}
 
 

@@ -41,22 +41,22 @@ func (s *ContextCallSuite) GetValueContext() *ValueContext {
 	return s.ValueContext
 }
 
-func (s ContextCallSuite) String() string {
-	return fmt.Sprintf("context: %s ,\n node: %s ,\n in: %s ,\n , out: %s ,\n ",s.GetValueContext().String(),s.node.String(),s.GetIn())
+func (s *ContextCallSuite) String() string {
+	return fmt.Sprintf("context: %s , node: %s , in: %s , out: %s",s.GetValueContext().String(),s.node.String(),s.GetIn().String(),s.GetOut().String())
 }
 
-func (s ContextCallSuite) SetIn(l lattice.Lattice) {
+func (s *ContextCallSuite) SetIn(l lattice.Lattice) {
 	s.in,_ = s.in.LeastUpperBound(l)
 }
 
-func (s ContextCallSuite) SetOut(l lattice.Lattice) {
-	s.out,_ = s.GetExitValue().LeastUpperBound(l)
+func (s *ContextCallSuite) SetOut(l lattice.Lattice) {
+	s.out,_ = s.GetOut().LeastUpperBound(l)
 }
 
-func (s ContextCallSuite) GetOut() lattice.Lattice {
+func (s *ContextCallSuite) GetOut() lattice.Lattice {
 	return s.out
 }
 
-func (s ContextCallSuite) GetIn() lattice.Lattice {
+func (s *ContextCallSuite) GetIn() lattice.Lattice {
 	return s.in
 }

@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="721597a4-5724-4571-b5f0-a5c3cb8b78de" name="Default Changelist" comment="" />
+    <list default="true" id="721597a4-5724-4571-b5f0-a5c3cb8b78de" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/config/example.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go-taint/checker/checker_method.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go-taint/checker/tasklist_utils.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go-taint/lattice/handle_flows.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/sourceandsink.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sourceandsink.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/checker/checker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker_init.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/checker/checker_init.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/checker/tasklist.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/checker/tasklist.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/context/semantics.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/lattice/semantics.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/context/valueContextMap.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/context/valueContextMap.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/flows/function_flow.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/flows/taint_flows.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/lattice/lattice.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_flow.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/lattice/lattice_flow.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_pointer.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/lattice/lattice_pointer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_value.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/lattice/lattice_value.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go-taint/utils/parser.go" beforeDir="false" afterPath="$PROJECT_DIR$/go-taint/utils/parser.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssa/file2ssa.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssa/file2ssa_test.go" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +37,9 @@
     </option>
   </component>
   <component name="GOROOT" path="/usr/local/golang/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="GoLibraries">
     <option name="urls">
       <list>
@@ -36,24 +61,36 @@
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="go.vendoring.notification.had.been.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/config" />
     <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/go-taint/lattice" />
+      <recent name="$PROJECT_DIR$/go-taint/checker" />
+      <recent name="$PROJECT_DIR$/go-taint/flows" />
+      <recent name="$PROJECT_DIR$/go-taint/Checker" />
+      <recent name="$PROJECT_DIR$/go-taint/taint" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/config" />
       <recent name="$PROJECT_DIR$/go-taint/Context" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/chaincodes" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/go-taint/Checker" />
-      <recent name="$PROJECT_DIR$/go-taint/lattice" />
-      <recent name="$PROJECT_DIR$/go-taint/taint" />
-      <recent name="$PROJECT_DIR$/go-taint/utils" />
-    </key>
   </component>
-  <component name="RunManager" selected="Go Test.parser_test.go">
+  <component name="RunManager" selected="Go Build.go build chaincode-checker">
+    <configuration name="go build chaincode-checker" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="chaincode-checker" />
+      <working_directory value="$PROJECT_DIR$" />
+      <parameters value="-src=&quot;config/example.go&quot;" />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <package value="chaincode-checker" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
     <configuration name="TestParseSourceAndSinkFile in chaincode-checker/go-taint/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="chaincode-checker" />
       <working_directory value="$PROJECT_DIR$/go-taint/utils" />
@@ -76,16 +113,6 @@
       <pattern value="^\QTestSSAfromFile\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestTestAst in pass_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="chaincode-checker" />
-      <working_directory value="$PROJECT_DIR$/ast" />
-      <framework value="gotest" />
-      <kind value="FILE" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/ast/pass_test.go" />
-      <pattern value="^\QTestTestAst\E$" />
-      <method v="2" />
-    </configuration>
     <configuration name="TestTryCFG in chaincode-checker/ast" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="chaincode-checker" />
       <working_directory value="$PROJECT_DIR$/ast" />
@@ -106,13 +133,20 @@
       <filePath value="$PROJECT_DIR$/go-taint/utils/parser_test.go" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Go Build.go build chaincode-checker" />
+      <item itemvalue="Go Test.parser_test.go" />
+      <item itemvalue="Go Test.TestParseSourceAndSinkFile in chaincode-checker/go-taint/utils" />
+      <item itemvalue="Go Test.TestSSAfromFile in chaincode-checker/ssa" />
+      <item itemvalue="Go Test.TestTryCFG in chaincode-checker/ast" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build chaincode-checker" />
         <item itemvalue="Go Test.parser_test.go" />
         <item itemvalue="Go Test.TestParseSourceAndSinkFile in chaincode-checker/go-taint/utils" />
         <item itemvalue="Go Test.TestSSAfromFile in chaincode-checker/ssa" />
         <item itemvalue="Go Test.TestTryCFG in chaincode-checker/ast" />
-        <item itemvalue="Go Test.TestTestAst in pass_test.go" />
       </list>
     </recent_temporary>
   </component>
@@ -128,49 +162,62 @@
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state x="755" y="390" width="400" height="328" key="#Go_Modules/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608256800198" />
+    <state x="447" y="396" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1609233966840">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state x="447" y="396" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609233966840" />
     <state x="457" y="347" width="996" height="415" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1608188859359">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state x="457" y="347" width="996" height="415" key="#com.intellij.fileTypes.FileTypeChooser/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608188859359" />
-    <state x="720" y="256" width="469" height="596" key="#com.intellij.ide.util.MemberChooser" timestamp="1608476042761">
+    <state x="720" y="256" width="479" height="596" key="#com.intellij.ide.util.MemberChooser" timestamp="1608905357294">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
+    <state x="720" y="256" width="479" height="596" key="#com.intellij.ide.util.MemberChooser/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1608905357294" />
     <state x="720" y="256" width="469" height="596" key="#com.intellij.ide.util.MemberChooser/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608476042761" />
     <state x="742" y="312" width="424" height="485" key="FileChooserDialogImpl" timestamp="1608257546761">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state x="742" y="312" width="424" height="485" key="FileChooserDialogImpl/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608257546761" />
-    <state width="1866" height="328" key="GridCell.Tab.0.bottom" timestamp="1608553622147">
+    <state width="1866" height="322" key="GridCell.Tab.0.bottom" timestamp="1609242048283">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
+    <state width="1866" height="322" key="GridCell.Tab.0.bottom/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609242048283" />
     <state width="1866" height="328" key="GridCell.Tab.0.bottom/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
-    <state width="1866" height="328" key="GridCell.Tab.0.center" timestamp="1608553622147">
+    <state width="1866" height="322" key="GridCell.Tab.0.center" timestamp="1609242048283">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
+    <state width="1866" height="322" key="GridCell.Tab.0.center/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609242048283" />
     <state width="1866" height="328" key="GridCell.Tab.0.center/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
-    <state width="1866" height="328" key="GridCell.Tab.0.left" timestamp="1608553622147">
+    <state width="1866" height="322" key="GridCell.Tab.0.left" timestamp="1609242048283">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
+    <state width="1866" height="322" key="GridCell.Tab.0.left/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609242048283" />
     <state width="1866" height="328" key="GridCell.Tab.0.left/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
-    <state width="1866" height="328" key="GridCell.Tab.0.right" timestamp="1608553622147">
+    <state width="1866" height="322" key="GridCell.Tab.0.right" timestamp="1609242048283">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
+    <state width="1866" height="322" key="GridCell.Tab.0.right/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609242048283" />
     <state width="1866" height="328" key="GridCell.Tab.0.right/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
-    <state width="1866" height="328" key="GridCell.Tab.1.bottom" timestamp="1608553622148">
+    <state width="1866" height="322" key="GridCell.Tab.1.bottom" timestamp="1609242050466">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
+    <state width="1866" height="322" key="GridCell.Tab.1.bottom/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609242050466" />
     <state width="1866" height="328" key="GridCell.Tab.1.bottom/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622148" />
-    <state width="1866" height="328" key="GridCell.Tab.1.center" timestamp="1608553622148">
+    <state width="1866" height="322" key="GridCell.Tab.1.center" timestamp="1609242050466">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
+    <state width="1866" height="322" key="GridCell.Tab.1.center/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609242050466" />
     <state width="1866" height="328" key="GridCell.Tab.1.center/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622148" />
-    <state width="1866" height="328" key="GridCell.Tab.1.left" timestamp="1608553622148">
+    <state width="1866" height="322" key="GridCell.Tab.1.left" timestamp="1609242050465">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
+    <state width="1866" height="322" key="GridCell.Tab.1.left/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609242050465" />
     <state width="1866" height="328" key="GridCell.Tab.1.left/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622148" />
-    <state width="1866" height="328" key="GridCell.Tab.1.right" timestamp="1608553622148">
+    <state width="1866" height="322" key="GridCell.Tab.1.right" timestamp="1609242050466">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
+    <state width="1866" height="322" key="GridCell.Tab.1.right/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609242050466" />
     <state width="1866" height="328" key="GridCell.Tab.1.right/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622148" />
     <state x="190" y="150" width="1037" height="731" key="SettingsEditor" timestamp="1608360161842">
       <screen x="0" y="28" width="1920" height="1052" />
@@ -194,9 +241,9 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/go-taint/utils/parser.go</url>
-          <line>76</line>
-          <option name="timeStamp" value="6" />
+          <url>file://$PROJECT_DIR$/go-taint/checker/checker.go</url>
+          <line>161</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

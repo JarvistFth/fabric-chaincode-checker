@@ -1,6 +1,8 @@
 package lattice
 
-import "golang.org/x/tools/go/ssa"
+import (
+	"golang.org/x/tools/go/ssa"
+)
 
 type LatticeType int
 
@@ -38,7 +40,9 @@ type Lattice interface {
 
 	GetTag(key ssa.Value) LatticeTag
 
+
 }
+
 
 
 

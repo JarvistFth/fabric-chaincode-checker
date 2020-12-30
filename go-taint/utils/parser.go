@@ -9,7 +9,7 @@ import (
 
 const sourcetypeglobal = "global"
 const sourcetypefunc = "function"
-
+var SS *SinkAndSources
 type SinkAndSources struct {
 	Sinks []*taint.TaintData
 	Sources []*taint.TaintData
@@ -44,7 +44,7 @@ func ParseSourceAndSinkFile(path string) (*SinkAndSources, error) {
 	}
 
 	var sourceAndSinkConfig Config
-	ss := &SinkAndSources{
+	SS = &SinkAndSources{
 		Sinks:   make([]*taint.TaintData, 0),
 		Sources: make([]*taint.TaintData, 0),
 	}
@@ -59,16 +59,16 @@ func ParseSourceAndSinkFile(path string) (*SinkAndSources, error) {
 	for _,e := range sourceAndSinkConfig.Sources{
 		td = taint.NewTaintData(e.Signature,e.Callee,e.Name,e.SourceType == sourcetypeglobal,e.IsInterface)
 
-		ss.Sources = append(ss.Sources,td)
+		SS.Sources = append(SS.Sources,td)
 	}
 
 	for _,e := range sourceAndSinkConfig.Sinks{
 
 		td = taint.NewTaintData(e.Signature,e.Callee,"",false,e.IsInterface)
-		ss.Sinks = append(ss.Sinks,td)
+		SS.Sinks = append(SS.Sinks,td)
 	}
 
 	log.Printf("end")
-	return ss,nil
+	return SS,nil
 
 }

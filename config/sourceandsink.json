@@ -5,10 +5,6 @@
       "signature": "func() int",
       "callee": "math/rand.Int",
       "is_interface": false
-    },
-    {
-      "source_type": "global",
-      "name": "k"
     }
   ],
   "sinks": [

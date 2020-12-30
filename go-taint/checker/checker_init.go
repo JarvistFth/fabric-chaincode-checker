@@ -2,7 +2,7 @@ package checker
 
 import (
 	"chaincode-checker/go-taint/context"
-	"chaincode-checker/go-taint/flows"
+	"chaincode-checker/go-taint/lattice"
 	"chaincode-checker/go-taint/ssautils"
 	"chaincode-checker/go-taint/utils"
 	"errors"
@@ -12,7 +12,9 @@ import (
 	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 	"log"
+	"os"
 	"strings"
+	"time"
 )
 
 func (ck *Checker) Init()  {
@@ -22,7 +24,6 @@ func (ck *Checker) Init()  {
 		log.Fatalf("error: %s",err.Error())
 	}
 	ck.GetValueContext(ck.MainFunc,[]ssa.Value{},nil,false)
-	ck.ErrFlows = flows.NewErrInFlows()
 }
 
 func (ck *Checker) makeAlloc() {
@@ -31,28 +32,30 @@ func (ck *Checker) makeAlloc() {
 	ck.Transitions = make([]*context.Transitions,0)
 	ck.ValToPtr = make(map[ssa.Value]pointer.Pointer)
 	ck.ContextPkgs = make([]*ssa.Package,0)
+	ck.taskList = NewTaskList()
+	ck.ErrFlows = lattice.NewErrInFlows()
 
 }
 
 func (ck *Checker) initSSAandPTA()  error {
 	// First generating a ssautils with source code to get the main function
-	mainpkg, err := ssautils.Build(ck.Path, ck.SourceFiles)
+	mainpkg, err := ssautils.Build(ck.checkerCfg.Path, ck.checkerCfg.SourceFiles)
 	utils.HandleError(err, "ssautils build failed")
 	mainpkg.Build()
 	ck.MainFunc = mainpkg.Func("main")
 	if ck.MainFunc == nil{
 		utils.HandleError(errors.New("no main function in pkgs"),"")
 	}
-	ck.ss,err = utils.ParseSourceAndSinkFile(ck.SourceAndSinkFile)
+	utils.SS,err = utils.ParseSourceAndSinkFile(ck.checkerCfg.SourceAndSinkFile)
 	utils.HandleError(err, "ssautils build failed")
 
-	if ck.Allpkgs{
+	if ck.checkerCfg.Allpkgs{
 		ck.ContextPkgs = ck.MainFunc.Prog.AllPackages()
 	}else{
 		log.Printf("only analyze main pkgs")
 		ck.ContextPkgs = []*ssa.Package{mainpkg}
-		if ck.Pkgs != ""{
-			for _,pkg := range strings.Split(ck.Pkgs,","){
+		if ck.checkerCfg.Pkgs != ""{
+			for _,pkg := range strings.Split(ck.checkerCfg.Pkgs,","){
 				p := ck.MainFunc.Prog.ImportedPackage(pkg)
 				if p != nil{
 					ck.ContextPkgs = append(ck.ContextPkgs,p)
@@ -169,4 +172,17 @@ func (ck *Checker) setupPtrMap(pkgs []*ssa.Package) {
 			}
 		}//end ctx pkgs
 	}
+}
+
+func (ck *Checker) SetLogger(logName string) {
+	now := time.Now().Format("2006-01-02 15:04:05")
+	var err error
+	ck.logfile,err = os.OpenFile(logName + "-" + now + ".txt",os.O_APPEND|os.O_WRONLY|os.O_CREATE,0666)
+	if err != nil{
+		log.Fatalf("error set logger : %s",err.Error())
+	}
+	//TODO DEBUG MODE
+	log.SetOutput(ck.logfile)
+	//log.SetOutput(os.Stdout)
+	log.SetFlags(log.Lshortfile)
 }

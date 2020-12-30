@@ -1,8 +1,10 @@
 package lattice
 
 import (
+	"chaincode-checker/go-taint/utils"
 	"fmt"
 	"github.com/pkg/errors"
+	"go/token"
 	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 )
@@ -20,8 +22,8 @@ func NewLatticePointer(len int, m map[ssa.Value]pointer.Pointer) *LatticePointer
 }
 
 func (p *LatticePointer) LeastUpperBound(l2 Lattice) (Lattice, error) {
-	lat,err := p.LeastUpperBound(l2)
-	latTainted,ok := lat.(*LatticeValue)
+	lat,err := p.Vals.LeastUpperBound(l2)
+	latTainted,ok := lat.(LatticeValue)
 	if !ok || err != nil{
 		return nil,errors.Errorf("error least upper bound, %s,%s",p.String(),l2.String())
 	}
@@ -30,22 +32,22 @@ func (p *LatticePointer) LeastUpperBound(l2 Lattice) (Lattice, error) {
 
 
 	return &LatticePointer{
-		Vals: *latTainted,
+		Vals: latTainted,
 		Ptrs:         ptrs,
 	},nil
 
 }
 
 func (p *LatticePointer) GreatestLowerBound(l2 Lattice) (Lattice, error) {
-	lat,err := p.GreatestLowerBound(l2)
-	lattainted,ok := lat.(*LatticeValue)
+	lat,err := p.Vals.GreatestLowerBound(l2)
+	lattainted,ok := lat.(LatticeValue)
 	if !ok || err != nil{
 		return nil,errors.Errorf("err greatest lowerbound, %s,%s",p.String(),l2.String())
 	}
 
 	ptrs := p.GetPtrs()
 	return &LatticePointer{
-		Vals: *lattainted,
+		Vals: lattainted,
 		Ptrs:         ptrs,
 	},nil
 
@@ -53,7 +55,7 @@ func (p *LatticePointer) GreatestLowerBound(l2 Lattice) (Lattice, error) {
 }
 
 func (p *LatticePointer) LeastElement() (Lattice, error) {
-	lat,err := p.LeastElement()
+	lat,err := p.Vals.LeastElement()
 	lattainted,ok := lat.(*LatticeValue)
 	if !ok || err != nil{
 		return nil,errors.Errorf("err greatest lowerbound, %s",p.String())
@@ -146,7 +148,7 @@ func (p *LatticePointer) GetLattice() Lattice {
 	return p.Vals
 }
 
-func (p LatticePointer) GetSSAValMayAlias(v ssa.Value) []ssa.Value {
+func (p *LatticePointer) GetSSAValMayAlias(v ssa.Value) []ssa.Value {
 	ret := make([]ssa.Value,0)
 
 	vptr := p.GetPtr(v)
@@ -160,6 +162,83 @@ func (p LatticePointer) GetSSAValMayAlias(v ssa.Value) []ssa.Value {
 	return ret
 }
 
+func (l1 *LatticePointer) TransferFunction(node ssa.Instruction, ptr *pointer.Result) PlainFF {
+	switch nType := node.(type) {
+	case *ssa.UnOp:
+		if nType.Op != token.MUL && nType.Op != token.ARROW {
+			l := l1.GetLattice().(LatticeValue)
+
+			return l.TransferFunction(node, ptr)
+		}
+		//handling unop ptrs
+		return ptrUnOp(nType, l1, ptr)
+	case *ssa.Store:
+		// *t1 = t0
+		// everything which mayalias the addres should set to the lattice value of val.
+		addr := nType.Addr
+		lupVal := l1.GetTag(nType.Val)
+		if ptr != nil {
+			if ok, addrp := utils.IsPointerVal(addr); ok {
+				q := ptr.Queries[addrp]
+				qset := q.PointsTo()
+				lbaels := qset.Labels()
+				for _, l := range lbaels {
+					l1.GetLattice().SetTag(l.Value(), lupVal)
+					for ssav, p := range l1.GetPtrs() {
+						if p.MayAlias(l1.GetPtr(l.Value())) {
+							l1.GetLattice().SetTag(ssav, lupVal)
+						}
+					}
+				}
+			}
+		}
+		l1.GetLattice().SetTag(addr, lupVal)
+	case *ssa.Call, *ssa.Defer, *ssa.Go:
+		ff := checkAndHandleSourcesAndsinks(node, l1, true)
+		if ff == nil {
+			return returnID
+		} else {
+			return ff
+		}
+	}
+	l := l1.GetLattice().(LatticeValue)
+	return l.TransferFunction(node, ptr)
+}
 
 
+func ptrUnOp(e *ssa.UnOp, l *LatticePointer, ptr *pointer.Result) PlainFF {
+	value := e.X
+	lupVal := l.GetTag(e.X)
+
+	if ptr != nil {
+		if ok, valr := utils.IsPointerVal(value); ok {
+			q := ptr.Queries[valr]
+			labels := q.PointsTo().Labels()
+			for _, la := range labels {
+
+				l.GetLattice().SetTag(la.Value(), lupVal)
+				for ssav, p := range l.GetPtrs() {
+					if p.MayAlias(l.GetPtr(la.Value())) {
+						l.GetLattice().SetTag(ssav, lupVal)
+					}
+				}
+			}
+		}
+
+		if ok, valr := utils.IsIndirectPtr(value); ok {
+			q := ptr.Queries[valr]
+			labels := q.PointsTo().Labels()
+			for _, la := range labels {
+
+				l.GetLattice().SetTag(la.Value(), lupVal)
+				for ssav, p := range l.GetPtrs() {
+					if p.MayAlias(l.GetPtr(la.Value())) {
+						l.GetLattice().SetTag(ssav, lupVal)
+					}
+				}
+			}
+		}
+	}
+	return returnLUP(lupVal)
+}
 

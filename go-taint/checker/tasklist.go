@@ -3,6 +3,7 @@ package checker
 import (
 	"chaincode-checker/go-taint/context"
 	"fmt"
+	"log"
 )
 
 type TaskList struct {
@@ -32,7 +33,7 @@ func (l *TaskList) GetFirstCCS() *context.ContextCallSuite {
 
 func (l *TaskList) RemoveFirstCCS() *context.ContextCallSuite {
 	var ret *context.ContextCallSuite = nil
-
+	log.Printf("tasklist map len: %d",len(l.taskMap))
 	for i:= 0 ; i<len(l.order);i++{
 		if ok := l.taskMap[l.order[i]];ok{
 			ret = l.order[i]
@@ -67,7 +68,7 @@ func (l *TaskList) Len() int {
 	return len(l.taskMap)
 }
 
-func (l TaskList) String() string {
+func (l *TaskList) String() string {
 	var ret string
 	for i:= 0 ; i< len(l.order); i++{
 		if ok := l.taskMap[l.order[i]];ok{
@@ -76,7 +77,3 @@ func (l TaskList) String() string {
 	}
 	return ret
 }
-
-
-
-

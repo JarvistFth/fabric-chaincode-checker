@@ -1,7 +1,6 @@
-package context
+package lattice
 
 import (
-	"chaincode-checker/go-taint/lattice"
 	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 )
@@ -15,4 +14,4 @@ type SemanticeInterface interface {
 }
 
 // PlainFF describes a plain flow function without any connection to an instruction.
-type PlainFF func(tag lattice.Lattice) (lattice.Lattice, error)
+type PlainFF func(tag LatticeTag) (LatticeTag,error)
