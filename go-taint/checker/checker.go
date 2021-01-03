@@ -5,14 +5,15 @@ import (
 	"chaincode-checker/go-taint/lattice"
 	"chaincode-checker/go-taint/taint"
 	"chaincode-checker/go-taint/utils"
+	"github.com/op/go-logging"
 	"github.com/pkg/errors"
 	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
-	"log"
-	"os"
+	logger "chaincode-checker/go-taint/logger"
 )
 
 var idCounter = 0
+var log = logging.MustGetLogger("main")
 
 type Checker struct {
 
@@ -49,7 +50,7 @@ type Checker struct {
 	ErrFlows *lattice.ErrInFlows
 	taskList *TaskList
 
-	logfile *os.File
+	//logfile *os.File
 	
 }
 
@@ -76,7 +77,7 @@ func NewChecker(path string, sourcefiles []string, sourceAndSinkFile string, all
 
 func(ck *Checker) NewValueContext(function *ssa.Function) *context.ValueContext {
 	if function == nil{
-		log.Printf("callee function is nil")
+		log.Errorf("callee function is nil")
 	}
 
 
@@ -122,6 +123,36 @@ func (ck *Checker) NewCtxCallSuites(ctx *context.ValueContext, node ssa.Instruct
 
 }
 
+// An analysis state for the main function will be created.
+// The context gets a value context for the main function. The entry and exit value is a empty lattice.
+// The worklist consists of all instructions of the main function.
+func(ck *Checker) initCtxVC(ssaFun *ssa.Function, vc *context.ValueContext) {
+	pkg := ssaFun.Package()
+	analyze := false
+	// check whether the pkg is defined within the packages which should analyzed
+ctxtfor:
+	for _, p := range ck.ContextPkgs {
+		if p == pkg {
+			analyze = true
+			break ctxtfor
+		}
+	}
+	// only add the blocks and instructions if the package should be analyzed.
+	if analyze {
+		ssaFun.WriteTo(logger.LogFile)
+		for _, block := range ssaFun.Blocks {
+			for _, instr := range block.Instrs {
+				// build a new context call site for every instruction within the main value context
+				//log.Debugf("instr: %s",instr.String())
+				c := ck.NewCtxCallSuites(vc, instr)
+				ck.taskList.Add(c)
+				//	ccsPool = append(ccsPool, c)
+			}
+		}
+	}
+}
+
+
 func (ck *Checker) NewTransitions(start *context.ValueContext, targetContext *context.ValueContext, node ssa.Instruction) {
 	if start == nil || targetContext == nil || node == nil {
 		return
@@ -144,6 +175,7 @@ func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lca
 		return nil
 		//TODO global value callee is not specify
 	}
+
 	latEntry := ck.matchParams(pcaller,lcaller,callee,isClosure)
 	{
 		c := ck.ValueCtxMap.FindInContext(callee,latEntry)
@@ -152,6 +184,7 @@ func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lca
 		}
 	}
 
+	log.Infof("latentry: %s",latEntry.String())
 
 	{
 		var sinkAndSources []*taint.TaintData
@@ -165,7 +198,7 @@ func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lca
 				}
 			}else{
 				if i == len(sinkAndSources) - 1{
-					log.Printf("s string %s\n", s.String())
+					log.Infof("s string %s", s.String())
 				}
 				if callee.Signature.String() + " " + callee.String() == s.String(){
 					return nil
@@ -177,7 +210,7 @@ func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lca
 	vc := ck.NewValueContext(callee)
 	vc.ValueIndent.SetIn(latEntry)
 	ck.ValueCtxMap.AddToContext(vc)
-	log.Printf("new valuectx: %s",vc.String())
+	log.Infof("new valuectx: %s",vc.String())
 	//TODO init
 	ck.initCtxVC(callee,vc)
 	return vc
@@ -191,7 +224,6 @@ func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lca
 func (ck *Checker) StartAnalyzing() error {
 	for !ck.taskList.Empty(){
 		ccs := ck.taskList.RemoveFirstCCS()
-		//log.Printf("nextccs: %s",ccs.String())
 
 		//TODO UPDATE
 		err := ck.updateEntryContext(ccs)
@@ -220,32 +252,5 @@ func (ck *Checker) StartAnalyzing() error {
 
 
 
-// An analysis state for the main function will be created.
-// The context gets a value context for the main function. The entry and exit value is a empty lattice.
-// The worklist consists of all instructions of the main function.
-func(ck *Checker) initCtxVC(ssaFun *ssa.Function, vc *context.ValueContext) {
-	pkg := ssaFun.Package()
-	analyze := false
-	// check whether the pkg is defined within the packages which should analyzed
-ctxtfor:
-	for _, p := range ck.ContextPkgs {
-		if p == pkg {
-			analyze = true
-			break ctxtfor
-		}
-	}
-	// only add the blocks and instructions if the package should be analyzed.
-	if analyze {
-		ssaFun.WriteTo(ck.logfile)
-		for _, block := range ssaFun.Blocks {
-			for _, instr := range block.Instrs {
-				// build a new context call site for every instruction within the main value context
-				c := ck.NewCtxCallSuites(vc, instr)
-				ck.taskList.Add(c)
-				//	ccsPool = append(ccsPool, c)
-			}
-		}
-	}
-}
 
 

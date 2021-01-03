@@ -10,10 +10,9 @@ import (
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
+	"log"
 	"math/rand"
 	"strconv"
-
-	time "time"
 )
 
 // SimpleAsset implements a simple chaincode to manage an asset
@@ -45,22 +44,28 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 // method may create a new asset by specifying a new key-value pair.
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and args from the transaction proposal
-	fn, args := stub.GetFunctionAndParameters()
+	_, args := stub.GetFunctionAndParameters()
 
-	var result string
-	var err error
-	if fn == "setWithRand" {
-		var last = rand.Int()
-		slast := strconv.Itoa(last)
-		args[1] += slast
-		result, err = set(stub, args)
-	} else if fn == "get"{ // assume 'get' even if fn is nil
-		result, err = get(stub, args)
-	}else if fn == "setWithTime"{
-		var t = time.Now().Format("2006-01-02 15:04:05.999999")
-		args[1] += t
-		result, err = set(stub, args)
-	}
+	//var result string
+	//var err error
+	//if fn == "setWithRand" {
+	//	var last = rand.Int()
+	//	slast := strconv.Itoa(last)
+	//	args[1] += slast
+	//	result, err = set(stub, args)
+	//} else if fn == "get"{ // assume 'get' even if fn is nil
+	//	result, err = get(stub, args)
+	//}else if fn == "setWithTime"{
+	//	var t = time.Now().Format("2006-01-02 15:04:05.999999")
+	//	args[1] += t
+	//	result, err = set(stub, args)
+	//}
+
+	var last = rand.Int()
+	slast := strconv.Itoa(last)
+	args[1] += slast
+	result, err := set(stub, args)
+
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -101,7 +106,43 @@ func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 // main function starts up the chaincode in the container during instantiate
 func main() {
-	if err := shim.Start(new(SimpleAsset)); err != nil {
-		fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
+	//if err := shim.Start(new(SimpleAsset)); err != nil {
+	//	fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
+	//}
+
+
+	s := new(SimpleAsset)
+	stub := shim.NewMockStub("SimpleAsset",s)
+	stub.GetFunctionAndParameters()
+	s.Invoke(stub)
+	//TestInvoke(stub)
+}
+
+func TestInvoke(stub *shim.MockStub) {
+	str := []string{"a","b" }
+	CheckInvoke(stub,"set",str)
+}
+
+func CheckInvoke( stub *shim.MockStub, fn string, params []string) {
+	checkHandle( stub, fn, params)
+}
+
+func checkHandle( stub *shim.MockStub, fn string, params []string) {
+	paramsValue := [][]byte{}
+	paramsValue = append(paramsValue, []byte(fn))
+	if len(params) > 0 {
+		for _, v := range params {
+			vv := []byte(v)
+			paramsValue = append(paramsValue, vv)
+		}
 	}
+
+	res := stub.MockInvoke("1", paramsValue)
+
+	fmt.Printf("【%s】 Response Status:【%d】\n", fn, res.Status)
+
+	if res.Status != shim.OK {
+		log.Fatalf("【%s】 failed:%s\n", fn, res.Message)
+	}
+	fmt.Printf("【%s】 Response Value:【%s】\n", fn, string(res.Payload))
 }

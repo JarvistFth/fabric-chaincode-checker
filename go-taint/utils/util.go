@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"chaincode-checker/go-taint/taint"
 	"github.com/pkg/errors"
 	"go/token"
 	"go/types"
@@ -118,5 +119,10 @@ func findChannels(mains []*ssa.Package) map[ssa.Value][]ssa.CallInstruction {
 		}
 	}
 	return chfuncs
+}
+
+func TakeGlobalVarToSources(name string)  {
+	td := taint.NewTaintData("","",name,true,false)
+	SS.Sources = append(SS.Sources,td)
 }
 

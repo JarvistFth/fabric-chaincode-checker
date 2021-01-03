@@ -11,17 +11,16 @@ import (
 	"go/types"
 	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
-	"log"
-	"os"
 	"strings"
-	"time"
+	//"log"
 )
+
 
 func (ck *Checker) Init()  {
 	ck.makeAlloc()
 	err := ck.initSSAandPTA()
 	if err != nil{
-		log.Fatalf("error: %s",err.Error())
+		log.Errorf("error: %s",err.Error())
 	}
 	ck.GetValueContext(ck.MainFunc,[]ssa.Value{},nil,false)
 }
@@ -39,20 +38,25 @@ func (ck *Checker) makeAlloc() {
 
 func (ck *Checker) initSSAandPTA()  error {
 	// First generating a ssautils with source code to get the main function
+	var err error
+	utils.SS,err = utils.ParseSourceAndSinkFile(ck.checkerCfg.SourceAndSinkFile)
+	utils.HandleError(err, "ssautils build failed")
+	log.Debugf("build path: %s source file: %s",ck.checkerCfg.Path,ck.checkerCfg.SourceFiles)
 	mainpkg, err := ssautils.Build(ck.checkerCfg.Path, ck.checkerCfg.SourceFiles)
 	utils.HandleError(err, "ssautils build failed")
 	mainpkg.Build()
+
+	log.Debugf("%s",utils.SS.String())
+
+
 	ck.MainFunc = mainpkg.Func("main")
 	if ck.MainFunc == nil{
 		utils.HandleError(errors.New("no main function in pkgs"),"")
 	}
-	utils.SS,err = utils.ParseSourceAndSinkFile(ck.checkerCfg.SourceAndSinkFile)
-	utils.HandleError(err, "ssautils build failed")
-
 	if ck.checkerCfg.Allpkgs{
 		ck.ContextPkgs = ck.MainFunc.Prog.AllPackages()
 	}else{
-		log.Printf("only analyze main pkgs")
+		log.Infof("only analyze main pkgs")
 		ck.ContextPkgs = []*ssa.Package{mainpkg}
 		if ck.checkerCfg.Pkgs != ""{
 			for _,pkg := range strings.Split(ck.checkerCfg.Pkgs,","){
@@ -60,7 +64,7 @@ func (ck *Checker) initSSAandPTA()  error {
 				if p != nil{
 					ck.ContextPkgs = append(ck.ContextPkgs,p)
 				}else{
-					log.Printf("pkg: [%s] is unknown in %s",pkg,ck.MainFunc.String())
+					log.Infof("pkg: [%s] is unknown in %s",pkg,ck.MainFunc.String())
 					utils.HandleError(errors.New(fmt.Sprintf("pkg: [%s] is unknown in %s",pkg,ck.MainFunc.String())),"")
 				}
 			}
@@ -174,15 +178,15 @@ func (ck *Checker) setupPtrMap(pkgs []*ssa.Package) {
 	}
 }
 
-func (ck *Checker) SetLogger(logName string) {
-	now := time.Now().Format("2006-01-02 15:04:05")
-	var err error
-	ck.logfile,err = os.OpenFile(logName + "-" + now + ".txt",os.O_APPEND|os.O_WRONLY|os.O_CREATE,0666)
-	if err != nil{
-		log.Fatalf("error set logger : %s",err.Error())
-	}
-	//TODO DEBUG MODE
-	log.SetOutput(ck.logfile)
-	//log.SetOutput(os.Stdout)
-	log.SetFlags(log.Lshortfile)
-}
+//func (ck *Checker) SetLogger(logName string) {
+//	now := time.Now().Format("2006-01-02 15:04:05")
+//	var err error
+//	ck.logfile,err = os.OpenFile(logName + "-" + now + ".txt",os.O_APPEND|os.O_WRONLY|os.O_CREATE,0666)
+//	if err != nil{
+//		log.Fatalf("error set logger : %s",err.Error())
+//	}
+//	//TODO DEBUG MODE
+//	log.SetOutput(ck.logfile)
+//	//log.SetOutput(os.Stdout)
+//	log.SetFlags(log.Lshortfile)
+//}

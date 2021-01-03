@@ -4,10 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package globalcc
+package main
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
 )
@@ -22,10 +24,10 @@ type SimpleAsset struct {
 // data. Note that chaincode upgrade also calls this function to reset
 // or to migrate data.
 func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
-	// Get the Args from the transaction proposal
+	// Get the args from the transaction proposal
 	_,args := stub.GetFunctionAndParameters()
 	if len(args) != 2 {
-		return shim.Error(fmt.Sprintf("incorrect Args, len(Args):%d", len(args)))
+		return shim.Error(fmt.Sprintf("incorrect args, len(args):%d", len(args)))
 	}
 
 	// Set up any variables or assets here by calling stub.PutState()
@@ -42,8 +44,9 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 // either a 'get' or a 'set' on the asset created by Init function. The Set
 // method may create a new asset by specifying a new key-value pair.
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-	// Extract the function and Args from the transaction proposal
+	// Extract the function and args from the transaction proposal
 	fn, args := stub.GetFunctionAndParameters()
+
 	var result string
 	var err error
 	if fn == "set" {
@@ -93,16 +96,43 @@ func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 // main function starts up the chaincode in the container during instantiate
 func main() {
-
-
-	//if err := shim.Start(s); err != nil {
+	//if err := shim.Start(new(SimpleAsset)); err != nil {
 	//	fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
 	//}
 
-	s := &SimpleAsset{}
-	stub := shim.NewMockStub("s",s)
-	s.Invoke(stub)
+	s := new(SimpleAsset)
+	stub := shim.NewMockStub("SimpleAsset",s)
+
+	TestInvoke(stub)
+}
 
 
 
+func TestInvoke(stub *shim.MockStub) {
+	str := []string{"a","b" }
+	CheckInvoke(stub,"set",str)
+}
+
+func CheckInvoke( stub *shim.MockStub, fn string, params []string) {
+	checkHandle( stub, fn, params)
+}
+
+func checkHandle( stub *shim.MockStub, fn string, params []string) {
+	paramsValue := [][]byte{}
+	paramsValue = append(paramsValue, []byte(fn))
+	if len(params) > 0 {
+		for _, v := range params {
+			vv := []byte(v)
+			paramsValue = append(paramsValue, vv)
+		}
+	}
+
+	res := stub.MockInvoke("1", paramsValue)
+
+	fmt.Printf("【%s】 Response Status:【%d】\n", fn, res.Status)
+
+	if res.Status != shim.OK {
+		log.Fatalf("【%s】 failed:%s\n", fn, res.Message)
+	}
+	fmt.Printf("【%s】 Response Value:【%s】\n", fn, string(res.Payload))
 }

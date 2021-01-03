@@ -4,15 +4,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package globalcc
+package main
 
 import (
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
-)
+	"math/rand"
+	"strconv"
 
-var g = "1"
+	time "time"
+)
 
 // SimpleAsset implements a simple chaincode to manage an asset
 type SimpleAsset struct {
@@ -22,10 +24,10 @@ type SimpleAsset struct {
 // data. Note that chaincode upgrade also calls this function to reset
 // or to migrate data.
 func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
-	// Get the Args from the transaction proposal
+	// Get the args from the transaction proposal
 	_,args := stub.GetFunctionAndParameters()
 	if len(args) != 2 {
-		return shim.Error(fmt.Sprintf("incorrect Args, len(Args):%d", len(args)))
+		return shim.Error(fmt.Sprintf("incorrect args, len(args):%d", len(args)))
 	}
 
 	// Set up any variables or assets here by calling stub.PutState()
@@ -42,16 +44,22 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 // either a 'get' or a 'set' on the asset created by Init function. The Set
 // method may create a new asset by specifying a new key-value pair.
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-	// Extract the function and Args from the transaction proposal
+	// Extract the function and args from the transaction proposal
 	fn, args := stub.GetFunctionAndParameters()
+
 	var result string
 	var err error
-	if fn == "set" {
-		g = g + "2"
-		args[1] += g
+	if fn == "setWithRand" {
+		var last = rand.Int()
+		slast := strconv.Itoa(last)
+		args[1] += slast
 		result, err = set(stub, args)
-	} else { // assume 'get' even if fn is nil
+	} else if fn == "get"{ // assume 'get' even if fn is nil
 		result, err = get(stub, args)
+	}else if fn == "setWithTime"{
+		var t = time.Now().Format("2006-01-02 15:04:05.999999")
+		args[1] += t
+		result, err = set(stub, args)
 	}
 	if err != nil {
 		return shim.Error(err.Error())
@@ -64,7 +72,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 // Set stores the asset (both key and value) on the ledger. If the key exists,
 // it will override the value with the new one
 func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	if len(args) < 2 {
+	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
 
@@ -93,16 +101,7 @@ func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 // main function starts up the chaincode in the container during instantiate
 func main() {
-
-
-	//if err := shim.Start(s); err != nil {
-	//	fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
-	//}
-
-	s := &SimpleAsset{}
-	stub := shim.NewMockStub("s",s)
-	s.Invoke(stub)
-
-
-
+	if err := shim.Start(new(SimpleAsset)); err != nil {
+		fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
+	}
 }

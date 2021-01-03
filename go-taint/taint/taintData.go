@@ -1,5 +1,7 @@
 package taint
 
+import "fmt"
+
 type TaintData struct {
 	sig    string
 	callee string
@@ -40,6 +42,6 @@ func (d *TaintData) GetName() string {
 	return d.name
 }
 
-func (d TaintData) String() string {
-	return d.sig + " " + d.callee
+func (d *TaintData) String() string {
+	return fmt.Sprintf("sig: %s, callee: %s, name: %s, global: %t, interface: %t\n",d.sig,d.callee,d.name,d.isGlobal,d.isInterface)
 }

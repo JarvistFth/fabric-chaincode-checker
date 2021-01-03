@@ -356,6 +356,7 @@ func getTaintVal(l Lattice) (LatticeValue,error) {
 
 
 func (lv LatticeValue) TransferFunction(node ssa.Instruction, ptr *pointer.Result) PlainFF {
+	log.Debugf("node: %s\n",node.String())
 	switch nType := node.(type) {
 	// Handle all cases which returns only the id
 	// *ssa.MakeClosure returns only the id, becuase it's a ~function~ call which creates a new context
@@ -400,6 +401,7 @@ func (lv LatticeValue) TransferFunction(node ssa.Instruction, ptr *pointer.Resul
 		case *ssa.UnOp:
 			valX = xType.X
 
+
 			//TODO
 
 			/*	if xType.Op != token.MUL {
@@ -408,7 +410,15 @@ func (lv LatticeValue) TransferFunction(node ssa.Instruction, ptr *pointer.Resul
 					return ptrUnOp(xType, lv, ptr)
 				} */
 		}
-		return returnLUP(lv.GetTag(valX))
+
+		//TODO check global source?
+		ff := checkAndHandleGlobalSource(valX)
+		if ff == nil{
+			return returnLUP(lv.GetTag(valX))
+		}else{
+			return ff
+		}
+
 		// Handle the cases which operates on two ssa.Values
 	case *ssa.BinOp, *ssa.IndexAddr, *ssa.Lookup:
 		var val1, val2 ssa.Value

@@ -1,6 +1,7 @@
 package ssautils
 
 import (
+	"github.com/op/go-logging"
 	"github.com/pkg/errors"
 	"go/token"
 	"golang.org/x/tools/go/loader"
@@ -9,19 +10,37 @@ import (
 	"strings"
 )
 
+var log = logging.MustGetLogger("main")
+
+
 func Build(path string, sourcefiles []string) (*ssa.Package, error){
 	var conf loader.Config
-	srcfs := strings.Join(sourcefiles, ", ")
-	conf.CreateFromFilenames(path, srcfs)
-
+	//srcfs := strings.Join(sourcefiles, ", ")
+	conf.CreateFromFilenames(path, sourcefiles...)
+	//log.Infof("srcfs: %s",srcfs)
 	lprog, err := conf.Load()
 	if err != nil {
-		return nil, errors.Errorf("fail to load config of path: %s and sourcefiles: %s", path, srcfs)
+		return nil, errors.Errorf("fail to load config of path: %s and sourcefiles: %s", path, sourcefiles)
 	}
 
 	prog := ssautil.CreateProgram(lprog, ssa.SanityCheckFunctions)
 	mainPkg := prog.Package(lprog.Created[0].Pkg)
+
+	//members := mainPkg.Members
+	//for _,v := range members{
+	//
+	//	if g,ok := v.(*ssa.Global);ok{
+	//		s := g.Name()
+	//		if s == "init$guard"{
+	//			continue
+	//		}
+	//		//TODO take it into sources
+	//		utils.TakeGlobalVarToSources(s)
+	//		log.Debugf(s)
+	//	}
+	//}
 	prog.Build()
+
 
 	return mainPkg, nil
 

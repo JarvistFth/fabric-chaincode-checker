@@ -163,11 +163,11 @@ func (p *LatticePointer) GetSSAValMayAlias(v ssa.Value) []ssa.Value {
 }
 
 func (l1 *LatticePointer) TransferFunction(node ssa.Instruction, ptr *pointer.Result) PlainFF {
+	fmt.Printf("nodeptr: %s\n",node.String())
 	switch nType := node.(type) {
 	case *ssa.UnOp:
 		if nType.Op != token.MUL && nType.Op != token.ARROW {
 			l := l1.GetLattice().(LatticeValue)
-
 			return l.TransferFunction(node, ptr)
 		}
 		//handling unop ptrs
@@ -208,8 +208,11 @@ func (l1 *LatticePointer) TransferFunction(node ssa.Instruction, ptr *pointer.Re
 
 func ptrUnOp(e *ssa.UnOp, l *LatticePointer, ptr *pointer.Result) PlainFF {
 	value := e.X
+	isSource := isGlobalSource(e.X.Name())
+	if isSource{
+		l.SetTag(e.X,Tainted)
+	}
 	lupVal := l.GetTag(e.X)
-
 	if ptr != nil {
 		if ok, valr := utils.IsPointerVal(value); ok {
 			q := ptr.Queries[valr]
@@ -239,6 +242,8 @@ func ptrUnOp(e *ssa.UnOp, l *LatticePointer, ptr *pointer.Result) PlainFF {
 			}
 		}
 	}
-	return returnLUP(lupVal)
+	ret := returnLUP(lupVal)
+	//return returnLUP(ret)
+	return ret
 }
 

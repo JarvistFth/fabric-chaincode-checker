@@ -42,7 +42,7 @@ func (s *ContextCallSuite) GetValueContext() *ValueContext {
 }
 
 func (s *ContextCallSuite) String() string {
-	return fmt.Sprintf("context: %s , node: %s , in: %s , out: %s",s.GetValueContext().String(),s.node.String(),s.GetIn().String(),s.GetOut().String())
+	return fmt.Sprintf("context: %s,\n Node: %s,\n In: %s,\n Out: %s",s.GetValueContext().String(),s.node.String(),s.GetIn().String(),s.GetOut().String())
 }
 
 func (s *ContextCallSuite) SetIn(l lattice.Lattice) {

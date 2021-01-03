@@ -3,13 +3,16 @@ package lattice
 import (
 	"chaincode-checker/go-taint/utils"
 	"fmt"
+	"github.com/op/go-logging"
 	"go/types"
 	"golang.org/x/tools/go/ssa"
-	"log"
 	"strings"
 	"unicode"
 	"unicode/utf8"
+	//log "chaincode-checker/go-taint/logger"
 )
+
+var log = logging.MustGetLogger("main")
 
 
 type ErrInFlows struct {
@@ -27,6 +30,7 @@ func (e *ErrInFlows) Add(err *ErrLeak) {
 		}
 	}
 	e.errs = append(e.errs, err)
+	log.Debugf("err:len: %d",len(e.errs))
 }
 
 // Error returns a string of all flows beeing in e.
@@ -68,8 +72,8 @@ func (e *ErrLeak) Error() (s string) {
 		f := fset.File(pos)
 		filepath := f.Name()
 		fset.File(pos).Name()
-		fmt.Print("leak at file:")
-		fmt.Printf(" %s:%d \n",filepath,location)
+		log.Errorf("leak at file: %s:%d \n",filepath,location)
+		s += fmt.Sprintf("leak at file: %s:%d\n",filepath,location)
 	}
 
 	//for i, arg := range e.Args {
@@ -92,7 +96,6 @@ func (e *ErrLeak) Error() (s string) {
 	//		//s += " at: file:" + filepath + " near to :" + strconv.Itoa(location)
 	//	}
 	//}
-	s += "\n"
 	return
 }
 
@@ -111,9 +114,14 @@ func getSignature(c ssa.CallCommon) (signature, staticCallee, iSignature string)
 	}
 
 	var sigSlice []string
+
+	//k := types.IsInterface(c.Signature().Underlying())
+	//log.Debugf("callCommon: %s, sig %t", c.String(), k)
+
 	if types.IsInterface(c.Signature().Underlying()) {
 		// Signature for an interface does not contain names for the parameters
 		sigI := c.Signature().String()
+		//log.Debugf("sigI: %s",c.Signature().String())
 		// splits a string into a string slice.
 		// Each element in the slice consists only of an letter, a number, [, ], (,) or a *
 		f := func(c rune) bool {
@@ -165,10 +173,23 @@ func getSignature(c ssa.CallCommon) (signature, staticCallee, iSignature string)
 	return
 }
 
-func isSource(c ssa.CallCommon) bool {
+func isGlobalSource(name string) bool {
+
+	for _,source := range utils.SS.Sources{
+		if source.IsGlobal(){
+			if name == source.GetName(){
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func isFunctionSource(c ssa.CallCommon) bool {
 	sig, call, iSig := getSignature(c)
 	for _, source := range utils.SS.Sources {
 		if source.IsInterface() {
+			log.Debugf("source interface source, getSig: %s, source.Sig: %s",iSig,source.GetSignature())
 			if iSig == source.GetSignature() {
 				return true
 			}
@@ -185,8 +206,11 @@ func isSource(c ssa.CallCommon) bool {
 
 func isSink(c ssa.CallCommon) bool {
 	sig, call, iSig := getSignature(c)
+
+	//log.Debugf("sink signature: sig:%s, call:%s, iSig:%s",sig,call,iSig)
 	for _, sink := range utils.SS.Sinks {
 		if sink.IsInterface() {
+			//log.Debugf("sink interface, getSig: %s, source.Sig: %s",iSig,sink.GetSignature())
 			if iSig == sink.GetSignature() {
 				return true
 			}
@@ -198,6 +222,24 @@ func isSink(c ssa.CallCommon) bool {
 		}
 	}
 	return false
+}
+
+
+func checkAndHandleGlobalSource(v ssa.Value) PlainFF {
+	// ensure that err is nil because it is later used to distinguish whether a information flow occurs or not.
+	name := ""
+	switch xType := v.(type) {
+	case *ssa.Global:
+		name = xType.Name()
+		fmt.Println(name)
+	}
+	// Get the lup of the value
+	source := isGlobalSource(name)
+	if source {
+		return returnTainted
+	}
+
+	return nil
 }
 
 
@@ -216,7 +258,10 @@ func checkAndHandleSourcesAndsinks(c ssa.Instruction, l Lattice, ptr bool) Plain
 	}
 	// Get the lup of the value
 	lupVal := l.GetTag(callCom.Value)
-	source := isSource(callCom)
+
+
+	log.Infof("callCom.Value %s, %s",callCom.Value.String(), lupVal.String())
+	source := isFunctionSource(callCom)
 	if source {
 		return returnTainted
 	}
@@ -257,7 +302,7 @@ func handleSinkDetection(c ssa.CallCommon, l Lattice, ptr bool) error {
 				valsPtsTo := lptr.GetSSAValMayAlias(arg)
 				for _, v := range valsPtsTo {
 					if v.Name() == "t2" {
-						log.Printf("t2 aliases %s\n", arg.Name())
+						log.Debugf("t2 aliases %s\n", arg.Name())
 					}
 					if lptr.GetTag(v) == Tainted || lptr.GetTag(v) == Both {
 						argsErr = append(argsErr, arg)
@@ -269,7 +314,7 @@ func handleSinkDetection(c ssa.CallCommon, l Lattice, ptr bool) error {
 	// Handle the case that one parameter is a variable
 
 	if len(argsErr) != 0 {
-		log.Printf("new err in flow")
+		log.Debugf("new err in flow")
 		err = NewErrInFlow(&c, argsErr, nil)
 		return err
 	}

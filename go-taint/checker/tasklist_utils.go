@@ -124,28 +124,28 @@ func (ck *Checker)updateEntryContext(n *context.ContextCallSuite) error  {
 }
 
 
-func (ck *Checker) AddSuccessor(c *context.ContextCallSuite ) {
-	sucs := getSuccessors(c.GetNode())
+func (ck *Checker) AddSuccessor(n *context.ContextCallSuite ) {
+	sucs := getSuccessors(n.GetNode())
 	for _, s := range sucs {
-		c := getInstrContext(c, s, ck.ContextCallSuites)
+		c := getInstrContext(n, s, ck.ContextCallSuites)
 		if c == nil {
-			c = ck.NewCtxCallSuites(c.GetValueContext(), s)
-			c.SetIn(c.GetOut())
+			c = ck.NewCtxCallSuites(n.GetValueContext(), s)
+			c.SetIn(n.GetOut())
 		}
 		ck.taskList.Add(c)
 	}
 	// For node send: Add all calls which uses the channel als successor
-	send, ok := c.GetNode().(*ssautils.Send)
+	send, ok := n.GetNode().(*ssautils.Send)
 	if ok {
 		for _, s := range send.GetCalls() {
 			// should only one context, because every node should exists once within each context.
-			c := ck.getChannelContext(c, s)
+			c := ck.getChannelContext(n, s)
 			if c == nil {
-				c = ck.NewCtxCallSuites(c.GetValueContext(), s)
+				c = ck.NewCtxCallSuites(n.GetValueContext(), s)
 				// Overapproximate and set the out lattice of the sending node
-				c.SetIn(c.GetOut())
+				c.SetIn(n.GetOut())
 			} else {
-				newValue := c.GetOut().GetTag(send.Send.Chan)
+				newValue := n.GetOut().GetTag(send.Send.Chan)
 				c.GetIn().SetTag(send.Send.Chan, newValue)
 			}
 			ck.taskList.Add(c)

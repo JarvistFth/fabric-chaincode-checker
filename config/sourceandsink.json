@@ -12,6 +12,11 @@
       "signature": "func(format string, v ...interface{})",
       "callee": "log.Printf",
       "is_interface": false
+    },
+    {
+      "signature": "func(n int) error",
+      "callee": "(*chaincode-checker.Testobj).PutState",
+      "is_interface": false
     }
   ]
 }

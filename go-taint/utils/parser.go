@@ -3,9 +3,11 @@ package utils
 import (
 	"chaincode-checker/go-taint/taint"
 	"encoding/json"
+	"github.com/op/go-logging"
 	"io/ioutil"
-	"log"
 )
+
+var log = logging.MustGetLogger("main")
 
 const sourcetypeglobal = "global"
 const sourcetypefunc = "function"
@@ -51,7 +53,7 @@ func ParseSourceAndSinkFile(path string) (*SinkAndSources, error) {
 
 	err = json.Unmarshal(bytes,&sourceAndSinkConfig)
 	if err != nil{
-		log.Fatal(err.Error())
+		log.Fatalf(err.Error())
 		return nil,err
 	}
 
@@ -68,7 +70,21 @@ func ParseSourceAndSinkFile(path string) (*SinkAndSources, error) {
 		SS.Sinks = append(SS.Sinks,td)
 	}
 
-	log.Printf("end")
+	log.Debugf("parse source and sink file ending")
 	return SS,nil
 
+}
+
+func (ss *SinkAndSources) String() string {
+	var ret string
+
+	for _,s := range ss.Sources{
+		ret += "sources: "+ s.String()
+	}
+
+
+	for _,s := range ss.Sinks{
+		ret += "sinks:" + s.String()
+	}
+	return ret
 }

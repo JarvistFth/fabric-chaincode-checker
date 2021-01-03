@@ -6,7 +6,6 @@ import (
 	"chaincode-checker/go-taint/ssautils"
 	"github.com/pkg/errors"
 	"golang.org/x/tools/go/ssa"
-	"log"
 )
 
 
@@ -42,7 +41,7 @@ func (ck *Checker)Flow(c *context.ContextCallSuite) error {
 	// Check, whether c.in implements the Semanticer interface.
 	// (Else a flow is not possible because methods are missing.)
 
-	log.Printf("callsite :%s\n",c.String())
+	//log.Debugf("callsite :%s\n",c.String())
 	lIn, ok := c.GetIn().(lattice.SemanticeInterface)
 	if !ok {
 		log.Fatalf("%v throws an error because it doesn't implement the interface transferFunction.Semanticer", c.GetIn())
@@ -81,7 +80,9 @@ func (ck *Checker)Flow(c *context.ContextCallSuite) error {
 		case *ssa.Defer:
 			valin = n.Common().Value
 			valout = n.Common().Value
+
 		}
+
 		valn := c.GetIn().GetTag(valin)
 
 		// Flow the flow function and handle the errors
@@ -89,7 +90,7 @@ func (ck *Checker)Flow(c *context.ContextCallSuite) error {
 		if err != nil {
 			switch err := err.(type) {
 			case *lattice.ErrLeak:
-				log.Printf("add errleak")
+				log.Debugf("add errleak")
 				ck.ErrFlows.Add(err)
 			default:
 				return errors.Wrapf(err, "failed call ff with %s, %s", valn.String(),err.Error())
@@ -105,6 +106,23 @@ func (ck *Checker)Flow(c *context.ContextCallSuite) error {
 	case *ssa.Jump, *ssa.Return:
 		// ToDo improve - current problem: can't pass n as value for the lattice (is *ssa.Instruction)
 		c.SetOut(c.GetIn())
+	case *ssa.If:
+
+		//TODO HANDLE IF STATEMENT
+
+		//b := n.Block().Instrs
+		//for _,i := range b{
+		//	log.Debugf("if statement block: %s",i.String())
+		//}
+		//p := n.Block().Preds
+		//for _, i := range p{
+		//	log.Debugf(i.String())
+		//}
+		//p = n.Block().Succs
+		//for _, i := range p{
+		//	log.Debugf(i.String())
+		//}
+		//ck.AddSuccessor(n)
 	}
 
 	// Get information whether the node is a call or a closure
@@ -153,7 +171,7 @@ func (ck *Checker)Flow(c *context.ContextCallSuite) error {
 		}
 
 	}
-	log.Printf("callsite - 2  :%s\n",c.String())
+	log.Debugf("callsite - 2  :%s\n",c.String())
 
 	return nil
 }
@@ -165,7 +183,7 @@ func(ck *Checker) handleReturn(c *context.ContextCallSuite) {
 	anotherccs := ck.ctxTransToAnotherX(c)
 
 	for _,d := range anotherccs{
-		log.Printf("d %s\n", d.String())
+		log.Debugf("d %s\n", d.String())
 		ck.taskList.Add(d)
 	}
 

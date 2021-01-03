@@ -3,6 +3,7 @@ package main
 import (
 	"chaincode-checker/go-taint/checker"
 	"chaincode-checker/go-taint/lattice"
+	"chaincode-checker/go-taint/logger"
 	"errors"
 	"flag"
 	"fmt"
@@ -14,8 +15,7 @@ var srcFlagCalled = false
 type sourcefiles []string
 
 
-var logfile *os.File
-
+var log = logger.GetLogger("./debuglogs/test")
 
 func (s *sourcefiles) String() string {
 	return fmt.Sprint(*s)
@@ -54,17 +54,18 @@ func main() {
 		flag.PrintDefaults()
 	}else{
 		ck := checker.NewChecker(*path,sourceFilesFlag,*ssf,*allpkgs,*pkgs,*ptr)
-		ck.SetLogger("./debuglogs/test")
+		logger.SetLogger("./debuglogs/test")
+		//ck.SetLogger("./debuglogs/test")
 		ck.Init()
 		err := ck.StartAnalyzing()
 
 		if err != nil {
 			switch err := err.(type) {
 			case *lattice.ErrInFlows:
-				fmt.Printf("err.NumberOfFlows: %d \n", err.NumberOfFlows())
-				fmt.Printf("err.Error() %s\n", err.Error())
+				fmt.Printf("err.NumberOfFlows: %d, messages are: \n", err.NumberOfFlows())
+				fmt.Printf("%s\n", err.Error())
 			default:
-				fmt.Printf("Errors: %+v\n", err)
+				log.Errorf("Errors: %+v\n", err)
 				os.Exit(1)
 			}
 		} else {
