@@ -1,9 +1,11 @@
 package ssautils
 
 import (
+	"fmt"
 	"github.com/op/go-logging"
 	"github.com/pkg/errors"
 	"go/token"
+	"go/types"
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
@@ -13,36 +15,37 @@ import (
 var log = logging.MustGetLogger("main")
 
 
-func Build(path string, sourcefiles []string) (*ssa.Package, error){
+func Build(path string, sourcefiles []string) (*ssa.Package, error, *ssa.Function, *ssa.Function){
 	var conf loader.Config
 	//srcfs := strings.Join(sourcefiles, ", ")
 	conf.CreateFromFilenames(path, sourcefiles...)
 	//log.Infof("srcfs: %s",srcfs)
 	lprog, err := conf.Load()
 	if err != nil {
-		return nil, errors.Errorf("fail to load config of path: %s and sourcefiles: %s", path, sourcefiles)
+		return nil, errors.Errorf("fail to load config of path: %s and sourcefiles: %s", path, sourcefiles),nil,nil
 	}
 
 	prog := ssautil.CreateProgram(lprog, ssa.SanityCheckFunctions)
+
+
 	mainPkg := prog.Package(lprog.Created[0].Pkg)
 
-	//members := mainPkg.Members
-	//for _,v := range members{
-	//
-	//	if g,ok := v.(*ssa.Global);ok{
-	//		s := g.Name()
-	//		if s == "init$guard"{
-	//			continue
-	//		}
-	//		//TODO take it into sources
-	//		utils.TakeGlobalVarToSources(s)
-	//		log.Debugf(s)
-	//	}
-	//}
 	prog.Build()
 
+	var initf *ssa.Function
 
-	return mainPkg, nil
+	s := mainPkg.Type("SimpleAsset")
+	t := s.Type()
+
+	p := types.NewPointer(t)
+
+
+	initf = prog.LookupMethod(p,mainPkg.Pkg,"Init")
+	invokef := prog.LookupMethod(p,mainPkg.Pkg,"Invoke")
+	//initf.WriteTo(os.Stdout)
+
+	fmt.Println("end build ssa pkgs")
+	return mainPkg, nil, initf, invokef
 
 }
 

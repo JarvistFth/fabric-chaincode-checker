@@ -10,24 +10,23 @@ import (
 )
 
 type LatticePointer struct {
-	Vals LatticeValue
-	Ptrs map[ssa.Value]pointer.Pointer
+	*LatticeValue
+	//Ptrs map[ssa.Value]pointer.Pointer
+
+
 }
 
-func NewLatticePointer(len int, m map[ssa.Value]pointer.Pointer) *LatticePointer {
-	return &LatticePointer{
-		Vals: make(map[ssa.Value]LatticeTag, len),
-		Ptrs: m,
-	}
+func NewLatticePointer() *LatticePointer {
+
 }
 
 func (p *LatticePointer) LeastUpperBound(l2 Lattice) (Lattice, error) {
 	lat,err := p.Vals.LeastUpperBound(l2)
 	latTainted,ok := lat.(LatticeValue)
 	if !ok || err != nil{
-		return nil,errors.Errorf("error least upper bound, %s,%s",p.String(),l2.String())
+		return nil,errors.Errorf("error least upper bound, %s,%s", p.String(),l2.String())
 	}
-	ptrs:=p.GetPtrs()
+	ptrs:= p.GetPtrs()
 
 
 
@@ -42,7 +41,7 @@ func (p *LatticePointer) GreatestLowerBound(l2 Lattice) (Lattice, error) {
 	lat,err := p.Vals.GreatestLowerBound(l2)
 	lattainted,ok := lat.(LatticeValue)
 	if !ok || err != nil{
-		return nil,errors.Errorf("err greatest lowerbound, %s,%s",p.String(),l2.String())
+		return nil,errors.Errorf("err greatest lowerbound, %s,%s", p.String(),l2.String())
 	}
 
 	ptrs := p.GetPtrs()
@@ -58,7 +57,7 @@ func (p *LatticePointer) LeastElement() (Lattice, error) {
 	lat,err := p.Vals.LeastElement()
 	lattainted,ok := lat.(*LatticeValue)
 	if !ok || err != nil{
-		return nil,errors.Errorf("err greatest lowerbound, %s",p.String())
+		return nil,errors.Errorf("err greatest lowerbound, %s", p.String())
 	}
 
 	ptrs := p.GetPtrs()
@@ -113,7 +112,7 @@ func (p *LatticePointer) DeepCopy() Lattice {
 }
 
 func (p *LatticePointer) String() string {
-	return fmt.Sprintf("LatticePointer: %s",p.Vals.String())
+	return fmt.Sprintf("LatticePointer: %s", p.Vals.String())
 }
 
 func (p *LatticePointer) GetPtrs() map[ssa.Value]pointer.Pointer {
@@ -162,56 +161,68 @@ func (p *LatticePointer) GetSSAValMayAlias(v ssa.Value) []ssa.Value {
 	return ret
 }
 
-func (l1 *LatticePointer) TransferFunction(node ssa.Instruction, ptr *pointer.Result) PlainFF {
-	fmt.Printf("nodeptr: %s\n",node.String())
+func (p *LatticePointer) TransferFunction(node ssa.Instruction, ptr *pointer.Result) PlainFF {
+	//fmt.Printf("nodeptr: %s\n",node.String())
 	switch nType := node.(type) {
 	case *ssa.UnOp:
 		if nType.Op != token.MUL && nType.Op != token.ARROW {
-			l := l1.GetLattice().(LatticeValue)
+			l := p.GetLattice().(*LatticeValue)
 			return l.TransferFunction(node, ptr)
 		}
 		//handling unop ptrs
-		return ptrUnOp(nType, l1, ptr)
+		return ptrUnOp(nType, p, ptr)
 	case *ssa.Store:
 		// *t1 = t0
 		// everything which mayalias the addres should set to the lattice value of val.
 		addr := nType.Addr
-		lupVal := l1.GetTag(nType.Val)
+		lupVal := p.GetTag(nType.Val)
+		//log.Warningf("ptr node store: %s, type.val: %s, tag: %s, addr: %s",node.String(),nType.Val.String(),lupVal.String(),addr.String())
 		if ptr != nil {
 			if ok, addrp := utils.IsPointerVal(addr); ok {
 				q := ptr.Queries[addrp]
 				qset := q.PointsTo()
-				lbaels := qset.Labels()
-				for _, l := range lbaels {
-					l1.GetLattice().SetTag(l.Value(), lupVal)
-					for ssav, p := range l1.GetPtrs() {
-						if p.MayAlias(l1.GetPtr(l.Value())) {
-							l1.GetLattice().SetTag(ssav, lupVal)
+				labels := qset.Labels()
+				//log.Warningf("addrname:%s, valname:%s, qset: %s, len(labels):%d", addr.Name(), nType.Val.Name(),qset.String(), len(labels))
+				for _, l := range labels {
+					//log.Warningf("ptr store, label: %s, value: %s, valuetag:%s",l.String(), l.Value().Name(),lupVal.String())
+					p.GetLattice().SetTag(l.Value(), lupVal)
+					for ssav, ptr := range p.GetPtrs() {
+						if ptr.MayAlias(p.GetPtr(l.Value())) {
+							p.GetLattice().SetTag(ssav, lupVal)
 						}
 					}
 				}
 			}
 		}
-		l1.GetLattice().SetTag(addr, lupVal)
+		//log.Warningf("ptr lattice:%s",p.GetLattice().String())
+		p.GetLattice().SetTag(addr, lupVal)
 	case *ssa.Call, *ssa.Defer, *ssa.Go:
-		ff := checkAndHandleSourcesAndsinks(node, l1, true)
+		ff := checkAndHandleSourcesAndsinks(node, p, true)
 		if ff == nil {
 			return returnID
 		} else {
 			return ff
 		}
 	}
-	l := l1.GetLattice().(LatticeValue)
+	l := p.GetLattice().(*LatticeValue)
 	return l.TransferFunction(node, ptr)
 }
 
 
 func ptrUnOp(e *ssa.UnOp, l *LatticePointer, ptr *pointer.Result) PlainFF {
 	value := e.X
-	isSource := isGlobalSource(e.X.Name())
-	if isSource{
+	switch e.X.(type){
+	case *ssa.Global:
+		log.Infof("ptrUnOp global value: %s",e.X.Name())
 		l.SetTag(e.X,Tainted)
+	default:
+
 	}
+
+	//isSource := isGlobalSource(e.X.Name())
+	//if isSource{
+	//	l.SetTag(e.X,Tainted)
+	//}
 	lupVal := l.GetTag(e.X)
 	if ptr != nil {
 		if ok, valr := utils.IsPointerVal(value); ok {

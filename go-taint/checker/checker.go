@@ -3,13 +3,13 @@ package checker
 import (
 	"chaincode-checker/go-taint/context"
 	"chaincode-checker/go-taint/lattice"
+	logger "chaincode-checker/go-taint/logger"
 	"chaincode-checker/go-taint/taint"
 	"chaincode-checker/go-taint/utils"
 	"github.com/op/go-logging"
 	"github.com/pkg/errors"
 	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
-	logger "chaincode-checker/go-taint/logger"
 )
 
 var idCounter = 0
@@ -20,6 +20,8 @@ type Checker struct {
 	MainFunc *ssa.Function
 	Program *ssa.Program
 
+	InvokeFunc *ssa.Function
+	InitFunc *ssa.Function
 
 
 
@@ -42,10 +44,10 @@ type Checker struct {
 	checkerCfg	*CheckerConfig
 
 	ContextPkgs       []*ssa.Package
-	ContextCallSuites []*context.ContextCallSuite
+	ContextCallSuites []*context.InstructionContext
 	Transitions       []*context.Transitions
 	ValueCtxMap       *context.ValueContextMap
-	ValToPtr          map[ssa.Value]pointer.Pointer
+	//ValToPtr          map[ssa.Value]pointer.Pointer
 
 	ErrFlows *lattice.ErrInFlows
 	taskList *TaskList
@@ -100,7 +102,7 @@ func(ck *Checker) NewValueContext(function *ssa.Function) *context.ValueContext 
 
 }
 
-func (ck *Checker) NewCtxCallSuites(ctx *context.ValueContext, node ssa.Instruction) *context.ContextCallSuite {
+func (ck *Checker) NewCtxCallSuites(ctx *context.ValueContext, node ssa.Instruction) *context.InstructionContext {
 
 	if ctx == nil || node == nil{
 		return nil
@@ -118,6 +120,11 @@ func (ck *Checker) NewCtxCallSuites(ctx *context.ValueContext, node ssa.Instruct
 
 	ccs := context.NewContextCallSuite(ctx,node,l1,l2)
 
+	switch ntype := node.(type) {
+	case ssa.Value:
+		log.Debugf("new ctx callsite: %s:  %s",ntype.Name(),ntype.String())
+	}
+
 	ck.ContextCallSuites = append(ck.ContextCallSuites,ccs)
 	return ccs
 
@@ -126,9 +133,11 @@ func (ck *Checker) NewCtxCallSuites(ctx *context.ValueContext, node ssa.Instruct
 // An analysis state for the main function will be created.
 // The context gets a value context for the main function. The entry and exit value is a empty lattice.
 // The worklist consists of all instructions of the main function.
-func(ck *Checker) initCtxVC(ssaFun *ssa.Function, vc *context.ValueContext) {
+func(ck *Checker) initVCwithFunc(ssaFun *ssa.Function, vc *context.ValueContext) {
 	pkg := ssaFun.Package()
 	analyze := false
+
+	ssaFun.Name()
 	// check whether the pkg is defined within the packages which should analyzed
 ctxtfor:
 	for _, p := range ck.ContextPkgs {
@@ -143,10 +152,9 @@ ctxtfor:
 		for _, block := range ssaFun.Blocks {
 			for _, instr := range block.Instrs {
 				// build a new context call site for every instruction within the main value context
-				//log.Debugf("instr: %s",instr.String())
+				log.Debugf("new ctxcallsite in instr: %s",instr.String())
 				c := ck.NewCtxCallSuites(vc, instr)
 				ck.taskList.Add(c)
-				//	ccsPool = append(ccsPool, c)
 			}
 		}
 	}
@@ -170,15 +178,14 @@ func (ck *Checker) NewTransitions(start *context.ValueContext, targetContext *co
 	ck.Transitions = append(ck.Transitions,t)
 }
 
-func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lcaller lattice.Lattice, isClosure bool) *context.ValueContext{
-	if callee == nil{
+func(ck *Checker) GetValueContext(callfunc *ssa.Function, args []ssa.Value, lcaller lattice.Lattice, isClosure bool) *context.ValueContext{
+	if callfunc == nil{
 		return nil
-		//TODO global value callee is not specify
 	}
 
-	latEntry := ck.matchParams(pcaller,lcaller,callee,isClosure)
+	latEntry := ck.GetArgLattice(callfunc,args,lcaller,isClosure)
 	{
-		c := ck.ValueCtxMap.FindInContext(callee,latEntry)
+		c := ck.ValueCtxMap.FindInContext(callfunc,latEntry)
 		if c != nil{
 			return c
 		}
@@ -193,26 +200,25 @@ func(ck *Checker) GetValueContext(callee *ssa.Function, pcaller []ssa.Value, lca
 
 		for i,s := range sinkAndSources{
 			if s.IsInterface() {
-				if callee.Signature.String() == s.GetSignature(){
+				if callfunc.Signature.String() == s.GetSignature(){
 					return nil
 				}
 			}else{
 				if i == len(sinkAndSources) - 1{
 					log.Infof("s string %s", s.String())
 				}
-				if callee.Signature.String() + " " + callee.String() == s.String(){
+				if callfunc.Signature.String() + " " + callfunc.String() == s.String(){
 					return nil
 				}
 			}
 		}
 	}
 
-	vc := ck.NewValueContext(callee)
-	vc.ValueIndent.SetIn(latEntry)
+	vc := ck.NewValueContext(callfunc)
+	vc.SetEntryValue(latEntry)
 	ck.ValueCtxMap.AddToContext(vc)
 	log.Infof("new valuectx: %s",vc.String())
-	//TODO init
-	ck.initCtxVC(callee,vc)
+	ck.initVCwithFunc(callfunc,vc)
 	return vc
 }
 
@@ -225,23 +231,24 @@ func (ck *Checker) StartAnalyzing() error {
 	for !ck.taskList.Empty(){
 		ccs := ck.taskList.RemoveFirstCCS()
 
-		//TODO UPDATE
+		log.Debug("updateEntryContext")
 		err := ck.updateEntryContext(ccs)
-
 		if err != nil{
 			return errors.Wrapf(err,"failed update Entry ctx, %s",ccs.String())
 		}
-		//TODO FLOW
+		log.Debug("begin flow function")
 		if err := ck.Flow(ccs);err != nil{
 			return errors.Wrap(err,"failed flow at function")
 		}
 
-		//TODO CHECK HANDLE CHANGE
+		log.Debug("checkAndHandleChange")
 		if err := ck.checkAndHandleChange(ccs);err != nil{
 			return errors.Wrap(err,"error at checkAndHandleChange")
 		}
-
+		log.Debug("checkAndHandleReturn")
 		ck.checkAndHandleReturn(ccs)
+		log.Debugf("callsite:%s\n",ccs.String())
+
 	}
 
 	if ck.ErrFlows.NumberOfFlows() > 0 {

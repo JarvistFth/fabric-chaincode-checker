@@ -6,16 +6,16 @@ import (
 )
 
 type TaskList struct {
-	taskMap map[*context.ContextCallSuite]bool
-	order []*context.ContextCallSuite
+	taskMap map[*context.InstructionContext]bool
+	order []*context.InstructionContext
 	MaxElement int
 
 
 }
 
 func NewTaskList() *TaskList {
-	m := make(map[*context.ContextCallSuite]bool)
-	o := make([]*context.ContextCallSuite,0)
+	m := make(map[*context.InstructionContext]bool)
+	o := make([]*context.InstructionContext,0)
 	ret := &TaskList{
 		taskMap: m,
 		order:   o,
@@ -23,7 +23,7 @@ func NewTaskList() *TaskList {
 	return ret
 }
 
-func (l *TaskList) GetFirstCCS() *context.ContextCallSuite {
+func (l *TaskList) GetFirstCCS() *context.InstructionContext {
 	for i:= 0 ; i < len(l.order); i++{
 		if ok := l.taskMap[l.order[i]];ok{
 			return l.order[i]
@@ -32,8 +32,8 @@ func (l *TaskList) GetFirstCCS() *context.ContextCallSuite {
 	return nil
 }
 
-func (l *TaskList) RemoveFirstCCS() *context.ContextCallSuite {
-	var ret *context.ContextCallSuite = nil
+func (l *TaskList) RemoveFirstCCS() *context.InstructionContext {
+	var ret *context.InstructionContext = nil
 	log.Debugf("tasklist map len: %d",len(l.taskMap))
 	for i:= 0 ; i<len(l.order);i++{
 		if ok := l.taskMap[l.order[i]];ok{
@@ -51,7 +51,10 @@ func (l *TaskList) Empty() bool {
 	return len(l.taskMap) == 0
 }
 
-func (l *TaskList) Add(c *context.ContextCallSuite) {
+func (l *TaskList) Add(c *context.InstructionContext) {
+
+	log.Debugf("add contextCallSite: %s", c.GetNode().String())
+
 	_, ok := l.taskMap[c]
 
 	// c as entry not exist, create it

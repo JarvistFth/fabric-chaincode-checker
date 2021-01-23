@@ -43,22 +43,24 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 // method may create a new asset by specifying a new key-value pair.
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and Args from the transaction proposal
-	fn, args := stub.GetFunctionAndParameters()
-	var result string
-	var err error
-	if fn == "set" {
-		g = g + "2"
-		args[1] += g
-		result, err = set(stub, args)
-	} else { // assume 'get' even if fn is nil
-		result, err = get(stub, args)
-	}
-	if err != nil {
-		return shim.Error(err.Error())
-	}
+	_, args := stub.GetFunctionAndParameters()
+	//var result string
+	//var err error
 
+
+	//if fn == "set" {
+	//	g = g + "2"
+	//	args[1] += g
+	//	result, err = set(stub, args)
+	//} else { // assume 'get' even if fn is nil
+	//	result, err = get(stub, args)
+	//}
+	//if err != nil {
+	//	return shim.Error(err.Error())
+	//}
+	stub.PutState(args[0],[]byte(g))
 	// Return the result as success payload
-	return shim.Success([]byte(result))
+	return shim.Success([]byte(g))
 }
 
 // Set stores the asset (both key and value) on the ledger. If the key exists,

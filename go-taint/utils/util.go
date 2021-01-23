@@ -2,6 +2,7 @@ package utils
 
 import (
 	"chaincode-checker/go-taint/taint"
+	"fmt"
 	"github.com/pkg/errors"
 	"go/token"
 	"go/types"
@@ -126,3 +127,20 @@ func TakeGlobalVarToSources(name string)  {
 	SS.Sources = append(SS.Sources,td)
 }
 
+func GenKeyFromSSAValue(value ssa.Value) string{
+	return fmt.Sprintf("%s.%s.%s",value.Parent().Pkg.String(),value.Parent().Name(),value.Name())
+}
+
+func  GetSSAValMayAlias(v ssa.Value) []ssa.Value {
+	ret := make([]ssa.Value,0)
+
+	vptr := p.GetPtr(v)
+	ptrs := p.GetPtrs()
+
+	for v, ptr := range ptrs{
+		if ptr.MayAlias(vptr){
+			ret = append(ret,v)
+		}
+	}
+	return ret
+}

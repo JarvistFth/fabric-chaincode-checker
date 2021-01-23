@@ -1,24 +1,10 @@
 package lattice
 
-import (
-	"golang.org/x/tools/go/ssa"
-)
-
-type LatticeType int
-
-const(
-	Value LatticeType = iota
-
-	Pointer
-
-)
 
 type Lattice interface {
-	LeastUpperBound(l2 Lattice) (Lattice,error)
+	LeastUpperBound(l2 Lattice) error
 
-	GreatestLowerBound(l2 Lattice) (Lattice,error)
-
-	LeastElement() (Lattice,error)
+	GreatestLowerBound(l2 Lattice) error
 
 	Less(l2 Lattice) (bool,error)
 
@@ -30,18 +16,20 @@ type Lattice interface {
 
 	GreaterEqual(l2 Lattice) (bool,error)
 
-	BottomLattice() Lattice
+	ResetTag()
 
 	DeepCopy() Lattice
 
 	String() string
 
-	SetTag(key ssa.Value, tag LatticeTag)error
+	SetTag(tag LatticeTag)
 
-	GetTag(key ssa.Value) LatticeTag
+	GetTag() LatticeTag
 
 
 }
+
+
 
 
 

@@ -10,7 +10,7 @@ import (
 
 
 
-func (ck *Checker) updateNewContext(vc *context.ValueContext, ps []ssa.Value, c *context.ContextCallSuite, callee *ssa.Function, call ssa.Instruction)  {
+func (ck *Checker) updateNewContext(vc *context.ValueContext, ps []ssa.Value, c *context.InstructionContext, callee *ssa.Function, call ssa.Instruction)  {
 	vcInCtxMap,knownCtx := ck.ValueCtxMap.Known(vc,ps)
 
 	callerCtx := c.GetValueContext()
@@ -29,7 +29,7 @@ func (ck *Checker) updateNewContext(vc *context.ValueContext, ps []ssa.Value, c 
 		if err != nil{
 			errors.Wrap(err,"")
 		}
-		vc.ExitValue = lup
+		vc.RetValueLattice = lup
 		c.SetOut(lup)
 	}
 }
@@ -37,7 +37,7 @@ func (ck *Checker) updateNewContext(vc *context.ValueContext, ps []ssa.Value, c 
 
 
 
-func (ck *Checker)Flow(c *context.ContextCallSuite) error {
+func (ck *Checker)Flow(c *context.InstructionContext) error {
 	// Check, whether c.in implements the Semanticer interface.
 	// (Else a flow is not possible because methods are missing.)
 
@@ -144,9 +144,17 @@ func (ck *Checker)Flow(c *context.ContextCallSuite) error {
 			callCom = call.Common()
 			staticCallee = callCom.StaticCallee()
 			// *Builtin or any other value indicating a dynamically dispatched function call
+			// todo: check some taint flow function in srcpkgs
+
+
+			//check
+
+
 			if staticCallee != nil {
 				// staticCalle is the targetMethod of the call
 				vc = ck.GetValueContext(staticCallee, callCom.Args, c.GetIn(), false)
+				log.Debugf("callvalue: %s,callinstr: %s, staticCallee: %s", call.Value().String(),callCom.String(),staticCallee.String())
+
 			}
 			//log.Printf("callsite - 3  :%s\n",c.String())
 
@@ -171,53 +179,7 @@ func (ck *Checker)Flow(c *context.ContextCallSuite) error {
 		}
 
 	}
-	log.Debugf("callsite - 2  :%s\n",c.String())
+	//log.Debugf("callsite - 2  :%s\n",c.String())
 
 	return nil
-}
-
-
-func(ck *Checker) handleReturn(c *context.ContextCallSuite) {
-	c.GetValueContext().NewExitValue(c.GetOut())
-
-	anotherccs := ck.ctxTransToAnotherX(c)
-
-	for _,d := range anotherccs{
-		log.Debugf("d %s\n", d.String())
-		ck.taskList.Add(d)
-	}
-
-}
-
-func(ck *Checker) checkAndHandleReturn(c *context.ContextCallSuite) {
-	isRet := ck.checkReturn(c)
-	if isRet {
-		ck.handleReturn(c)
-	}
-}
-
-// checkReturn returns true if c's node is a *ssa.Return statement.
-func(ck *Checker) checkReturn(c *context.ContextCallSuite) bool {
-	_, ok := c.GetNode().(*ssa.Return)
-	return ok
-}
-
-func (ck *Checker) checkAndHandleChange(c *context.ContextCallSuite) error {
-	unchanged,err := c.GetIn().Equal(c.GetOut())
-	//true is changed, false means unchanged
-
-	if err != nil{
-		return errors.Wrapf(err,"equal failed with context.in: %s, context.out %s",c.GetIn().String(),c.GetOut().String())
-	}
-
-	if unchanged{
-		return err
-	}else{
-		//changed , handle it
-		//TODO
-
-		ck.AddSuccessor(c)
-		return nil
-	}
-
 }

@@ -31,11 +31,11 @@ func SetLogger(logName string){
 	InfoBackend := logging.NewLogBackend(LogFile,"",0)
 
 	if debugstdout{
-		debugformat = logging.MustStringFormatter(`%{color:reset}[%{level:.5s}] %{time:2006-01-02 15:04:05} %{shortfile}  %{message}`)
+		debugformat = logging.MustStringFormatter(`%{color:reset}[%{level:.5s}] %{time:15:04:05} %{shortfile}  %{message}`)
 	}else{
-		debugformat = logging.MustStringFormatter(`[%{level:.5s}] %{time:2006-01-02 15:04:05} %{shortfile}  %{message}`)
+		debugformat = logging.MustStringFormatter(`[%{level:.5s}] %{time:15:04:05} %{shortfile} %{callpath:1}: %{message}`)
 	}
-	infoformat := logging.MustStringFormatter(`[%{level:.5s}] %{time:2006-01-02 15:04:05}  %{shortfile}  %{message}`)
+	infoformat := logging.MustStringFormatter(`[%{level:.5s}] %{time:15:04:05}  %{shortfile} %{callpath:1}: %{message}`)
 
 	debugbandf := logging.NewBackendFormatter(debugBackend,debugformat)
 	infobandf := logging.NewBackendFormatter(InfoBackend,infoformat)

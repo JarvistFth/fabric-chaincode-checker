@@ -22,17 +22,20 @@ func (ck *Checker) Init()  {
 	if err != nil{
 		log.Errorf("error: %s",err.Error())
 	}
-	ck.GetValueContext(ck.MainFunc,[]ssa.Value{},nil,false)
+	//ck.GetValueContext(ck.MainFunc,[]ssa.Value{},nil,false)
+	//ck.GetValueContext(ck.InitFunc,[]ssa.Value{},nil,false)
+	ck.GetValueContext(ck.InvokeFunc,[]ssa.Value{},nil,false)
 }
 
 func (ck *Checker) makeAlloc() {
 	ck.ValueCtxMap = context.NewValueCtxMap()
-	ck.ContextCallSuites = make([]*context.ContextCallSuite,0)
+	ck.ContextCallSuites = make([]*context.InstructionContext,0)
 	ck.Transitions = make([]*context.Transitions,0)
-	ck.ValToPtr = make(map[ssa.Value]pointer.Pointer)
+	//ck.ValToPtr = make(map[ssa.Value]pointer.Pointer)
 	ck.ContextPkgs = make([]*ssa.Package,0)
 	ck.taskList = NewTaskList()
 	ck.ErrFlows = lattice.NewErrInFlows()
+	ValToPtrs = make(map[ssa.Value]pointer.Pointer)
 
 }
 
@@ -42,14 +45,17 @@ func (ck *Checker) initSSAandPTA()  error {
 	utils.SS,err = utils.ParseSourceAndSinkFile(ck.checkerCfg.SourceAndSinkFile)
 	utils.HandleError(err, "ssautils build failed")
 	log.Debugf("build path: %s source file: %s",ck.checkerCfg.Path,ck.checkerCfg.SourceFiles)
-	mainpkg, err := ssautils.Build(ck.checkerCfg.Path, ck.checkerCfg.SourceFiles)
+	mainpkg, err,initfn,invokefn := ssautils.Build(ck.checkerCfg.Path, ck.checkerCfg.SourceFiles)
+	ck.InitFunc = initfn
+	ck.InvokeFunc = invokefn
 	utils.HandleError(err, "ssautils build failed")
 	mainpkg.Build()
-
 	log.Debugf("%s",utils.SS.String())
 
 
 	ck.MainFunc = mainpkg.Func("main")
+
+
 	if ck.MainFunc == nil{
 		utils.HandleError(errors.New("no main function in pkgs"),"")
 	}
@@ -70,15 +76,23 @@ func (ck *Checker) initSSAandPTA()  error {
 			}
 		}
 	}
-
+	var methods []*ssa.Function
+	methods = append(methods,ck.InitFunc,ck.InvokeFunc)
 	//setup pointer analysis
 	mains := []*ssa.Package{mainpkg}
 	ck.setupPointers(mains)
+	ck.addQueryMethods(methods)
 	ck.pointerResult,err = pointer.Analyze(ck.pointerConfig)
+	//for k,v := range ck.pointerResult.Queries{
+	//	log.Infof("value: %s, ptr: %s",k.Name(),v.PointsTo().String())
+	//}
+
+	//for k,v := range ck.pointerResult.IndirectQueries{
+	//	log.Infof("indirect value: %s, ptr: %s",k.Name(),v.PointsTo().String())
+	//}
 	utils.HandleError(err,"pointer analysis failed\n")
 	ck.setupPtrMap(mains)
 
-	// TODO replace send
 	utils.ReplaceSend(mains)
 	return nil
 	
@@ -90,6 +104,8 @@ func (ck *Checker) setupPointers(mains []*ssa.Package) {
 		BuildCallGraph: false,
 	}
 	ck.addQueries(mains)
+
+
 }
 
 func (ck *Checker) addQueries(mains []*ssa.Package) {
@@ -103,10 +119,12 @@ func (ck *Checker) addQueries(mains []*ssa.Package) {
 						if ok {
 							ok, ptrv := utils.IsPointerVal(val)
 							if ok{
+								//log.Warningf("add query:%s",ptrv.String())
 								ck.pointerConfig.AddQuery(ptrv)
 							}
 							ok,indrectv := utils.IsIndirectPtr(val)
 							if ok{
+								//log.Warningf("add query indirect:%s",indrectv.String())
 								ck.pointerConfig.AddIndirectQuery(indrectv)
 							}
 						}
@@ -115,7 +133,34 @@ func (ck *Checker) addQueries(mains []*ssa.Package) {
 			}
 		}
 	}
+
+
 }
+
+func (ck *Checker) addQueryMethods(functions []*ssa.Function) {
+	for _,f := range functions{
+		for _,b := range f.Blocks{
+			for _,i := range b.Instrs{
+				val,ok := i.(ssa.Value)
+				if ok{
+					ok,ptrv := utils.IsPointerVal(val)
+					if ok{
+						ck.pointerConfig.AddQuery(ptrv)
+						log.Warningf("add query:%s",ptrv.String())
+
+					}
+					ok, indirectv := utils.IsIndirectPtr(val)
+					if ok{
+						ck.pointerConfig.AddIndirectQuery(indirectv)
+						log.Warningf("add query indirect:%s",indirectv.String())
+					}
+				}
+			}
+		}
+	}
+}
+
+
 
 func (ck *Checker) setupPtrMap(pkgs []*ssa.Package) {
 	for _,pkg := range pkgs{
@@ -176,17 +221,17 @@ func (ck *Checker) setupPtrMap(pkgs []*ssa.Package) {
 			}
 		}//end ctx pkgs
 	}
-}
 
-//func (ck *Checker) SetLogger(logName string) {
-//	now := time.Now().Format("2006-01-02 15:04:05")
-//	var err error
-//	ck.logfile,err = os.OpenFile(logName + "-" + now + ".txt",os.O_APPEND|os.O_WRONLY|os.O_CREATE,0666)
-//	if err != nil{
-//		log.Fatalf("error set logger : %s",err.Error())
-//	}
-//	//TODO DEBUG MODE
-//	log.SetOutput(ck.logfile)
-//	//log.SetOutput(os.Stdout)
-//	log.SetFlags(log.Lshortfile)
-//}
+	//for val,ptr := range ck.ValToPtr{
+	//
+	//	log.Debugf("val to ptr map: %s, %s ,%s",val.Name(), val.String(),ptr.String())
+	//}
+
+	for val,ptr := range  ck.pointerResult.Queries{
+		log.Debugf("ck.pointerResult.Queries %s=%s, %s",val.Name(), val.String(),ptr.PointsTo().String())
+	}
+
+	for val,ptr := range  ck.pointerResult.IndirectQueries{
+		log.Debugf("ck.pointerResult.IndirectQueries %s=%s, %s", val.Name(),val.String(),ptr.PointsTo().String())
+	}
+}

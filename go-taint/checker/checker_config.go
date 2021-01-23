@@ -1,5 +1,14 @@
 package checker
 
+import (
+	"golang.org/x/tools/go/pointer"
+	"golang.org/x/tools/go/ssa"
+)
+
+var ValToPtrs map[ssa.Value] pointer.Pointer
+
+
+
 type CheckerConfig struct {
 	//The path to the .go-files starting at $GOPATH/src
 	Path              string

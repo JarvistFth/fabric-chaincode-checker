@@ -105,18 +105,30 @@ func NewErrInFlow(c *ssa.CallCommon, a []ssa.Value, e error) error {
 }
 
 
-func getSignature(c ssa.CallCommon) (signature, staticCallee, iSignature string) {
+func getSignature(c ssa.CallCommon) (signature, callee, iSignature string) {
 	// [vs: can this signature be an interface here? If yes, do we miss "up-casted" sources?]
 	// Get the signatuer and iterate through the sources
+
+	//log.Infof("c get sig: %s",c.String())
+
+	if c.IsInvoke(){
+		typename := c.Value.Type().String()
+		relativepkgs := strings.Split(typename,"/")
+		objname := relativepkgs[len(relativepkgs) - 1]
+		callee = objname + "." + c.Method.Name()
+		signature = c.Signature().String()
+		//log.Debugf("invoke call comm : callee: %s signature: %s",callee,signature)
+		return
+	}
+
 	signature = c.Signature().String()
 	if c.StaticCallee() != nil {
-		staticCallee = c.StaticCallee().String()
+		callee = c.StaticCallee().String()
 	}
 
 	var sigSlice []string
 
-	//k := types.IsInterface(c.Signature().Underlying())
-	//log.Debugf("callCommon: %s, sig %t", c.String(), k)
+
 
 	if types.IsInterface(c.Signature().Underlying()) {
 		// Signature for an interface does not contain names for the parameters
@@ -187,9 +199,11 @@ func isGlobalSource(name string) bool {
 
 func isFunctionSource(c ssa.CallCommon) bool {
 	sig, call, iSig := getSignature(c)
+	//log.Debugf("sig:%s call:%s",sig,call)
 	for _, source := range utils.SS.Sources {
+		//log.Debugf("getSig: %s, call:%s, source.Sig:%s, source.callee:%s",sig,call,source.GetSignature(),source.GetCallee())
 		if source.IsInterface() {
-			log.Debugf("source interface source, getSig: %s, source.Sig: %s",iSig,source.GetSignature())
+			//log.Debugf("source interface source, getSig: %s, source.Sig: %s",iSig,source.GetSignature())
 			if iSig == source.GetSignature() {
 				return true
 			}
@@ -203,9 +217,28 @@ func isFunctionSource(c ssa.CallCommon) bool {
 	return false
 }
 
+func isSDKFunction(c ssa.CallCommon) bool {
+	sig, call, iSig := getSignature(c)
+	for _, f := range utils.SDKfunctions {
+		if f.IsInterface {
+			log.Debugf("sdk function isig: %s, f.Sig: %s",iSig, f.Signature)
+			if iSig == f.Signature {
+				return true
+			}
+		}
+		if sig == f.Signature {
+			if call == f.Callee {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 
 func isSink(c ssa.CallCommon) bool {
 	sig, call, iSig := getSignature(c)
+
 
 	//log.Debugf("sink signature: sig:%s, call:%s, iSig:%s",sig,call,iSig)
 	for _, sink := range utils.SS.Sinks {
@@ -258,13 +291,38 @@ func checkAndHandleSourcesAndsinks(c ssa.Instruction, l Lattice, ptr bool) Plain
 	}
 	// Get the lup of the value
 	lupVal := l.GetTag(callCom.Value)
+	callCom.Value.Name()
 
 
-	log.Infof("callCom.Value %s, %s",callCom.Value.String(), lupVal.String())
+	log.Debugf("callCom.Value %s, %s",callCom.Value.String(), lupVal.String())
 	source := isFunctionSource(callCom)
 	if source {
 		return returnTainted
 	}
+
+	//todo check some function
+
+	sdkfun := isSDKFunction(callCom)
+	if sdkfun{
+		var argstr string
+		var hastaintval = false
+		for _, arg := range callCom.Args{
+			argstr = argstr + arg.Name() + " "
+			argtag := l.GetTag(arg)
+			if argtag == Tainted || argtag == Both{
+				hastaintval = true
+			}
+		}
+		log.Debugf("callcom.args: %s",argstr)
+
+		if hastaintval{
+			return returnTainted
+		}else{
+			return returnUntainted
+		}
+	}
+
+
 	sink := isSink(callCom)
 	err = nil
 	if sink {
@@ -275,6 +333,7 @@ func checkAndHandleSourcesAndsinks(c ssa.Instruction, l Lattice, ptr bool) Plain
 		return returnLUPTaint(lupVal)
 	}
 
+	//todo : return nil?
 	return nil
 }
 

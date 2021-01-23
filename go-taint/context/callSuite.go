@@ -6,15 +6,15 @@ import (
 	"golang.org/x/tools/go/ssa"
 )
 
-type ContextCallSuite struct {
+type InstructionContext struct {
 	*ValueContext
 	node ssa.Instruction
 	in   lattice.Lattice
 	out  lattice.Lattice
 }
 
-func NewContextCallSuite(vc *ValueContext, node ssa.Instruction, in,out lattice.Lattice) *ContextCallSuite {
-	ret := &ContextCallSuite{
+func NewContextCallSuite(vc *ValueContext, node ssa.Instruction, in,out lattice.Lattice) *InstructionContext {
+	ret := &InstructionContext{
 		ValueContext: vc,
 		node:         node,
 		in:           in,
@@ -24,7 +24,7 @@ func NewContextCallSuite(vc *ValueContext, node ssa.Instruction, in,out lattice.
 
 }
 
-func (s *ContextCallSuite) Equal(c *ContextCallSuite) bool {
+func (s *InstructionContext) Equal(c *InstructionContext) bool {
 
 	eqCtx := c.GetValueContext().Equal(c.GetValueContext())
 	eqNode := s.node == c.node
@@ -33,30 +33,30 @@ func (s *ContextCallSuite) Equal(c *ContextCallSuite) bool {
 	return eqCtx && eqNode && eqIn && eqOut
 }
 
-func (s *ContextCallSuite) GetNode() ssa.Instruction {
+func (s *InstructionContext) GetNode() ssa.Instruction {
 	return s.node
 }
 
-func (s *ContextCallSuite) GetValueContext() *ValueContext {
+func (s *InstructionContext) GetValueContext() *ValueContext {
 	return s.ValueContext
 }
 
-func (s *ContextCallSuite) String() string {
-	return fmt.Sprintf("context: %s,\n Node: %s,\n In: %s,\n Out: %s",s.GetValueContext().String(),s.node.String(),s.GetIn().String(),s.GetOut().String())
+func (s *InstructionContext) String() string {
+	return fmt.Sprintf("context: %s, name :%s\n Node: %s,\n In: %s,\n Out: %s", s.GetValueContext().String(),s.node.String(),s.GetIn().String(),s.GetOut().String())
 }
 
-func (s *ContextCallSuite) SetIn(l lattice.Lattice) {
+func (s *InstructionContext) SetIn(l lattice.Lattice) {
 	s.in,_ = s.in.LeastUpperBound(l)
 }
 
-func (s *ContextCallSuite) SetOut(l lattice.Lattice) {
+func (s *InstructionContext) SetOut(l lattice.Lattice) {
 	s.out,_ = s.GetOut().LeastUpperBound(l)
 }
 
-func (s *ContextCallSuite) GetOut() lattice.Lattice {
+func (s *InstructionContext) GetOut() lattice.Lattice {
 	return s.out
 }
 
-func (s *ContextCallSuite) GetIn() lattice.Lattice {
+func (s *InstructionContext) GetIn() lattice.Lattice {
 	return s.in
 }

@@ -5,6 +5,42 @@
       "signature": "func() int",
       "callee": "math/rand.Int",
       "is_interface": false
+    },
+    {
+      "source_type": "function",
+      "signature": "func() time.Time",
+      "callee": "time.Now",
+      "is_interface": false
+    },
+    {
+      "source_type": "function",
+      "signature": "func() string",
+      "callee": "(time.Time).String",
+      "is_interface": false
+    },
+    {
+      "source_type": "function",
+      "signature": "func(layout string) string",
+      "callee": "(time.Time).Format",
+      "is_interface": false
+    },
+    {
+      "source_type": "function",
+      "signature": "func(name string) (*os.File, error)",
+      "callee": "os.Open",
+      "is_interface": false
+    },
+    {
+      "source_type": "function",
+      "signature": "func(name string, flag int, perm FileMode) (*os.File, error)",
+      "callee": "os.OpenFile",
+      "is_interface": false
+    },
+    {
+      "source_type": "function",
+      "signature": "func(name string, arg ...string) *os/exec.Cmd",
+      "callee": "os/exec.Command",
+      "is_interface": false
     }
   ],
   "sinks": [
@@ -16,6 +52,33 @@
     {
       "signature": "func(n int) error",
       "callee": "(*chaincode-checker.Testobj).PutState",
+      "is_interface": false
+    },
+    {
+      "signature": "func(key string, value []byte) error",
+      "callee": "shim.ChaincodeStubInterface.PutState",
+      "is_interface": false
+    }
+  ],
+  "sdk_functions": [
+    {
+      "signature": "func(format string, a ...interface{}) string",
+      "callee": "fmt.Sprintf",
+      "is_interface": false
+    },
+    {
+      "signature": "func(v interface{}) ([]byte, error)",
+      "callee": "json.Marshal",
+      "is_interface": false
+    },
+    {
+      "signature": "func(i int) string",
+      "callee": "strconv.Itoa",
+      "is_interface": false
+    },
+    {
+      "signature": "func(b []byte) (n int, err error)",
+      "callee": "(*os.File).Read",
       "is_interface": false
     }
   ]

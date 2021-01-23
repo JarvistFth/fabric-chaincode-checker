@@ -12,7 +12,7 @@ var idCounter = 0
 type ValueContext struct {
 	//ValueIdentInterface
 
-	ExitValue lattice.Lattice
+	RetValueLattice lattice.Lattice
 
 	Id int
 	Params []ssa.Value
@@ -38,9 +38,9 @@ type ValueContext struct {
 
 func NewValueContext(vi *ValueContextIndent, id int, exitval lattice.Lattice) *ValueContext {
 	ret := &ValueContext{
-		ExitValue:   exitval,
-		Id:          id,
-		ValueIndent: vi,
+		RetValueLattice: exitval,
+		Id:              id,
+		ValueIndent:     vi,
 	}
 	return ret
 }
@@ -54,7 +54,7 @@ func (v *ValueContext) GetEntryValue() lattice.Lattice {
 }
 
 func (v *ValueContext) GetExitValue() lattice.Lattice {
-	return v.ExitValue
+	return v.RetValueLattice
 }
 
 func (v *ValueContext) NewEntryValue(entry lattice.Lattice) {
@@ -63,11 +63,11 @@ func (v *ValueContext) NewEntryValue(entry lattice.Lattice) {
 }
 
 func (v *ValueContext) NewExitValue(exit lattice.Lattice) {
-	v.ExitValue,_ = v.ExitValue.LeastUpperBound(exit)
+	v.RetValueLattice,_ = v.RetValueLattice.LeastUpperBound(exit)
 }
 
 func (v *ValueContext) String() string {
-	return fmt.Sprintf("[%d], Method:%s, EntryValue:%s, ExitValue:%s",v.Id, v.ValueIndent.GetFunction().String(), v.ValueIndent.GetIn().String(),v.ExitValue.String())
+	return fmt.Sprintf("[%d], Method:%s, EntryValue:%s, RetValueLattice:%s",v.Id, v.ValueIndent.GetFunction().String(), v.ValueIndent.GetIn().String(),v.RetValueLattice.String())
 }
 
 func (v *ValueContext) SameId(v2 *ValueContext) bool {
@@ -111,4 +111,7 @@ func (v *ValueContext) IsEntryEqual(v2 *ValueContext, params []ssa.Value) bool {
 	return true
 }
 
+func (v *ValueContext) SetEntryValue(entry lattice.Lattice) {
+	v.ValueIndent.SetIn(entry)
+}
 

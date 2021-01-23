@@ -38,7 +38,7 @@ func (v *ValueContextIndent) SetFunction(f *ssa.Function) {
 	v.Function = f
 }
 
-func (v *ValueContextIndent) Equal(vi ValueContextIndent) bool {
+func (v *ValueContextIndent) Equal(vi *ValueContextIndent) bool {
 	ineq,_ := vi.GetIn().Equal(v.In)
 	return ineq && v.Function == vi.GetFunction()
 }

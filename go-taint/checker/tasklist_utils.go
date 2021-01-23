@@ -8,19 +8,19 @@ import (
 	"golang.org/x/tools/go/ssa"
 )
 
-func(ck *Checker) matchParams(pcaller []ssa.Value, lcaller lattice.Lattice, callee *ssa.Function, isClosure bool) lattice.Lattice {
+func(ck *Checker) GetArgLattice(callfunc *ssa.Function, args []ssa.Value, lcaller lattice.Lattice,  isClosure bool) lattice.Lattice {
 
 
 	var pcallee []ssa.Value
 
 	if isClosure{
-		fvs := callee.FreeVars
+		fvs := callfunc.FreeVars
 		pcallee = make([]ssa.Value,len(fvs))
 		for i,fv := range fvs{
 			pcallee[i] = fv
 		}
 	}else{
-		params := callee.Params
+		params := callfunc.Params
 		pcallee = make([]ssa.Value,len(params))
 		for i,p := range params{
 			pcallee[i] = p
@@ -35,7 +35,9 @@ func(ck *Checker) matchParams(pcaller []ssa.Value, lcaller lattice.Lattice, call
 		ret = lattice.NewLattice(0)
 	}
 
-	for i,val := range pcaller{
+	//log.Debugf("match param: callfunc:%s, lcaller:%s", callfunc.String(), lcaller.String())
+
+	for i,val := range args {
 		ret.SetTag(pcallee[i],lcaller.GetTag(val))
 	}
 
@@ -47,15 +49,17 @@ func isEntryNode(n ssa.Instruction) bool {
 	parentFunc := n.Parent()
 
 	if parentFunc.Blocks[0].Instrs[0] == n{
+		log.Debugf("%s, %s",parentFunc.Blocks[0].Instrs[0].String(),n.String())
 		return true
 	}
 	return false
 }
 
-func (ck *Checker)updateEntryContext(n *context.ContextCallSuite) error  {
+func (ck *Checker)updateEntryContext(n *context.InstructionContext) error  {
 	isEntry := isEntryNode(n.GetNode())
 
 	if !isEntry{
+		log.Debugf("%s is not entry node",n.GetNode().String())
 		var upLattice lattice.Lattice
 		if ck.checkerCfg.IsPtr{
 			upLatticePtr := lattice.NewLatticePointer(0,ck.ValToPtr)
@@ -119,13 +123,15 @@ func (ck *Checker)updateEntryContext(n *context.ContextCallSuite) error  {
 	}else{
 		ctx := n.GetValueContext()
 		n.SetIn(ctx.GetEntryValue())
+		log.Debugf("set entry lattice value:%s",n.GetEntryValue().String())
 	}
 	return nil
 }
 
 
-func (ck *Checker) AddSuccessor(n *context.ContextCallSuite ) {
+func (ck *Checker) AddSuccessor(n *context.InstructionContext) {
 	sucs := getSuccessors(n.GetNode())
+
 	for _, s := range sucs {
 		c := getInstrContext(n, s, ck.ContextCallSuites)
 		if c == nil {
@@ -158,8 +164,8 @@ func (ck *Checker) AddSuccessor(n *context.ContextCallSuite ) {
 
 
 
-func(ck *Checker) ctxTransToAnotherX(x *context.ContextCallSuite)[]*context.ContextCallSuite {
-	var another []*context.ContextCallSuite
+func(ck *Checker) ctxTransToAnotherX(x *context.InstructionContext)[]*context.InstructionContext {
+	var another []*context.InstructionContext
 
 	if x != nil && x.GetValueContext() != nil{
 		for _,t := range ck.Transitions{
@@ -199,8 +205,8 @@ func getSuccessors(i ssa.Instruction) []ssa.Instruction {
 	return succs
 }
 
-func getInstrContext(n *context.ContextCallSuite, s ssa.Instruction, ccss []*context.ContextCallSuite) *context.ContextCallSuite {
-	var c *context.ContextCallSuite = nil
+func getInstrContext(n *context.InstructionContext, s ssa.Instruction, ccss []*context.InstructionContext) *context.InstructionContext {
+	var c *context.InstructionContext = nil
 
 	call,isCall := s.(ssa.CallInstruction)
 	noUpdate := true
@@ -231,7 +237,7 @@ func getInstrContext(n *context.ContextCallSuite, s ssa.Instruction, ccss []*con
 	return c
 }
 
-func (ck *Checker) getChannelContext(n *context.ContextCallSuite, s ssa.Instruction) *context.ContextCallSuite {
+func (ck *Checker) getChannelContext(n *context.InstructionContext, s ssa.Instruction) *context.InstructionContext {
 	if s.Parent() == n.GetValueContext().GetMethod() {
 		for _, ccs := range ck.ContextCallSuites {
 			if ccs.GetNode() == s {

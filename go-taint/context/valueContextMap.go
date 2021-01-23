@@ -23,8 +23,13 @@ func (m *ValueContextMap) FindInContext(callee *ssa.Function, latEntry lattice.L
 		In:       latEntry,
 		Function: callee,
 	}
-
-	ret := m.ctx[vcindent]
+	var ret *ValueContext
+	for k,v := range m.ctx{
+		if k.Equal(vcindent){
+			ret = v
+		}
+	}
+	//ret := m.ctx[vcindent]
 
 	if ret == nil{
 		return nil
