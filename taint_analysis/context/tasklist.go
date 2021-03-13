@@ -1,7 +1,6 @@
-package checker
+package context
 
 import (
-	"chaincode-checker/taint_analysis/context"
 	"container/list"
 )
 
@@ -11,34 +10,34 @@ type TaskList struct {
 
 }
 
-func NewTaskList() *TaskList{
+func NewTaskList() *TaskList {
 	t := &TaskList{}
 	t.list = list.New()
 	return t
 }
 
-func (l *TaskList) PushFront(value *context.InstructionContext) {
+func (l *TaskList) PushFront(value *InstructionContext) {
  	l.list.PushFront(value)
 }
 
-func (l *TaskList) PushBack(value *context.InstructionContext) {
+func (l *TaskList) PushBack(value *InstructionContext) {
 	l.list.PushBack(value)
 }
 
-func (l *TaskList) RemoveFront() *context.InstructionContext {
+func (l *TaskList) RemoveFront() *InstructionContext {
 	ret := l.list.Front()
 	if ret != nil{
 		l.list.Remove(ret)
-		return ret.Value.(*context.InstructionContext)
+		return ret.Value.(*InstructionContext)
 	}
 	return nil
 }
 
-func (l *TaskList) PopBack() *context.InstructionContext {
+func (l *TaskList) PopBack() *InstructionContext {
 	ret := l.list.Back()
 	if ret != nil{
 		l.list.Remove(ret)
-		return ret.Value.(*context.InstructionContext)
+		return ret.Value.(*InstructionContext)
 	}
 	return nil
 }

@@ -1,8 +1,8 @@
 package ssautils
 
 import (
+	"chaincode-checker/taint_analysis/logger"
 	"fmt"
-	"github.com/op/go-logging"
 	"github.com/pkg/errors"
 	"go/token"
 	"go/types"
@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var log = logging.MustGetLogger("main")
+var log = logger.GetLogger("main")
 
 
 func Build(path string, sourcefiles []string) (*ssa.Package, error, *ssa.Function, *ssa.Function, *ssa.Program){

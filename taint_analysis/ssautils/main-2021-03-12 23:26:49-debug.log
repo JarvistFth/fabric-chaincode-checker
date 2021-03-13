@@ -1,0 +1,1 @@
+[DEBUG] 23:26:49 ssabuilder_test.go:23 TestBuild: fail to load config of path: chaincode-checker and sourcefiles: ../../chaincodes/timerandomcc/timerandomcc.go

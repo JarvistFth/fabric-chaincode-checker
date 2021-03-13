@@ -14,7 +14,7 @@ var srcFlagCalled = false
 type sourcefiles []string
 
 
-var log = logger.GetLogger("./debuglogs/test")
+var log = logger.	GetLogger("./debuglogs/test")
 
 func (s *sourcefiles) String() string {
 	return fmt.Sprint(*s)

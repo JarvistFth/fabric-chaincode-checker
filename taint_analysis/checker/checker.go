@@ -1,22 +1,22 @@
 package checker
 
 import (
-	"chaincode-checker/taint_analysis/latticer"
+	"chaincode-checker/taint_analysis/context"
 	"chaincode-checker/taint_analysis/project_config"
 	"chaincode-checker/taint_analysis/utils"
 	"golang.org/x/tools/go/ssa"
 )
 
 var Config *CmdConfig
-var TasksList *TaskList
-var LatticeTable LatticeMap
+var TasksList *context.TaskList
 
 
 func Init(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs bool, pkgs string, ptr bool) {
 	Config = NewCheckerConfig(path,sourcefiles,sourceAndSinkFile,allpkgs,pkgs,ptr)
 	InitSSConfig()
-	TasksList = NewTaskList()
-	LatticeTable = make(map[string]latticer.Lattice)
+	TasksList = context.NewTaskList()
+	context.CallGraphs = context.NewCallGraphMap()
+	//LatticeTable = make(map[string]latticer.Lattice)
 	mainpkg := BuildSSA()
 	mains := []*ssa.Package{mainpkg}
 
@@ -38,8 +38,7 @@ func StartAnalyzing() error {
 
 		//handle instr
 		log.Debugf("handle instr: %s",ccs.GetInstr().String())
-		HandleInstr(ccs)
-		log.Debugf(LatticeTable.String())
+
 
 		//set lattice value tag according to instr args
 

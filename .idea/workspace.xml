@@ -2,53 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="721597a4-5724-4571-b5f0-a5c3cb8b78de" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_utils.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/checker/init.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/checker/tasklist.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/call_function.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/instruction.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/operation.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/project_config/program.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/taint_config/sourceandsink.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/taint_config/sourceandsink_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taint_analysis/context/callgrapgh_map.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taint_analysis/context/callgraph_method.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taint_analysis/context/sinksource.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taint_analysis/ssautils/main-2021-03-12 23:26:49-debug.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taint_analysis/ssautils/main-2021-03-12 23:26:49-info.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chaincodes/timerandom/timerandomcc.go" beforeDir="false" afterPath="$PROJECT_DIR$/chaincodes/timerandom/timerandomcc.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/sourceandsink.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sourceandsink.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker_config.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker_init.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker_init_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/checker.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker_method.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_method.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker_util.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/tasklist.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/tasklist_utils.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/callSuite.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/transition.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/valueContext.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/valueContextIndent.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/valueContextMap.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/handle_flows.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_flow.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice_flow.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_pointer.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice_pointer.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_table.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/lattice_table.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_value.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice_value.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/semantics.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/semantics.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/taintTag.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/taintTag.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/logger/logging.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/logger/logging.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/program/program.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/one.log" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/one.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/ssaChannelSend.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssaChannelSend.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/ssabuilder.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/ssabuilder_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/ssahelper.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssahelper.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/taint/taintData.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/utils/channel_send.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/utils/channel_send.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/utils/parser.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/utils/parser_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/utils/parser_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/utils/util.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/utils/util.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/checker/checker.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/checker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/checker/checker_method.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_method.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/checker/checker_utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/checker/lattice_table.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/context/lattice_table.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/checker/tasklist.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/context/tasklist.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/context/call_function.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/context/callgraph.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/context/instruction.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/context/instruction.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/ssautils/one.log" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/one.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,15 +66,15 @@
     <property name="go.vendoring.notification.had.been.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/taint_analysis" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="LogHighlighting" />
+    <property name="settings.editor.selected.configurable" value="com.goide.configuration.GoLibrariesConfigurableProvider" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/taint_analysis/context" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/taint_analysis/checker" />
       <recent name="$PROJECT_DIR$/taint_analysis/project_config" />
       <recent name="$PROJECT_DIR$/taint_analysis" />
-      <recent name="$PROJECT_DIR$/dynamic-mockenv" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/taint_analysis" />
@@ -112,7 +84,7 @@
       <recent name="$PROJECT_DIR$/chaincodes" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build chaincode-checker -timerandom">
+  <component name="RunManager" selected="Go Test.TestBuild in chaincode-checker/taint_analysis/ssautils">
     <configuration name="go build chaincode-checker - example" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="chaincode-checker" />
       <working_directory value="$PROJECT_DIR$" />
@@ -174,24 +146,15 @@
       <directory value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
-    <configuration name="go build ssabuilder.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="TestBuild in chaincode-checker/taint_analysis/ssautils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="chaincode-checker" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/go-taint/ssautils/ssabuilder.go" />
-      <package value="chaincode-checker" />
-      <directory value="$PROJECT_DIR$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestNewCfgFromFile in chaincode-checker/go-taint/taint_config" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="chaincode-checker" />
-      <working_directory value="$PROJECT_DIR$/go-taint/taint_config" />
+      <working_directory value="$PROJECT_DIR$/taint_analysis/ssautils" />
       <framework value="gotest" />
       <kind value="PACKAGE" />
-      <package value="chaincode-checker/go-taint/taint_config" />
+      <package value="chaincode-checker/taint_analysis/ssautils" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestNewCfgFromFile\E$" />
+      <pattern value="^\QTestBuild\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestNewChecker in chaincode-checker/taint_analysis/checker" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -215,16 +178,6 @@
       <filePath value="$PROJECT_DIR$/taint_analysis/checker/checker_test.go" />
       <method v="2" />
     </configuration>
-    <configuration name="parser_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="chaincode-checker" />
-      <working_directory value="$PROJECT_DIR$/go-taint/utils" />
-      <framework value="gotest" />
-      <kind value="FILE" />
-      <package value="chaincode-checker" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/go-taint/utils/parser_test.go" />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Go Build.go build chaincode-checker" />
       <item itemvalue="Go Build.go build chaincode-checker - globalcc" />
@@ -232,19 +185,17 @@
       <item itemvalue="Go Build.go build chaincode-checker - randomcc" />
       <item itemvalue="Go Build.go build chaincode-checker-1" />
       <item itemvalue="Go Build.go build chaincode-checker -timerandom" />
-      <item itemvalue="Go Build.go build ssabuilder.go" />
-      <item itemvalue="Go Test.parser_test.go" />
-      <item itemvalue="Go Test.TestNewCfgFromFile in chaincode-checker/go-taint/taint_config" />
       <item itemvalue="Go Test.TestNewChecker in chaincode-checker/taint_analysis/checker" />
       <item itemvalue="Go Test.checker_test.go" />
+      <item itemvalue="Go Test.TestBuild in chaincode-checker/taint_analysis/ssautils" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestBuild in chaincode-checker/taint_analysis/ssautils" />
         <item itemvalue="Go Build.go build chaincode-checker -timerandom" />
         <item itemvalue="Go Build.go build chaincode-checker-1" />
         <item itemvalue="Go Test.checker_test.go" />
         <item itemvalue="Go Test.TestNewChecker in chaincode-checker/taint_analysis/checker" />
-        <item itemvalue="Go Test.TestNewCfgFromFile in chaincode-checker/go-taint/taint_config" />
       </list>
     </recent_temporary>
   </component>
@@ -297,30 +248,30 @@
     </state>
     <state x="742" y="312" width="424" height="485" key="FileChooserDialogImpl/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609383457998" />
     <state x="742" y="312" width="424" height="485" key="FileChooserDialogImpl/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608257546761" />
-    <state width="1866" height="258" key="GridCell.Tab.0.bottom" timestamp="1611936621182">
+    <state width="1866" height="256" key="GridCell.Tab.0.bottom" timestamp="1615570747607">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state width="1866" height="190" key="GridCell.Tab.0.bottom/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1611315420789" />
     <state width="1866" height="328" key="GridCell.Tab.0.bottom/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
-    <state width="1866" height="258" key="GridCell.Tab.0.bottom/0.28.1920.1052@0.28.1920.1052" timestamp="1611936621182" />
-    <state width="1866" height="258" key="GridCell.Tab.0.center" timestamp="1611936621182">
+    <state width="1866" height="256" key="GridCell.Tab.0.bottom/0.28.1920.1052@0.28.1920.1052" timestamp="1615570747607" />
+    <state width="1866" height="256" key="GridCell.Tab.0.center" timestamp="1615570747606">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state width="1866" height="190" key="GridCell.Tab.0.center/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1611315420789" />
     <state width="1866" height="328" key="GridCell.Tab.0.center/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
-    <state width="1866" height="258" key="GridCell.Tab.0.center/0.28.1920.1052@0.28.1920.1052" timestamp="1611936621182" />
-    <state width="1866" height="258" key="GridCell.Tab.0.left" timestamp="1611936621182">
+    <state width="1866" height="256" key="GridCell.Tab.0.center/0.28.1920.1052@0.28.1920.1052" timestamp="1615570747606" />
+    <state width="1866" height="256" key="GridCell.Tab.0.left" timestamp="1615570747605">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state width="1866" height="190" key="GridCell.Tab.0.left/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1611315420789" />
     <state width="1866" height="328" key="GridCell.Tab.0.left/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
-    <state width="1866" height="258" key="GridCell.Tab.0.left/0.28.1920.1052@0.28.1920.1052" timestamp="1611936621182" />
-    <state width="1866" height="258" key="GridCell.Tab.0.right" timestamp="1611936621182">
+    <state width="1866" height="256" key="GridCell.Tab.0.left/0.28.1920.1052@0.28.1920.1052" timestamp="1615570747605" />
+    <state width="1866" height="256" key="GridCell.Tab.0.right" timestamp="1615570747607">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state width="1866" height="190" key="GridCell.Tab.0.right/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1611315420789" />
     <state width="1866" height="328" key="GridCell.Tab.0.right/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
-    <state width="1866" height="258" key="GridCell.Tab.0.right/0.28.1920.1052@0.28.1920.1052" timestamp="1611936621182" />
+    <state width="1866" height="256" key="GridCell.Tab.0.right/0.28.1920.1052@0.28.1920.1052" timestamp="1615570747607" />
     <state width="1866" height="320" key="GridCell.Tab.1.bottom" timestamp="1611743571116">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
@@ -345,12 +296,12 @@
     <state width="1866" height="271" key="GridCell.Tab.1.right/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1610346686548" />
     <state width="1866" height="328" key="GridCell.Tab.1.right/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622148" />
     <state width="1866" height="320" key="GridCell.Tab.1.right/0.28.1920.1052@0.28.1920.1052" timestamp="1611743571115" />
-    <state x="529" y="228" width="1037" height="731" key="SettingsEditor" timestamp="1611743380331">
+    <state x="529" y="228" width="1037" height="731" key="SettingsEditor" timestamp="1613116795271">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state x="529" y="228" width="1037" height="731" key="SettingsEditor/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609607935072" />
     <state x="190" y="150" width="1037" height="731" key="SettingsEditor/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608360161842" />
-    <state x="529" y="228" key="SettingsEditor/0.28.1920.1052@0.28.1920.1052" timestamp="1611743380331" />
+    <state x="529" y="228" width="1037" height="731" key="SettingsEditor/0.28.1920.1052@0.28.1920.1052" timestamp="1613116795271" />
     <state width="960" height="526" key="XDebugger.FullValuePopup" timestamp="1609602845567">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>

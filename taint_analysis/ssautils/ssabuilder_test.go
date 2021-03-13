@@ -2,6 +2,7 @@ package ssautils
 
 import (
 	"github.com/pkg/errors"
+	"go/types"
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
@@ -16,13 +17,15 @@ type members []ssa.Member
 
 func TestBuild(t *testing.T) {
 	//mainpkgs, err := TryBuild("chaincode-checker", []string{"../../chaincodes/simple.go"})
-	mainpkg, err := TryBuild("chaincode-checker", []string{"../../chaincodes/globalcc/globalcc.go"})
+
+	mainpkg, err := TryBuild("chaincode-checker", []string{"../../chaincodes/timerandom/timerandomcc.go"})
 	if err != nil{
 		log.Debugf(err.Error())
 	}
 
+	mainpkg.WriteTo(os.Stdout)
 
-	mainpkg.Build()
+
 	//mainpkg.WriteTo(os.Stdout)
 
 
@@ -48,8 +51,28 @@ func TryBuild(path string, sourcefiles []string) (*ssa.Package, error){
 
 
 	prog.Build()
+	mainPkg.Build()
 	var ret []*ssa.Package
 	ret = append(ret,mainPkg)
 
+	s := mainPkg.Type("SimpleAsset")
+	t := s.Type()
+
+	p := types.NewPointer(t)
+
+
+	//initf := prog.LookupMethod(p,mainPkg.Pkg,"Init")
+	invokef := prog.LookupMethod(p,mainPkg.Pkg,"Invoke")
+	invokef.WriteTo(file)
+
+	for _,block := range invokef.Blocks {
+		dominees := block.Dominees()
+
+		log.Infof("block index:%s -> idom:%s",block.Index,block.Idom())
+		for _, dom := range dominees{
+
+			log.Infof("block index:%s -> dominees:%s",block.Index, dom.String())
+		}
+	}
 	return mainPkg, nil
 }

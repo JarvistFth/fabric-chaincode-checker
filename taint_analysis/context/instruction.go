@@ -2,8 +2,6 @@ package context
 
 import (
 	"chaincode-checker/taint_analysis/latticer"
-	"chaincode-checker/taint_analysis/project_config"
-	"chaincode-checker/taint_analysis/utils"
 	"fmt"
 	"github.com/op/go-logging"
 	"golang.org/x/tools/go/ssa"
@@ -13,21 +11,17 @@ var log = logging.MustGetLogger("Main")
 type InstructionContext struct {
 
 	name string
-	functionContext *FunctionContext
+	functionContext *CallGraph
 	instruction ssa.Instruction
 
 	latticeIn  latticer.Lattices
 	latticeOut latticer.Lattice
 }
 
-func NewInstructionContext(vc *FunctionContext, instr ssa.Instruction, isPtr bool) *InstructionContext {
+func NewInstructionContext(vc *CallGraph, instr ssa.Instruction, isPtr bool) *InstructionContext {
 	var out latticer.Lattice
 	if val,ok := instr.(ssa.Value);ok{
-		if isPtr{
-			out = latticer.NewLatticePointer(utils.GenKeyFromSSAValue(val),val,project_config.WorkingProject.ValToPtrs)
-		}else{
-			out = latticer.NewLatticeValue(utils.GenKeyFromSSAValue(val),val)
-		}
+		out = LatticeTable.GetLattice(val)
 	}
 
 	ret := &InstructionContext{
@@ -48,7 +42,7 @@ func (c *InstructionContext) Name() string {
 	return c.name
 }
 
-func (c *InstructionContext) SetLatticeIn(l []latticer.Lattice) {
+func (c *InstructionContext) SetLatticeIn(l... latticer.Lattice) {
 	c.latticeIn = l
 }
 

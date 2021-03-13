@@ -1,0 +1,3 @@
+[DEBUG] 23:33:54 ssabuilder_test.go:48 ~.TryBuild: chaincode-checker
+[INFO] 23:33:55 ssabuilder_test.go:73 ~.TryBuild: block index: 0 dominees: 1
+[INFO] 23:33:55 ssabuilder_test.go:73 ~.TryBuild: block index: 0 dominees: 2

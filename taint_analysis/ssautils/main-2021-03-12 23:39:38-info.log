@@ -1,0 +1,5 @@
+[INFO] 23:40:08  ssabuilder_test.go:71 ~.TryBuild: block index:%!s(int=0) -> idom:<nil>
+[INFO] 23:40:08  ssabuilder_test.go:74 ~.TryBuild: block index:%!s(int=0) -> dominees:1
+[INFO] 23:40:08  ssabuilder_test.go:74 ~.TryBuild: block index:%!s(int=0) -> dominees:2
+[INFO] 23:40:08  ssabuilder_test.go:71 ~.TryBuild: block index:%!s(int=1) -> idom:0
+[INFO] 23:40:08  ssabuilder_test.go:71 ~.TryBuild: block index:%!s(int=2) -> idom:0
