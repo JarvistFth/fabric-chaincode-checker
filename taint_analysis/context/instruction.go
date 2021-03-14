@@ -3,10 +3,8 @@ package context
 import (
 	"chaincode-checker/taint_analysis/latticer"
 	"fmt"
-	"github.com/op/go-logging"
 	"golang.org/x/tools/go/ssa"
 )
-var log = logging.MustGetLogger("Main")
 
 type InstructionContext struct {
 

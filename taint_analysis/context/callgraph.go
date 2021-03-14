@@ -2,7 +2,7 @@ package context
 
 import (
 	"chaincode-checker/taint_analysis/latticer"
-	"chaincode-checker/taint_analysis/project_config"
+	"chaincode-checker/taint_analysis/config"
 	"chaincode-checker/taint_analysis/utils"
 	"fmt"
 	"github.com/emirpasic/gods/maps/hashmap"
@@ -141,7 +141,7 @@ func getLatticeFromParams(args []ssa.Value, isPtr bool) latticer.Lattices {
 	for _,arg := range args{
 		var lat latticer.Lattice
 		if isPtr {
-			lat = latticer.NewLatticePointer(utils.GenKeyFromSSAValue(arg),arg,project_config.WorkingProject.ValToPtrs)
+			lat = latticer.NewLatticePointer(utils.GenKeyFromSSAValue(arg),arg, config.WorkingProject.ValToPtrs)
 		}else{
 			lat = latticer.NewLatticeValue(utils.GenKeyFromSSAValue(arg),arg)
 		}

@@ -26,6 +26,7 @@ func TestBuild(t *testing.T) {
 	mainpkg.WriteTo(os.Stdout)
 
 
+
 	//mainpkg.WriteTo(os.Stdout)
 
 
@@ -74,5 +75,6 @@ func TryBuild(path string, sourcefiles []string) (*ssa.Package, error){
 			log.Infof("block index:%s -> dominees:%s",block.Index, dom.String())
 		}
 	}
+
 	return mainPkg, nil
 }

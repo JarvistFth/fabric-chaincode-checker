@@ -2,9 +2,10 @@ package context
 
 import (
 	"chaincode-checker/taint_analysis/latticer"
-	"chaincode-checker/taint_analysis/project_config"
+	"chaincode-checker/taint_analysis/config"
 	"chaincode-checker/taint_analysis/taint_config"
 	"chaincode-checker/taint_analysis/utils"
+	"go/types"
 	"golang.org/x/tools/go/ssa"
 	"strings"
 	"unicode"
@@ -67,7 +68,7 @@ func CheckSink(c *InstructionContext) bool {
 func handleSinkDetection(c *ssa.CallCommon)  {
 	val := c.Value
 	var taintArgs []ssa.Value
-	lat := LatticeTable.GetLattice(utils.GenKeyFromSSAValue(val),val)
+	lat := LatticeTable.GetLattice(val)
 
 	if lat.GetTag() == latticer.Tainted || lat.GetTag() == latticer.Both{
 		taintArgs = append(taintArgs,val)
@@ -76,15 +77,15 @@ func handleSinkDetection(c *ssa.CallCommon)  {
 	args := c.Args
 
 	for _,arg := range args{
-		lat := LatticeTable.GetLattice(utils.GenKeyFromSSAValue(arg),arg)
+		lat := LatticeTable.GetLattice(arg)
 		if lat.GetTag() == latticer.Tainted || lat.GetTag() == latticer.Both{
 			taintArgs = append(taintArgs,arg)
 		}
-		if Config.IsPtr{
+		if config.Config.WithPtr{
 			if latptr,ok := lat.(*latticer.LatticePointer);ok{
 				ptr := latptr.GetPtr()
 				if ptr != nil{
-					for ssav,p := range project_config.WorkingProject.ValToPtrs{
+					for ssav,p := range config.WorkingProject.ValToPtrs{
 						if p.MayAlias(*ptr){
 							tag,_ := LatticeTable.GetTag(utils.GenKeyFromSSAValue(ssav))
 							if tag == latticer.Tainted || tag == latticer.Both{

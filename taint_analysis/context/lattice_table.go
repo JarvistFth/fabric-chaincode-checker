@@ -1,9 +1,8 @@
 package context
 
 import (
-	"chaincode-checker/taint_analysis/checker"
 	"chaincode-checker/taint_analysis/latticer"
-	"chaincode-checker/taint_analysis/project_config"
+	"chaincode-checker/taint_analysis/config"
 	"chaincode-checker/taint_analysis/utils"
 	"golang.org/x/tools/go/ssa"
 	"sort"
@@ -20,8 +19,8 @@ func (v LatticeMap) GetLattice(value ssa.Value) latticer.Lattice {
 	if ret,ok := v[key];ok{
 		return ret
 	}else{
-		if checker.Config.IsPtr{
-			v[key] = latticer.NewLatticePointer(key,value,project_config.WorkingProject.ValToPtrs)
+		if config.Config.WithPtr{
+			v[key] = latticer.NewLatticePointer(key,value, config.WorkingProject.ValToPtrs)
 		}else{
 			v[key] = latticer.NewLatticeValue(key,value)
 		}

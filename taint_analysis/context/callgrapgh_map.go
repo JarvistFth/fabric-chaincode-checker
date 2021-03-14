@@ -2,7 +2,9 @@ package context
 
 import (
 	"github.com/emirpasic/gods/maps/hashmap"
+	"github.com/op/go-logging"
 )
+var log = logging.MustGetLogger("Main")
 
 type CallGraphMap *hashmap.Map
 

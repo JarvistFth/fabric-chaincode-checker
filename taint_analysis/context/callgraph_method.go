@@ -1,11 +1,12 @@
 package context
 
 import (
+	"chaincode-checker/taint_analysis/Errors"
+	"chaincode-checker/taint_analysis/config"
 	"chaincode-checker/taint_analysis/latticer"
 	"chaincode-checker/taint_analysis/logger"
-	"chaincode-checker/taint_analysis/project_config"
 	"chaincode-checker/taint_analysis/utils"
-	"go/token"
+	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 )
 
@@ -107,13 +108,13 @@ func (c *CallGraph) LoopInstr() {
 				//value := valtype.Call.Value
 				callcom := valtype.Common()
 				//check source and sink
-				issource := CheckSource(c)
+				issource := CheckSource(instrCtx)
 				if issource {
 					lat := LatticeTable.GetLattice(instr)
 					lat.SetTag(latticer.Tainted)
 				}
 
-				issink := CheckSink(c)
+				issink := CheckSink(instrCtx)
 				if issink {
 					//sink throw error
 					handleSinkDetection(callcom)
@@ -129,14 +130,15 @@ func (c *CallGraph) LoopInstr() {
 				} else {
 					staiccallee := valtype.Common().StaticCallee()
 
-					fc,_ := GetFunctionContext(staiccallee, false, IsPtr)
+					fc,_ := GetFunctionContext(staiccallee, false, true)
 					fc.LoopInstr()
 					retlattice := fc.GetReturnLattice()
 					ret := valtype.Call.Value
-					retlat := LatticeTable.GetLattice(utils.GenKeyFromSSAValue(ret),ret)
-
+					retlat := LatticeTable.GetLattice(ret)
+					for _,rets := range retlattice {
+						retlat.LeastUpperBound(rets)
+					}
 				}
-
 				break
 
 			case *ssa.Select:
@@ -145,20 +147,17 @@ func (c *CallGraph) LoopInstr() {
 
 			case *ssa.UnOp:
 				//
-				valtype.
 				log.Warningf("unop ctx:%s",valtype.String())
-				if valtype.Op != token.ARROW && valtype.Op != token.MUL {
-					log.Warning("un op but not pointer")
-					valx := valtype.X
-					latx := LatticeTable.GetLattice(valx)
-
-					c.AppendLatticeIn(latx)
-					SetLatticeInAndOutTag(c)
-				} else {
-					log.Warning("un op with pointer")
-					LatticeTable.GetLattice(valtype)
-					UnOpPtr(valtype,project_config.WorkingProject.PtrResult)
-				}
+				//if valtype.Op != token.ARROW && valtype.Op != token.MUL {
+				//	log.Warning("un op but not pointer")
+				//	valx := valtype.X
+				//	latx := LatticeTable.GetLattice(valx)
+				//
+				//} else {
+				//	log.Warning("un op with pointer")
+				//	LatticeTable.GetLattice(valtype)
+				//	UnOpPtr(valtype,config.WorkingProject.PtrResult)
+				//}
 			}
 
 		case *ssa.Send:
@@ -174,22 +173,8 @@ func (c *CallGraph) LoopInstr() {
 		case *ssa.Go, *ssa.Defer:
 			switch valtype := instr.(type) {
 			case *ssa.Go:
-				issink := CheckSink(c)
-				if issink {
-					//sink throw error
-					break
-				}
-
-				callcom := valtype.Common()
-				if callcom.IsInvoke() {
-					//todo invoke mode call
-				} else {
-					staiccallee := valtype.Common().StaticCallee()
-
-					GetFunctionContext(staiccallee, false, Config.IsPtr)
-
-				}
-
+				msg := Errors.NewErrMessage(valtype.Call,Errors.USE_GOROUTINE)
+				log.Warningf("%s",msg)
 			}
 
 			break
@@ -215,12 +200,12 @@ func (c *CallGraph) LoopInstr() {
 			val := instr.Val
 
 			latval := LatticeTable.GetLattice(val)
-			lataddr := LatticeTable.GetLattice(val)
+			lataddr := LatticeTable.GetLattice(addr)
 			valtag := latval.GetTag()
 			lataddr.SetTag(valtag)
 			if ok, addrp := utils.IsPointerVal(addr); ok {
 				var lataddr = lataddr.(*latticer.LatticePointer)
-				q := project_config.WorkingProject.PtrResult.Queries[addrp]
+				q := config.WorkingProject.PtrResult.Queries[addrp]
 				qset := q.PointsTo()
 				labels := qset.Labels()
 				//指针指向的value的tag要改
@@ -229,7 +214,7 @@ func (c *CallGraph) LoopInstr() {
 					LatticeTable.GetLattice(labelvalue).SetTag(valtag)
 				}
 				//是别名的指针，它对应的value的tag也要改
-				for ssav, p := range project_config.WorkingProject.ValToPtrs {
+				for ssav, p := range config.WorkingProject.ValToPtrs {
 					if p.MayAlias(*lataddr.GetPtr()) {
 						LatticeTable.GetLattice(ssav).SetTag(valtag)
 					}
@@ -258,7 +243,7 @@ func(c *CallGraph) analyzeInstructions(ssaFun *ssa.Function, isPtr bool)  {
 	analyze := false
 	// check whether the pkg is defined within the packages which should analyzed
 ctxtfor:
-	for _, p := range project_config.WorkingProject.Packages {
+	for _, p := range config.WorkingProject.Packages {
 		if p == pkg {
 			analyze = true
 			break ctxtfor
@@ -279,5 +264,53 @@ ctxtfor:
 	}
 }
 
+func UnOpPtr(e *ssa.UnOp, ptrResult *pointer.Result) {
+	addr := e.X
+	latticeVal := LatticeTable.GetLattice(addr)
+	valtag := latticeVal.GetTag()
+	//qset := q.PointsTo()
+	//				labels := qset.Labels()
+	//				//指针指向的value的tag要改
+	//				for _, l := range labels {
+	//					labelvalue := l.Value()
+	//					LatticeTable.GetLattice(labelvalue).SetTag(valtag)
+	//				}
+	//				//是别名的指针，它对应的value的tag也要改
+	//				for ssav, p := range config.WorkingProject.ValToPtrs {
+	//					if p.MayAlias(*lataddr.GetPtr()) {
+	//						LatticeTable.GetLattice(ssav).SetTag(valtag)
+	//					}
+	//				}
+
+	if ptrResult != nil{
+		if ok, valr := utils.IsPointerVal(addr); ok {
+			q := ptrResult.Queries[valr]
+			labels := q.PointsTo().Labels()
+			for _, label := range labels {
+				labelval := label.Value()
+				LatticeTable.GetLattice(labelval).SetTag(valtag)
+			}
+			//for ssav, p := range config.WorkingProject.ValToPtrs {
+			//	if p.MayAlias(*lataddr.GetPtr()) {
+			//		LatticeTable.GetLattice(ssav).SetTag(valtag)
+			//	}
+			//}
+		}
+
+		if ok, valr := utils.IsIndirectPtr(addr); ok {
+			q := ptrResult.Queries[valr]
+			labels := q.PointsTo().Labels()
+			for _, label := range labels {
+				labelval := label.Value()
+				LatticeTable.GetLattice(labelval).SetTag(valtag)
+			}
+			//for ssav, p := range config.WorkingProject.ValToPtrs {
+			//	if p.MayAlias(*lataddr.GetPtr()) {
+			//		LatticeTable.GetLattice(ssav).SetTag(valtag)
+			//	}
+			//}
+		}
+	}
+}
 
 

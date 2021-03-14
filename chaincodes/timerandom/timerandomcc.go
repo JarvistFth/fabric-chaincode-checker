@@ -71,6 +71,12 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	//result, err := set(stub, args)
 
 	tim := time.Now().Format("2006-01-02 15:04:05")
+	a := 1
+	b := &a
+	c := &a
+	d := *b
+	e := *c
+	log.Print(d,e)
 	//o := Tsg{Time: tim}
 	//ob,_ := json.Marshal(o)
 	err := stub.PutState(args[0],[]byte(tim))

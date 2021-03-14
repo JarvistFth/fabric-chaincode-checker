@@ -1,8 +1,9 @@
-package project_config
+package config
 
 //var ValToPtrs map[ssa.Value] pointer.Pointer
 
 
+var Config *CmdConfig
 
 type CmdConfig struct {
 	//The path to the .go-files starting at $GOPATH/src
@@ -16,15 +17,19 @@ type CmdConfig struct {
 	//Specify some packages in addition to the main package which should be analyzed
 	Pkgs              string
 	//If is is set we perform a pointer analysis, else not
+	WithPtr bool
+
 }
 
-func NewCheckerConfig(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs bool, pkgs string) *CmdConfig {
+func NewCmdConfig(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs bool, pkgs string, withptr bool) *CmdConfig {
 	cc := &CmdConfig{
 		Path:              path,
 		SourceFiles:       sourcefiles,
 		SourceAndSinkFile: sourceAndSinkFile,
 		Allpkgs:           allpkgs,
 		Pkgs:              pkgs,
+		WithPtr: withptr,
 	}
+	Config = cc
 	return cc
 }

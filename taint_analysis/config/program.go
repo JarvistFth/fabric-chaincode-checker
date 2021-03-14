@@ -1,4 +1,4 @@
-package project_config
+package config
 
 import (
 	"chaincode-checker/taint_analysis/utils"
@@ -14,7 +14,6 @@ var log = logging.MustGetLogger("Main")
 
 var WorkingProject *Project
 
-
 type Project struct {
 
 	//MainFunc *ssa.Function
@@ -29,7 +28,6 @@ type Project struct {
 	PtrConfig *pointer.Config
 
 	ValToPtrs map[ssa.Value]pointer.Pointer
-	WithPtr bool
 
 }
 
