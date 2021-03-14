@@ -12,7 +12,7 @@ import (
 )
 
 
-func() CheckSource(c *InstructionContext) bool {
+func CheckSource(c *InstructionContext) bool {
 	if c.IsCall(){
 		call := c.GetInstr().(ssa.CallInstruction)
 		callcom := call.Common()

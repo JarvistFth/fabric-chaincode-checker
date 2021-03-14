@@ -29,6 +29,7 @@ type Project struct {
 	PtrConfig *pointer.Config
 
 	ValToPtrs map[ssa.Value]pointer.Pointer
+	WithPtr bool
 
 }
 

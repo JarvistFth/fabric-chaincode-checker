@@ -1,4 +1,4 @@
-package checker
+package project_config
 
 //var ValToPtrs map[ssa.Value] pointer.Pointer
 
@@ -16,17 +16,15 @@ type CmdConfig struct {
 	//Specify some packages in addition to the main package which should be analyzed
 	Pkgs              string
 	//If is is set we perform a pointer analysis, else not
-	IsPtr             bool
 }
 
-func NewCheckerConfig(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs bool, pkgs string, ptr bool) *CmdConfig {
+func NewCheckerConfig(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs bool, pkgs string) *CmdConfig {
 	cc := &CmdConfig{
 		Path:              path,
 		SourceFiles:       sourcefiles,
 		SourceAndSinkFile: sourceAndSinkFile,
 		Allpkgs:           allpkgs,
 		Pkgs:              pkgs,
-		IsPtr:             ptr,
 	}
 	return cc
 }
