@@ -30,5 +30,9 @@ type Lattice interface {
 	GetTag() LatticeTag
 
 	GetKey() string
+
+	GetMsg() string
+
+	SetMsg(msg string)
 }
 

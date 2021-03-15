@@ -1,10 +1,10 @@
 package context
 
 import (
+	"chaincode-checker/taint_analysis/logger"
 	"github.com/emirpasic/gods/maps/hashmap"
-	"github.com/op/go-logging"
 )
-var log = logging.MustGetLogger("Main")
+var log = logger.GetLogger("./debuglogs/test")
 
 type CallGraphMap *hashmap.Map
 

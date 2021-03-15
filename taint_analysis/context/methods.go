@@ -1,10 +1,12 @@
 package context
 
 import (
+	"chaincode-checker/taint_analysis/Errors"
 	"chaincode-checker/taint_analysis/latticer"
 	"chaincode-checker/taint_analysis/config"
 	"chaincode-checker/taint_analysis/taint_config"
 	"chaincode-checker/taint_analysis/utils"
+	"fmt"
 	"go/types"
 	"golang.org/x/tools/go/ssa"
 	"strings"
@@ -12,13 +14,47 @@ import (
 	"unicode/utf8"
 )
 
+const(
+	TAINT_RANDOM = "RANDOM_FUNCTION"
+	TAINT_TIME = "TIME_FUNCTION"
+	TAINT_GLOBAL = "GLOBAL"
+	TAINT_FILE = "OUTSIDE_FILE_OPEN"
+	TIANT_CMD = "OUTSIDE_COMMAND_EXEC"
 
-func CheckSource(c *InstructionContext) bool {
+)
+
+func CheckSource(c *InstructionContext) (bool,string) {
 	if c.IsCall(){
 		call := c.GetInstr().(ssa.CallInstruction)
 		callcom := call.Common()
 		sig,callee,isig := getSignature(callcom)
 		for _, source := range taint_config.SSConfig.Sources{
+			//log.Debugf("getSig: %s, call:%s, source.Sig:%s, source.callee:%s",sig,call,source.GetSignature(),source.GetCallee())
+			if source.IsInterface {
+				//log.Debugf("source interface source, getSig: %s, source.Sig: %s",iSig,source.GetSignature())
+				if isig == source.Signature {
+					return true,source.Type
+				}
+			}
+			if sig == source.Signature {
+				if callee == source.Callee {
+					return true,source.Type
+				}
+			}
+		}
+		return false,""
+	}else{
+		log.Panicf("error!! instr:%s is not call instr",c.GetInstr().String())
+		return false,""
+	}
+}
+
+func CheckSink(c *InstructionContext) bool {
+	if c.IsCall(){
+		call := c.GetInstr().(ssa.CallInstruction)
+		callcom := call.Common()
+		sig,callee,isig := getSignature(callcom)
+		for _, source := range taint_config.SSConfig.Sinks{
 			//log.Debugf("getSig: %s, call:%s, source.Sig:%s, source.callee:%s",sig,call,source.GetSignature(),source.GetCallee())
 			if source.IsInterface {
 				//log.Debugf("source interface source, getSig: %s, source.Sig: %s",iSig,source.GetSignature())
@@ -39,12 +75,12 @@ func CheckSource(c *InstructionContext) bool {
 	}
 }
 
-func CheckSink(c *InstructionContext) bool {
+func CheckSDK(c *InstructionContext) bool {
 	if c.IsCall(){
 		call := c.GetInstr().(ssa.CallInstruction)
 		callcom := call.Common()
 		sig,callee,isig := getSignature(callcom)
-		for _, source := range taint_config.SSConfig.Sinks{
+		for _, source := range taint_config.SSConfig.SDKFunctions{
 			//log.Debugf("getSig: %s, call:%s, source.Sig:%s, source.callee:%s",sig,call,source.GetSignature(),source.GetCallee())
 			if source.IsInterface {
 				//log.Debugf("source interface source, getSig: %s, source.Sig: %s",iSig,source.GetSignature())
@@ -75,11 +111,16 @@ func handleSinkDetection(c *ssa.CallCommon)  {
 	}
 
 	args := c.Args
-
+	var msg string
 	for _,arg := range args{
 		lat := LatticeTable.GetLattice(arg)
 		if lat.GetTag() == latticer.Tainted || lat.GetTag() == latticer.Both{
 			taintArgs = append(taintArgs,arg)
+			tmp := msg
+			if tmp == msg{
+				continue
+			}
+			msg += fmt.Sprintf("arg:%s with: %s\n",arg.Name(),lat.GetMsg())
 		}
 		if config.Config.WithPtr{
 			if latptr,ok := lat.(*latticer.LatticePointer);ok{
@@ -90,6 +131,7 @@ func handleSinkDetection(c *ssa.CallCommon)  {
 							tag,_ := LatticeTable.GetTag(utils.GenKeyFromSSAValue(ssav))
 							if tag == latticer.Tainted || tag == latticer.Both{
 								taintArgs = append(taintArgs,arg)
+								msg += fmt.Sprintf("arg:%s with: %s\n",arg.Name(),lat.GetMsg())
 							}
 						}
 					}
@@ -101,6 +143,7 @@ func handleSinkDetection(c *ssa.CallCommon)  {
 
 	if len(taintArgs) > 0{
 		log.Errorf("sink function with tainted flag!!")
+		Errors.NewErrMessage(*c,msg)
 	}
 
 

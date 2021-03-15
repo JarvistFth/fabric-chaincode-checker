@@ -14,10 +14,12 @@ import (
 
 var ssf = "../../config/sourceandsink.json"
 var path = "chaincode-checker"
-var allpkg = false
+var allpkgs = false
 var ptr = true
 var pkgs = ""
-var src = "../../chaincodes/timerandom/timerandomcc.go"
+
+type sourcefiles []string
+var sourceFilesFlag = []string{"../../chaincodes/timerandom/timerandomcc.go"}
 
 
 func TestBuild(t *testing.T) {
@@ -84,4 +86,9 @@ func TryBuild(path string, sourcefiles []string) (*ssa.Package, error){
 	}
 
 	return mainPkg, nil
+}
+
+func TestStart(t *testing.T) {
+	Main(path,sourceFilesFlag,ssf,allpkgs,pkgs,ptr)
+
 }

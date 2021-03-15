@@ -2,13 +2,16 @@ package checker
 
 import (
 	"chaincode-checker/taint_analysis/Errors"
-	"chaincode-checker/taint_analysis/context"
 	"chaincode-checker/taint_analysis/config"
+	"chaincode-checker/taint_analysis/context"
+	"chaincode-checker/taint_analysis/latticer"
+	"chaincode-checker/taint_analysis/logger"
 	"chaincode-checker/taint_analysis/utils"
 	"fmt"
 	"golang.org/x/tools/go/ssa"
 )
 
+var log = logger.GetLogger("./debuglogs/test")
 
 
 func Init(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs bool, pkgs string, ptr bool) {
@@ -16,7 +19,7 @@ func Init(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs b
 	InitSSConfig()
 	context.CallGraphs = context.NewCallGraphMap()
 	Errors.ErrMsgPool = Errors.NewErrMessages()
-	//LatticeTable = make(map[string]latticer.Lattice)
+	context.LatticeTable = make(map[string]latticer.Lattice)
 	mainpkg := BuildSSA()
 	mains := []*ssa.Package{mainpkg}
 

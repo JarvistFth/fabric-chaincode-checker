@@ -1,13 +1,13 @@
 package taint_config
 
 import (
+	"chaincode-checker/taint_analysis/logger"
 	"encoding/json"
-	"github.com/op/go-logging"
 	"io/ioutil"
 )
 
 var SSConfig *Config
-var log = logging.MustGetLogger("main")
+var log = logger.GetLogger("./debuglogs/test")
 
 type Config struct {
 	Sources []Source            `json:"sources"`
@@ -19,7 +19,7 @@ type Source struct {
 	Signature string `json:"signature"`
 	Callee string `json:"callee"`
 	IsInterface bool `json:"is_interface"`
-
+	Type	string `json:"type"`
 	Name string `json:"name"`
 }
 

@@ -2,7 +2,6 @@ package context
 
 import (
 	"chaincode-checker/taint_analysis/latticer"
-	"fmt"
 	"golang.org/x/tools/go/ssa"
 )
 
@@ -62,15 +61,17 @@ func (c *InstructionContext) GetLatticeOut() latticer.Lattice {
 
 func (c *InstructionContext) String() string {
 	var str string
-	for _,s := range c.latticeIn{
-		str += s.String()
-	}
-
-	if _,ok := c.instruction.(ssa.Value);ok{
-		return fmt.Sprintf("name:%s, function:%s\n latticein:%s latticeOut:%s",c.name,c.functionContext.GetName(),str,c.latticeOut.String())
-	}else{
-		return fmt.Sprintf("name:%s, function:%s\n latticein:%s latticeOut: no out lattice",c.name,c.functionContext.GetName(),str)
-	}
+	//for _,s := range c.latticeIn{
+	//	str += s.String()
+	//}
+	//
+	//if _,ok := c.instruction.(ssa.Value);ok{
+	//	return fmt.Sprintf("name:%s, function:%s\n ",c.name,c.functionContext.GetName())
+	//}else{
+	//	return fmt.Sprintf("name:%s, function:%s\n ",c.name,c.functionContext.GetName())
+	//}
+	str += c.instruction.String()
+	return str
 }
 
 func (c *InstructionContext) IsValue() bool {

@@ -7,12 +7,10 @@ import (
 	"chaincode-checker/taint_analysis/utils"
 	"errors"
 	"fmt"
-	"github.com/op/go-logging"
 	"golang.org/x/tools/go/ssa"
 	"os"
 	"strings"
 )
-var log = logging.MustGetLogger("main")
 
 func InitSSConfig() {
 	_, _ = taint_config.NewSinkAndSourceCfgFromFile(config.Config.SourceAndSinkFile)

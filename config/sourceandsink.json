@@ -3,36 +3,43 @@
     {
       "signature": "func() int",
       "callee": "math/rand.Int",
+      "type": "RANDOM_FUNCTION",
       "is_interface": false
     },
     {
       "signature": "func() time.Time",
       "callee": "time.Now",
+      "type": "TIME_FUNCTION",
       "is_interface": false
     },
     {
       "signature": "func() string",
       "callee": "(time.Time).String",
+      "type": "TIME_FUNCTION",
       "is_interface": false
     },
     {
       "signature": "func(layout string) string",
       "callee": "(time.Time).Format",
+      "type": "TIME_FUNCTION",
       "is_interface": false
     },
     {
       "signature": "func(name string) (*os.File, error)",
       "callee": "os.Open",
+      "type": "OUTSIDE_FILE_OPEN",
       "is_interface": false
     },
     {
       "signature": "func(name string, flag int, perm FileMode) (*os.File, error)",
       "callee": "os.OpenFile",
+      "type": "OUTSIDE_FILE_OPEN",
       "is_interface": false
     },
     {
       "signature": "func(name string, arg ...string) *os/exec.Cmd",
       "callee": "os/exec.Command",
+      "type": "OUTSIDE_COMMAND_EXEC",
       "is_interface": false
     }
   ],

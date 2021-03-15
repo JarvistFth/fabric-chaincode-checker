@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var log = logger.GetLogger("main")
+var log = logger.GetLogger("./debuglogs/test")
 
 
 func Build(path string, sourcefiles []string) (*ssa.Package, error, *ssa.Function, *ssa.Function, *ssa.Program){

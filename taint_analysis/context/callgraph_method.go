@@ -13,7 +13,9 @@ import (
 func (c *CallGraph) LoopInstr() {
 	for !c.instrs.Empty(){
 		instrCtx := c.instrs.RemoveFront()
-		switch instr := instrCtx.GetInstr().(type) {
+		instruction := instrCtx.GetInstr()
+		log.Info(instruction.String())
+		switch instr := instruction.(type) {
 		case ssa.Value:
 			//flow
 
@@ -107,22 +109,38 @@ func (c *CallGraph) LoopInstr() {
 				//method := valtype.Call.Method
 				//value := valtype.Call.Value
 				callcom := valtype.Common()
+				ret := valtype.Call.Value
+				args := valtype.Call.Args
+				retlat := LatticeTable.GetLattice(ret)
 				//check source and sink
-				issource := CheckSource(instrCtx)
+				issource,types := CheckSource(instrCtx)
 				if issource {
 					lat := LatticeTable.GetLattice(instr)
 					lat.SetTag(latticer.Tainted)
+					lat.SetMsg(types)
+					continue
 				}
 
 				issink := CheckSink(instrCtx)
 				if issink {
 					//sink throw error
 					handleSinkDetection(callcom)
-					break
+					continue
 				}
 
 				if issink || issource {
-					break
+					continue
+				}
+
+
+				issdkfunc := CheckSDK(instrCtx)
+
+				if issdkfunc{
+					for _,arg := range args{
+						arglat := LatticeTable.GetLattice(arg)
+						retlat.LeastUpperBound(arglat)
+					}
+					continue
 				}
 
 				if callcom.IsInvoke() {
@@ -133,8 +151,6 @@ func (c *CallGraph) LoopInstr() {
 					fc,_ := GetFunctionContext(staiccallee, false, true)
 					fc.LoopInstr()
 					retlattice := fc.GetReturnLattice()
-					ret := valtype.Call.Value
-					retlat := LatticeTable.GetLattice(ret)
 					for _,rets := range retlattice {
 						retlat.LeastUpperBound(rets)
 					}
@@ -236,6 +252,8 @@ func (c *CallGraph) LoopInstr() {
 
 		}
 	}
+	log.Info(c.String())
+	log.Info(LatticeTable.String())
 }
 
 func(c *CallGraph) analyzeInstructions(ssaFun *ssa.Function, isPtr bool)  {

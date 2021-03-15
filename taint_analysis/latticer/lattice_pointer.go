@@ -1,14 +1,14 @@
 package latticer
 
 import (
+	"chaincode-checker/taint_analysis/logger"
 	"fmt"
-	"github.com/op/go-logging"
 	"github.com/pkg/errors"
 	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 )
 
-var log = logging.MustGetLogger("Main")
+var log = logger.GetLogger("./debuglogs/test")
 
 type LatticePointer struct {
 	val *LatticeValue
@@ -134,6 +134,14 @@ func (p *LatticePointer) SetPtr(ptr *pointer.Pointer) {
 
 func (p *LatticePointer) GetLatticeValue() Lattice {
 	return p.val
+}
+
+func (p *LatticePointer) GetMsg() string {
+	return p.val.msg
+}
+
+func (p *LatticePointer) SetMsg(msg string)  {
+	p.val.msg = msg
 }
 
 //func (p *LatticePointer) GetSSAValMayAlias(v ssa.Value) []ssa.Value {

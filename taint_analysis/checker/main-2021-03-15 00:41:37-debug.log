@@ -1,0 +1,241 @@
+[INFO] 00:42:07 init.go:39 ~.setPkgsList: only analyze main pkgs
+[DEBUG] 00:42:18 program.go:85 ~.SetValToPtrs: start set val to ptrs!!
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t2, n439972
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t5, n439979
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t8, n439983
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t9, n439985
+[DEBUG] 00:42:18 program.go:107 ~.SetValToPtrs: val:t9, %!p(string=n439986)
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t10, n439988
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t11, n439990
+[DEBUG] 00:42:18 program.go:107 ~.SetValToPtrs: val:t11, %!p(string=n439991)
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t12, n439993
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t13, n439995
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t15, n439997
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t17, n440000
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t18, n440002
+[DEBUG] 00:42:18 program.go:94 ~.SetValToPtrs: val:t22, n440013
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t = parameter t : *SimpleAsset
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:stub = parameter stub : github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t0 = invoke stub.GetFunctionAndParameters()
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t1 = extract t0 #0
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t3 = time.Now()
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t4 = (time.Time).Format(t3, "2006-01-02 15:04:05":string)
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t6 = *t5
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t7 = *t5
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t14 = log.Print(t13...)
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t16 = *t15
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t19 = t18 != nil:error
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t20 = invoke t18.Error()
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t21 = github.com/hyperledger/fabric/core/chaincode/shim.Error(t20)
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:t23 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t22)
+[DEBUG] 00:42:18 checker_method.go:11 ~.InitFunctionContext: init function: Invoke
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: invoke stub.GetFunctionAndParameters()
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:stub = parameter stub : github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface
+[DEBUG] 00:42:18 methods.go:162 ~.getSignature: invoke call comm : callee: shim.ChaincodeStubInterface.GetFunctionAndParameters signature: func() (string, []string)
+[DEBUG] 00:42:18 methods.go:162 ~.getSignature: invoke call comm : callee: shim.ChaincodeStubInterface.GetFunctionAndParameters signature: func() (string, []string)
+[DEBUG] 00:42:18 methods.go:162 ~.getSignature: invoke call comm : callee: shim.ChaincodeStubInterface.GetFunctionAndParameters signature: func() (string, []string)
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: extract t0 #0
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: extract t0 #1
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: time.Now()
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: func() time.Time
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:Now = time.Now
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: (time.Time).Format(t3, "2006-01-02 15:04:05":string)
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: func(layout string) string
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:Format = (time.Time).Format
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: new int (a)
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: *t5 = 1:int
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: int
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:1:int = 1:int
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: *t5
+[WARNI] 00:42:18 callgraph_method.go:166 ~.LoopInstr: unop ctx:*t5
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: *t5
+[WARNI] 00:42:18 callgraph_method.go:166 ~.LoopInstr: unop ctx:*t5
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: new [2]interface{} (varargs)
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: &t8[0:int]
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: int
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:0:int = 0:int
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: make interface{} <- int (t6)
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: *t9 = t10
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: &t8[1:int]
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: int
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: make interface{} <- int (t7)
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: *t11 = t12
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: slice t8[:]
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: log.Print(t13...)
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: func(v ...interface{})
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:Print = log.Print
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:v = parameter v : []interface{}
+[INFO] 00:42:18 callgraph_method.go:255 ~.LoopInstr: call function:Print
+arg latticer:
+latticer value-key:package log.Print.v, operation:v = parameter v : []interface{} tag:Uninitialized, msg: ptr: nilreturn latticer
+[INFO] 00:42:18 callgraph_method.go:256 ~.LoopInstr: latticer value-key:int.0:int, operation:0:int = 0:int tag:Untainted, msg: ptr: nil
+latticer value-key:int.1:int, operation:1:int = 1:int tag:Untainted, msg: ptr: nil
+latticer value-key:func() time.Time.Now, operation:Now = time.Now tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(v ...interface{}).Print, operation:Print = log.Print tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(layout string) string.Format, operation:Format = (time.Time).Format tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t0, operation:t0 = invoke stub.GetFunctionAndParameters() tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t1, operation:t1 = extract t0 #0 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t2, operation:t2 = extract t0 #1 tag:Uninitialized, msg: ptr: n439972
+latticer value-key:package chaincode-checker.Invoke.t3, operation:t3 = time.Now() tag:Tainted, msg:TIME_FUNCTION ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t4, operation:t4 = (time.Time).Format(t3, "2006-01-02 15:04:05":string) tag:Tainted, msg:TIME_FUNCTION ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t5, operation:t5 = new int (a) tag:Untainted, msg: ptr: n439979
+latticer value-key:package chaincode-checker.Invoke.t6, operation:t6 = *t5 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t7, operation:t7 = *t5 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t8, operation:t8 = new [2]interface{} (varargs) tag:Uninitialized, msg: ptr: n439983
+latticer value-key:package chaincode-checker.Invoke.t9, operation:t9 = &t8[0:int] tag:Uninitialized, msg: ptr: n439986
+latticer value-key:package chaincode-checker.Invoke.t10, operation:t10 = make interface{} <- int (t6) tag:Uninitialized, msg: ptr: n439988
+latticer value-key:package chaincode-checker.Invoke.t11, operation:t11 = &t8[1:int] tag:Uninitialized, msg: ptr: n439991
+latticer value-key:package chaincode-checker.Invoke.t12, operation:t12 = make interface{} <- int (t7) tag:Uninitialized, msg: ptr: n439993
+latticer value-key:package chaincode-checker.Invoke.t13, operation:t13 = slice t8[:] tag:Uninitialized, msg: ptr: n439995
+latticer value-key:package chaincode-checker.Invoke.t14, operation:t14 = log.Print(t13...) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t15, operation:t15 = &t2[0:int] tag:Uninitialized, msg: ptr: n439997
+latticer value-key:package chaincode-checker.Invoke.t16, operation:t16 = *t15 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t17, operation:t17 = convert []byte <- string (t4) tag:Uninitialized, msg: ptr: n440000
+latticer value-key:package chaincode-checker.Invoke.t18, operation:t18 = invoke stub.PutState(t16, t17) tag:Uninitialized, msg: ptr: n440002
+latticer value-key:package chaincode-checker.Invoke.t19, operation:t19 = t18 != nil:error tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t20, operation:t20 = invoke t18.Error() tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t21, operation:t21 = github.com/hyperledger/fabric/core/chaincode/shim.Error(t20) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t22, operation:t22 = convert []byte <- string ("ok":string) tag:Uninitialized, msg: ptr: n440013
+latticer value-key:package chaincode-checker.Invoke.t23, operation:t23 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t22) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.stub, operation:stub = parameter stub : github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface tag:Uninitialized, msg: ptr: nil
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: &t2[0:int]
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: int
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: *t15
+[WARNI] 00:42:18 callgraph_method.go:166 ~.LoopInstr: unop ctx:*t15
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: convert []byte <- string (t4)
+[DEBUG] 00:42:18 callgraph_method.go:37 ~.LoopInstr: convert: (time.Time).Format(t3, "2006-01-02 15:04:05":string)
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: invoke stub.PutState(t16, t17)
+[DEBUG] 00:42:18 methods.go:162 ~.getSignature: invoke call comm : callee: shim.ChaincodeStubInterface.PutState signature: func(key string, value []byte) error
+[DEBUG] 00:42:18 methods.go:162 ~.getSignature: invoke call comm : callee: shim.ChaincodeStubInterface.PutState signature: func(key string, value []byte) error
+[ERROR] 00:42:18 methods.go:141 ~.handleSinkDetection: sink function with tainted flag!!
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: t18 != nil:error
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: error
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:nil:error = nil:error
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: if t19 goto 1 else 2
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: invoke t18.Error()
+[DEBUG] 00:42:18 methods.go:162 ~.getSignature: invoke call comm : callee: error.Error signature: func() string
+[DEBUG] 00:42:18 methods.go:162 ~.getSignature: invoke call comm : callee: error.Error signature: func() string
+[DEBUG] 00:42:18 methods.go:162 ~.getSignature: invoke call comm : callee: error.Error signature: func() string
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: github.com/hyperledger/fabric/core/chaincode/shim.Error(t20)
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: func(msg string) github.com/hyperledger/fabric/protos/peer.Response
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:Error = github.com/hyperledger/fabric/core/chaincode/shim.Error
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:msg = parameter msg : string
+[INFO] 00:42:18 callgraph_method.go:255 ~.LoopInstr: call function:Error
+arg latticer:
+latticer value-key:package github.com/hyperledger/fabric/core/chaincode/shim.Error.msg, operation:msg = parameter msg : string tag:Uninitialized, msg: ptr: nilreturn latticer
+[INFO] 00:42:18 callgraph_method.go:256 ~.LoopInstr: latticer value-key:int.0:int, operation:0:int = 0:int tag:Untainted, msg: ptr: nil
+latticer value-key:int.1:int, operation:1:int = 1:int tag:Untainted, msg: ptr: nil
+latticer value-key:error.nil:error, operation:nil:error = nil:error tag:Untainted, msg: ptr: nil
+latticer value-key:func() time.Time.Now, operation:Now = time.Now tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(v ...interface{}).Print, operation:Print = log.Print tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(layout string) string.Format, operation:Format = (time.Time).Format tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t0, operation:t0 = invoke stub.GetFunctionAndParameters() tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t1, operation:t1 = extract t0 #0 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t2, operation:t2 = extract t0 #1 tag:Untainted, msg: ptr: n439972
+latticer value-key:package chaincode-checker.Invoke.t3, operation:t3 = time.Now() tag:Tainted, msg:TIME_FUNCTION ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t4, operation:t4 = (time.Time).Format(t3, "2006-01-02 15:04:05":string) tag:Tainted, msg:TIME_FUNCTION ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t5, operation:t5 = new int (a) tag:Untainted, msg: ptr: n439979
+latticer value-key:package chaincode-checker.Invoke.t6, operation:t6 = *t5 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t7, operation:t7 = *t5 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t8, operation:t8 = new [2]interface{} (varargs) tag:Uninitialized, msg: ptr: n439983
+latticer value-key:package chaincode-checker.Invoke.t9, operation:t9 = &t8[0:int] tag:Uninitialized, msg: ptr: n439986
+latticer value-key:package chaincode-checker.Invoke.t10, operation:t10 = make interface{} <- int (t6) tag:Uninitialized, msg: ptr: n439988
+latticer value-key:package chaincode-checker.Invoke.t11, operation:t11 = &t8[1:int] tag:Uninitialized, msg: ptr: n439991
+latticer value-key:package chaincode-checker.Invoke.t12, operation:t12 = make interface{} <- int (t7) tag:Uninitialized, msg: ptr: n439993
+latticer value-key:package chaincode-checker.Invoke.t13, operation:t13 = slice t8[:] tag:Uninitialized, msg: ptr: n439995
+latticer value-key:package chaincode-checker.Invoke.t14, operation:t14 = log.Print(t13...) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t15, operation:t15 = &t2[0:int] tag:Untainted, msg: ptr: n439997
+latticer value-key:package chaincode-checker.Invoke.t16, operation:t16 = *t15 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t17, operation:t17 = convert []byte <- string (t4) tag:Tainted, msg:TIME_FUNCTION ptr: n440000
+latticer value-key:package chaincode-checker.Invoke.t18, operation:t18 = invoke stub.PutState(t16, t17) tag:Untainted, msg: ptr: n440002
+latticer value-key:package chaincode-checker.Invoke.t19, operation:t19 = t18 != nil:error tag:Untainted, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t20, operation:t20 = invoke t18.Error() tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t21, operation:t21 = github.com/hyperledger/fabric/core/chaincode/shim.Error(t20) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t22, operation:t22 = convert []byte <- string ("ok":string) tag:Uninitialized, msg: ptr: n440013
+latticer value-key:package chaincode-checker.Invoke.t23, operation:t23 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t22) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.stub, operation:stub = parameter stub : github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(msg string) github.com/hyperledger/fabric/protos/peer.Response.Error, operation:Error = github.com/hyperledger/fabric/core/chaincode/shim.Error tag:Uninitialized, msg: ptr: nil
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: return t21
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: convert []byte <- string ("ok":string)
+[DEBUG] 00:42:18 callgraph_method.go:37 ~.LoopInstr: convert: "ok":string
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: string
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:"ok":string = "ok":string
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: github.com/hyperledger/fabric/core/chaincode/shim.Success(t22)
+[INFO] 00:42:18 util.go:128 ~.GenKeyFromSSAValue: const value: func(payload []byte) github.com/hyperledger/fabric/protos/peer.Response
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:Success = github.com/hyperledger/fabric/core/chaincode/shim.Success
+[WARNI] 00:42:18 lattice_pointer.go:41 ~.NewLatticePointer: can't find ptr for value:payload = parameter payload : []byte
+[INFO] 00:42:18 callgraph_method.go:255 ~.LoopInstr: call function:Success
+arg latticer:
+latticer value-key:package github.com/hyperledger/fabric/core/chaincode/shim.Success.payload, operation:payload = parameter payload : []byte tag:Uninitialized, msg: ptr: nilreturn latticer
+[INFO] 00:42:18 callgraph_method.go:256 ~.LoopInstr: latticer value-key:int.0:int, operation:0:int = 0:int tag:Untainted, msg: ptr: nil
+latticer value-key:int.1:int, operation:1:int = 1:int tag:Untainted, msg: ptr: nil
+latticer value-key:error.nil:error, operation:nil:error = nil:error tag:Untainted, msg: ptr: nil
+latticer value-key:string."ok":string, operation:"ok":string = "ok":string tag:Untainted, msg: ptr: nil
+latticer value-key:func() time.Time.Now, operation:Now = time.Now tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(v ...interface{}).Print, operation:Print = log.Print tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(layout string) string.Format, operation:Format = (time.Time).Format tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t0, operation:t0 = invoke stub.GetFunctionAndParameters() tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t1, operation:t1 = extract t0 #0 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t2, operation:t2 = extract t0 #1 tag:Untainted, msg: ptr: n439972
+latticer value-key:package chaincode-checker.Invoke.t3, operation:t3 = time.Now() tag:Tainted, msg:TIME_FUNCTION ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t4, operation:t4 = (time.Time).Format(t3, "2006-01-02 15:04:05":string) tag:Tainted, msg:TIME_FUNCTION ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t5, operation:t5 = new int (a) tag:Untainted, msg: ptr: n439979
+latticer value-key:package chaincode-checker.Invoke.t6, operation:t6 = *t5 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t7, operation:t7 = *t5 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t8, operation:t8 = new [2]interface{} (varargs) tag:Uninitialized, msg: ptr: n439983
+latticer value-key:package chaincode-checker.Invoke.t9, operation:t9 = &t8[0:int] tag:Uninitialized, msg: ptr: n439986
+latticer value-key:package chaincode-checker.Invoke.t10, operation:t10 = make interface{} <- int (t6) tag:Uninitialized, msg: ptr: n439988
+latticer value-key:package chaincode-checker.Invoke.t11, operation:t11 = &t8[1:int] tag:Uninitialized, msg: ptr: n439991
+latticer value-key:package chaincode-checker.Invoke.t12, operation:t12 = make interface{} <- int (t7) tag:Uninitialized, msg: ptr: n439993
+latticer value-key:package chaincode-checker.Invoke.t13, operation:t13 = slice t8[:] tag:Uninitialized, msg: ptr: n439995
+latticer value-key:package chaincode-checker.Invoke.t14, operation:t14 = log.Print(t13...) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t15, operation:t15 = &t2[0:int] tag:Untainted, msg: ptr: n439997
+latticer value-key:package chaincode-checker.Invoke.t16, operation:t16 = *t15 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t17, operation:t17 = convert []byte <- string (t4) tag:Tainted, msg:TIME_FUNCTION ptr: n440000
+latticer value-key:package chaincode-checker.Invoke.t18, operation:t18 = invoke stub.PutState(t16, t17) tag:Untainted, msg: ptr: n440002
+latticer value-key:package chaincode-checker.Invoke.t19, operation:t19 = t18 != nil:error tag:Untainted, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t20, operation:t20 = invoke t18.Error() tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t21, operation:t21 = github.com/hyperledger/fabric/core/chaincode/shim.Error(t20) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t22, operation:t22 = convert []byte <- string ("ok":string) tag:Untainted, msg: ptr: n440013
+latticer value-key:package chaincode-checker.Invoke.t23, operation:t23 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t22) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.stub, operation:stub = parameter stub : github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(msg string) github.com/hyperledger/fabric/protos/peer.Response.Error, operation:Error = github.com/hyperledger/fabric/core/chaincode/shim.Error tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(payload []byte) github.com/hyperledger/fabric/protos/peer.Response.Success, operation:Success = github.com/hyperledger/fabric/core/chaincode/shim.Success tag:Uninitialized, msg: ptr: nil
+[INFO] 00:42:18 callgraph_method.go:17 ~.LoopInstr: return t23
+[INFO] 00:42:18 callgraph_method.go:255 ~.LoopInstr: call function:Invoke
+arg latticer:
+latticer value-key:package chaincode-checker.Invoke.t, operation:t = parameter t : *SimpleAsset tag:Uninitialized, msg: ptr: nillatticer value-key:package chaincode-checker.Invoke.stub, operation:stub = parameter stub : github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface tag:Uninitialized, msg: ptr: nilreturn latticerlatticer value-key:package chaincode-checker.Invoke.t21, operation:t21 = github.com/hyperledger/fabric/core/chaincode/shim.Error(t20) tag:Uninitialized, msg: ptr: nillatticer value-key:package chaincode-checker.Invoke.t23, operation:t23 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t22) tag:Uninitialized, msg: ptr: nil
+[INFO] 00:42:18 callgraph_method.go:256 ~.LoopInstr: latticer value-key:int.0:int, operation:0:int = 0:int tag:Untainted, msg: ptr: nil
+latticer value-key:int.1:int, operation:1:int = 1:int tag:Untainted, msg: ptr: nil
+latticer value-key:error.nil:error, operation:nil:error = nil:error tag:Untainted, msg: ptr: nil
+latticer value-key:string."ok":string, operation:"ok":string = "ok":string tag:Untainted, msg: ptr: nil
+latticer value-key:func() time.Time.Now, operation:Now = time.Now tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(v ...interface{}).Print, operation:Print = log.Print tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(layout string) string.Format, operation:Format = (time.Time).Format tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t0, operation:t0 = invoke stub.GetFunctionAndParameters() tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t1, operation:t1 = extract t0 #0 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t2, operation:t2 = extract t0 #1 tag:Untainted, msg: ptr: n439972
+latticer value-key:package chaincode-checker.Invoke.t3, operation:t3 = time.Now() tag:Tainted, msg:TIME_FUNCTION ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t4, operation:t4 = (time.Time).Format(t3, "2006-01-02 15:04:05":string) tag:Tainted, msg:TIME_FUNCTION ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t5, operation:t5 = new int (a) tag:Untainted, msg: ptr: n439979
+latticer value-key:package chaincode-checker.Invoke.t6, operation:t6 = *t5 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t7, operation:t7 = *t5 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t8, operation:t8 = new [2]interface{} (varargs) tag:Uninitialized, msg: ptr: n439983
+latticer value-key:package chaincode-checker.Invoke.t9, operation:t9 = &t8[0:int] tag:Uninitialized, msg: ptr: n439986
+latticer value-key:package chaincode-checker.Invoke.t10, operation:t10 = make interface{} <- int (t6) tag:Uninitialized, msg: ptr: n439988
+latticer value-key:package chaincode-checker.Invoke.t11, operation:t11 = &t8[1:int] tag:Uninitialized, msg: ptr: n439991
+latticer value-key:package chaincode-checker.Invoke.t12, operation:t12 = make interface{} <- int (t7) tag:Uninitialized, msg: ptr: n439993
+latticer value-key:package chaincode-checker.Invoke.t13, operation:t13 = slice t8[:] tag:Uninitialized, msg: ptr: n439995
+latticer value-key:package chaincode-checker.Invoke.t14, operation:t14 = log.Print(t13...) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t15, operation:t15 = &t2[0:int] tag:Untainted, msg: ptr: n439997
+latticer value-key:package chaincode-checker.Invoke.t16, operation:t16 = *t15 tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t17, operation:t17 = convert []byte <- string (t4) tag:Tainted, msg:TIME_FUNCTION ptr: n440000
+latticer value-key:package chaincode-checker.Invoke.t18, operation:t18 = invoke stub.PutState(t16, t17) tag:Untainted, msg: ptr: n440002
+latticer value-key:package chaincode-checker.Invoke.t19, operation:t19 = t18 != nil:error tag:Untainted, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t20, operation:t20 = invoke t18.Error() tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t21, operation:t21 = github.com/hyperledger/fabric/core/chaincode/shim.Error(t20) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.t22, operation:t22 = convert []byte <- string ("ok":string) tag:Untainted, msg: ptr: n440013
+latticer value-key:package chaincode-checker.Invoke.t23, operation:t23 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t22) tag:Uninitialized, msg: ptr: nil
+latticer value-key:package chaincode-checker.Invoke.stub, operation:stub = parameter stub : github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(msg string) github.com/hyperledger/fabric/protos/peer.Response.Error, operation:Error = github.com/hyperledger/fabric/core/chaincode/shim.Error tag:Uninitialized, msg: ptr: nil
+latticer value-key:func(payload []byte) github.com/hyperledger/fabric/protos/peer.Response.Success, operation:Success = github.com/hyperledger/fabric/core/chaincode/shim.Success tag:Uninitialized, msg: ptr: nil
