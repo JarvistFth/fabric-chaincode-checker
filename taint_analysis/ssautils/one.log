@@ -1,0 +1,93 @@
+# Name: (*chaincode-checker.SimpleAsset).Invoke
+# Package: chaincode-checker
+# Location: /home/jarvist/go-project/fabric-chaincode-checker/chaincodes/globalcc/globalcc.go:44:23
+func (t *SimpleAsset) Invoke(stub github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface) github.com/hyperledger/fabric/protos/peer.Response:
+0:                                                                entry P:0 S:0
+	t0 = invoke stub.GetFunctionAndParameters()          (string, []string)
+	t1 = extract t0 #0                                               string
+	t2 = extract t0 #1                                             []string
+	t3 = &t2[0:int]                                                 *string
+	t4 = *t3                                                         string
+	t5 = *g                                                          string
+	t6 = convert []byte <- string (t5)                               []byte
+	t7 = invoke stub.PutState(t4, t6)                                 error
+	t8 = *g                                                          string
+	t9 = convert []byte <- string (t8)                               []byte
+	t10 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t9) github.com/hyperledger/fabric/protos/peer.Response
+	return t10
+
+# Name: (*chaincode-checker.SimpleAsset).Invoke
+# Package: chaincode-checker
+# Location: /home/jarvist/go-project/fabric-chaincode-checker/chaincodes/timerandom/timerandomcc.go:48:23
+func (t *SimpleAsset) Invoke(stub github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface) github.com/hyperledger/fabric/protos/peer.Response:
+0:                                                                entry P:0 S:2
+	t0 = invoke stub.GetFunctionAndParameters()          (string, []string)
+	t1 = extract t0 #0                                               string
+	t2 = extract t0 #1                                             []string
+	t3 = time.Now()                                               time.Time
+	t4 = (time.Time).Format(t3, "2006-01-02 15:04:05":string)        string
+	t5 = &t2[0:int]                                                 *string
+	t6 = *t5                                                         string
+	t7 = convert []byte <- string (t4)                               []byte
+	t8 = invoke stub.PutState(t6, t7)                                 error
+	t9 = t8 != nil:error                                               bool
+	if t9 goto 1 else 2
+1:                                                              if.then P:1 S:0
+	t10 = invoke t8.Error()                                          string
+	t11 = github.com/hyperledger/fabric/core/chaincode/shim.Error(t10) github.com/hyperledger/fabric/protos/peer.Response
+	return t11
+2:                                                              if.done P:1 S:0
+	t12 = convert []byte <- string ("ok":string)                     []byte
+	t13 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t12) github.com/hyperledger/fabric/protos/peer.Response
+	return t13
+
+# Name: (*chaincode-checker.SimpleAsset).Invoke
+# Package: chaincode-checker
+# Location: /home/jarvist/go-project/fabric-chaincode-checker/chaincodes/timerandom/timerandomcc.go:48:23
+func (t *SimpleAsset) Invoke(stub github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface) github.com/hyperledger/fabric/protos/peer.Response:
+0:                                                                entry P:0 S:2
+	t0 = invoke stub.GetFunctionAndParameters()          (string, []string)
+	t1 = extract t0 #0                                               string
+	t2 = extract t0 #1                                             []string
+	t3 = time.Now()                                               time.Time
+	t4 = (time.Time).Format(t3, "2006-01-02 15:04:05":string)        string
+	t5 = &t2[0:int]                                                 *string
+	t6 = *t5                                                         string
+	t7 = convert []byte <- string (t4)                               []byte
+	t8 = invoke stub.PutState(t6, t7)                                 error
+	t9 = t8 != nil:error                                               bool
+	if t9 goto 1 else 2
+1:                                                              if.then P:1 S:0
+	t10 = invoke t8.Error()                                          string
+	t11 = github.com/hyperledger/fabric/core/chaincode/shim.Error(t10) github.com/hyperledger/fabric/protos/peer.Response
+	return t11
+2:                                                              if.done P:1 S:0
+	t12 = convert []byte <- string ("ok":string)                     []byte
+	t13 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t12) github.com/hyperledger/fabric/protos/peer.Response
+	return t13
+
+# Name: (*chaincode-checker.SimpleAsset).Invoke
+# Package: chaincode-checker
+# Location: /home/jarvist/go-project/fabric-chaincode-checker/chaincodes/timerandom/timerandomcc.go:48:23
+func (t *SimpleAsset) Invoke(stub github.com/hyperledger/fabric/core/chaincode/shim.ChaincodeStubInterface) github.com/hyperledger/fabric/protos/peer.Response:
+0:                                                                entry P:0 S:2
+	t0 = invoke stub.GetFunctionAndParameters()          (string, []string)
+	t1 = extract t0 #0                                               string
+	t2 = extract t0 #1                                             []string
+	t3 = time.Now()                                               time.Time
+	t4 = (time.Time).Format(t3, "2006-01-02 15:04:05":string)        string
+	t5 = &t2[0:int]                                                 *string
+	t6 = *t5                                                         string
+	t7 = convert []byte <- string (t4)                               []byte
+	t8 = invoke stub.PutState(t6, t7)                                 error
+	t9 = t8 != nil:error                                               bool
+	if t9 goto 1 else 2
+1:                                                              if.then P:1 S:0
+	t10 = invoke t8.Error()                                          string
+	t11 = github.com/hyperledger/fabric/core/chaincode/shim.Error(t10) github.com/hyperledger/fabric/protos/peer.Response
+	return t11
+2:                                                              if.done P:1 S:0
+	t12 = convert []byte <- string ("ok":string)                     []byte
+	t13 = github.com/hyperledger/fabric/core/chaincode/shim.Success(t12) github.com/hyperledger/fabric/protos/peer.Response
+	return t13
+

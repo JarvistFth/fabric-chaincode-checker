@@ -1,9 +1,8 @@
 package main
 
 import (
-	"chaincode-checker/go-taint/checker"
-	"chaincode-checker/go-taint/lattice"
-	"chaincode-checker/go-taint/logger"
+	"chaincode-checker/taint_analysis/checker"
+	"chaincode-checker/taint_analysis/logger"
 	"errors"
 	"flag"
 	"fmt"
@@ -53,37 +52,26 @@ func main() {
 	if !srcFlagCalled{
 		flag.PrintDefaults()
 	}else{
-		ck := checker.NewChecker(*path,sourceFilesFlag,*ssf,*allpkgs,*pkgs,*ptr)
-		logger.SetLogger("./debuglogs/test")
-		//ck.SetLogger("./debuglogs/test")
-		ck.Init()
-		err := ck.StartAnalyzing()
+		checker.Main(*path,sourceFilesFlag,*ssf,*allpkgs,*pkgs,*ptr)
 
-		if err != nil {
-			switch err := err.(type) {
-			case *lattice.ErrInFlows:
-				fmt.Printf("err.NumberOfFlows: %d, messages are: \n", err.NumberOfFlows())
-				fmt.Printf("%s\n", err.Error())
-			default:
-				log.Errorf("Errors: %+v\n", err)
-				os.Exit(1)
-			}
-		} else {
-			fmt.Printf("Gongrats. Gotcha has not found an error.\n")
-			fmt.Printf("Your parameters are: \n")
-			fmt.Printf("path: %s\n", *path)
-			fmt.Printf("source file: %s\n", sourceFilesFlag)
-			fmt.Printf("sources and sinks file: %s\n", *ssf)
-			os.Exit(0)
-		}
+		//if err != nil {
+		//	switch err := err.(type) {
+		//	case *latticer.ErrInFlows:
+		//		fmt.Printf("err.NumberOfFlows: %d, messages are: \n", err.NumberOfFlows())
+		//		fmt.Printf("%s\n", err.Error())
+		//	default:
+		//		log.Errorf("Errors: %+v\n", err)
+		//		os.Exit(1)
+		//	}
+		//} else {
+		//	fmt.Printf("Gongrats. Gotcha has not found an error.\n")
+		//	fmt.Printf("Your parameters are: \n")
+		//	fmt.Printf("path: %s\n", *path)
+		//	fmt.Printf("source file: %s\n", sourceFilesFlag)
+		//	fmt.Printf("sources and sinks file: %s\n", *ssf)
+		//	os.Exit(0)
+		//}
 
 	}
 
 }
-
-
-//func setlogger(){
-//	logfile,_ = os.OpenFile("./debuglogs/test.txt",os.O_CREATE|os.O_WRONLY|os.O_APPEND,0666)
-//	log.SetOutput(logfile)
-//	log.SetFlags(log.Lshortfile)
-//}

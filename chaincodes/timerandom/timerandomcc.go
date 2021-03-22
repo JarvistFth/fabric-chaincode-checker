@@ -4,19 +4,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package timerandom
+package main
 
 import (
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
 	"log"
-	"math/rand"
-	"strconv"
+	"time"
 )
 
 // SimpleAsset implements a simple chaincode to manage an asset
 type SimpleAsset struct {
+}
+
+type Tsg struct {
+	Time string `json:"time"`
 }
 
 // Init is called during chaincode instantiation to initialize any
@@ -61,17 +64,37 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	//	result, err = set(stub, args)
 	//}
 
-	var last = rand.Int()
-	slast := strconv.Itoa(last)
-	args[1] += slast
-	result, err := set(stub, args)
+	//var last = rand.Int()
+	//slast := fmt.Sprintf("%d",last)
+	////slast = strconv.Itoa(last)
+	//args[1] += slast
+	//result, err := set(stub, args)
+
+	tim := time.Now().Format("2006-01-02 15:04:05")
+	a := 1
+	b := &a
+	c := &a
+	d := *b
+	e := *c
+	log.Print(d,e)
+	//o := Tsg{Time: tim}
+	//ob,_ := json.Marshal(o)
+	err := stub.PutState(args[0],[]byte(tim))
+	//err = stub.PutState(args[0], ob)
+	//s := fmt.Sprintf("time: %s, %s", tim,args[0])
+	//f, _ := os.Open("test.txt")
+	//b := make([]byte,10)
+	//f.Read(b)
+	//os.OpenFile()
+	//exec.Command()
+	//err := stub.PutState(args[0],b)
 
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
 	// Return the result as success payload
-	return shim.Success([]byte(result))
+	return shim.Success([]byte("ok"))
 }
 
 // Set stores the asset (both key and value) on the ledger. If the key exists,

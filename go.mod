@@ -23,6 +23,7 @@ require (
 	golang.org/x/tools v0.0.0-20201230224404-63754364767c
 	google.golang.org/grpc v1.34.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	github.com/emirpasic/gods v1.12.0
 
 )
 
