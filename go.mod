@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/Knetic/govaluate v3.0.0+incompatible // indirect
 	github.com/Shopify/sarama v1.27.2 // indirect
+	github.com/emirpasic/gods v1.12.0
 	github.com/fsouza/go-dockerclient v1.6.6 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2 // indirect
@@ -23,7 +24,6 @@ require (
 	golang.org/x/tools v0.0.0-20201230224404-63754364767c
 	google.golang.org/grpc v1.34.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	github.com/emirpasic/gods v1.12.0
 
 )
 

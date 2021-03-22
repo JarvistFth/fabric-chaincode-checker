@@ -43,7 +43,7 @@ func (c *InstructionContext) SetLatticeIn(l... latticer.Lattice) {
 	c.latticeIn = l
 }
 
-func (c InstructionContext) SetLatticeOut(l latticer.Lattice) {
+func (c *InstructionContext) SetLatticeOut(l latticer.Lattice) {
 	c.latticeOut = l
 }
 

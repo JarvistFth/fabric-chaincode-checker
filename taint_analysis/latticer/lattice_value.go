@@ -53,7 +53,9 @@ func (v *LatticeValue) LeastUpperBound(l2 Lattice) error {
 		errors.Wrap(err,"failed get taint val")
 	}
 	v.tag = v.tag.LeastUpperBound(l2taint.tag)
-	v.msg = l2taint.msg
+	if l2.GetMsg() != ""{
+		v.msg += l2.GetMsg()
+	}
 	return nil
 }
 
@@ -161,7 +163,7 @@ func (v *LatticeValue) SetMsg(msg string)  {
 }
 
 func (v *LatticeValue) String() string {
-	return fmt.Sprintf("latticer value-key:%s, operation:%s = %s tag:%s, msg:%s",v.key,v.value.Name(),v.value.String(), v.tag.String(), v.msg)
+	return fmt.Sprintf("value-key:%s, operation:%s = %s tag:%s, msg:%s",v.key,v.value.Name(),v.value.String(), v.tag.String(), v.msg)
 }
 
 func getTaintVal(l Lattice) (*LatticeValue,error) {

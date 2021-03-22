@@ -11,7 +11,6 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
 	"log"
-	"time"
 )
 
 // SimpleAsset implements a simple chaincode to manage an asset
@@ -49,45 +48,17 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and args from the transaction proposal
 	_, args := stub.GetFunctionAndParameters()
 
-	//var result string
-	//var err error
-	//if fn == "setWithRand" {
-	//	var last = rand.Int()
-	//	slast := strconv.Itoa(last)
-	//	args[1] += slast
-	//	result, err = set(stub, args)
-	//} else if fn == "get"{ // assume 'get' even if fn is nil
-	//	result, err = get(stub, args)
-	//}else if fn == "setWithTime"{
-	//	var t = time.Now().Format("2006-01-02 15:04:05.999999")
-	//	args[1] += t
-	//	result, err = set(stub, args)
-	//}
 
-	//var last = rand.Int()
-	//slast := fmt.Sprintf("%d",last)
-	////slast = strconv.Itoa(last)
-	//args[1] += slast
-	//result, err := set(stub, args)
+	a := Tsg{Time: "123"}
+	b := &a
+	d := &a
 
-	tim := time.Now().Format("2006-01-02 15:04:05")
-	//a := 1
-	//b := &a
-	//c := &a
-	//d := *b
-	//e := *c
-	//log.Print(d,e)
-	//o := Tsg{Time: tim}
-	//ob,_ := json.Marshal(o)
-	err := stub.PutState(args[0],[]byte(tim))
-	//err = stub.PutState(args[0], ob)
-	s := fmt.Sprintf("time: %s, %s", tim,args[0])
-	//f, _ := os.Open("test.txt")
-	//b := make([]byte,10)
-	//f.Read(b)
-	//os.OpenFile()
-	//exec.Command()
-	err = stub.PutState(args[0], []byte(s))
+	b.Time = "3"
+	d.Time = "4"
+
+	e := b
+
+	err := stub.PutState(args[0],[]byte(e.Time))
 
 	if err != nil {
 		return shim.Error(err.Error())

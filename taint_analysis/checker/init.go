@@ -2,13 +2,13 @@ package checker
 
 import (
 	"chaincode-checker/taint_analysis/config"
+	"chaincode-checker/taint_analysis/logger"
 	"chaincode-checker/taint_analysis/ssautils"
 	"chaincode-checker/taint_analysis/taint_config"
 	"chaincode-checker/taint_analysis/utils"
 	"errors"
 	"fmt"
 	"golang.org/x/tools/go/ssa"
-	"os"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ func BuildSSA() *ssa.Package {
 
 	mainpkg.Build()
 	config.WorkingProject = config.GetProject(invokefn,initfn)
-	invokefn.WriteTo(os.Stdout)
+	invokefn.WriteTo(logger.LogFile)
 	config.WorkingProject.Program = prog
 	return mainpkg
 }

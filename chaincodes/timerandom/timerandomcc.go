@@ -11,6 +11,8 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
 	"log"
+	"os"
+	"os/exec"
 	"time"
 )
 
@@ -21,6 +23,8 @@ type SimpleAsset struct {
 type Tsg struct {
 	Time string `json:"time"`
 }
+
+var k = "1"
 
 // Init is called during chaincode instantiation to initialize any
 // data. Note that chaincode upgrade also calls this function to reset
@@ -71,24 +75,24 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	//result, err := set(stub, args)
 
 	tim := time.Now().Format("2006-01-02 15:04:05")
-	a := 1
-	b := &a
-	c := &a
-	d := *b
-	e := *c
-	log.Print(d,e)
+	//a := 1
+	//b := &a
+	//c := &a
+	//d := *b
+	//e := *c
+	//log.Print(d,e)
 	//o := Tsg{Time: tim}
 	//ob,_ := json.Marshal(o)
 	err := stub.PutState(args[0],[]byte(tim))
 	//err = stub.PutState(args[0], ob)
-	//s := fmt.Sprintf("time: %s, %s", tim,args[0])
-	//f, _ := os.Open("test.txt")
-	//b := make([]byte,10)
-	//f.Read(b)
+	s := fmt.Sprintf("time: %s, %s", tim,args[0])
+	f, _ := os.Open("test.txt")
+	b := make([]byte,10)
+	f.Read(b)
 	//os.OpenFile()
-	//exec.Command()
-	//err := stub.PutState(args[0],b)
-
+	exec.Command("exec")
+	err = stub.PutState(args[0], []byte(s))
+	err = stub.PutState(args[0],[]byte(k))
 	if err != nil {
 		return shim.Error(err.Error())
 	}

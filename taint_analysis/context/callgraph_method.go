@@ -6,7 +6,7 @@ import (
 	"chaincode-checker/taint_analysis/latticer"
 	"chaincode-checker/taint_analysis/logger"
 	"chaincode-checker/taint_analysis/utils"
-	"golang.org/x/tools/go/pointer"
+	"go/token"
 	"golang.org/x/tools/go/ssa"
 )
 
@@ -14,16 +14,17 @@ func (c *CallGraph) LoopInstr() {
 	for !c.instrs.Empty(){
 		instrCtx := c.instrs.RemoveFront()
 		instruction := instrCtx.GetInstr()
-		log.Info(instruction.String())
+		log.Debug(instruction.String())
 		switch instr := instruction.(type) {
 		case ssa.Value:
 			//flow
-
-			switch valtype := instr.(type) {
+			latout := LatticeTable.GetLattice(instr)
+			instrCtx.SetLatticeOut(latout)
+			switch instrWithVal := instr.(type) {
 			case *ssa.Alloc, *ssa.MakeChan, *ssa.MakeMap, *ssa.MakeSlice:
 				//untainted
-				instrCtx.GetLatticeOut().Untaint()
-				break
+				latout.Untaint()
+				log.Debug(latout.String())
 			case *ssa.ChangeInterface, *ssa.ChangeType, *ssa.Convert, *ssa.Extract, *ssa.Field, *ssa.FieldAddr, *ssa.Index, *ssa.MakeInterface, *ssa.Next, *ssa.Range, *ssa.Slice, *ssa.TypeAssert:
 
 				var op ssa.Value
@@ -57,13 +58,8 @@ func (c *CallGraph) LoopInstr() {
 				}
 				//new lattice in
 				latin := LatticeTable.GetLattice(op)
-				latout := LatticeTable.GetLattice(valtype)
-				//c.AppendLatticeIn(latin)
-
-				//look for op tag
-				//SetLatticeInAndOutTag(c)
 				latout.LeastUpperBound(latin)
-				break
+				log.Debug(latout.String())
 
 			case *ssa.BinOp, *ssa.IndexAddr, *ssa.Lookup:
 				var op1, op2 ssa.Value
@@ -80,51 +76,41 @@ func (c *CallGraph) LoopInstr() {
 				}
 				lat1 := LatticeTable.GetLattice(op1)
 				lat2 := LatticeTable.GetLattice(op2)
-				latout := LatticeTable.GetLattice(valtype)
 				lat1.LeastUpperBound(lat2)
 				latout.LeastUpperBound(lat1)
-				//c.AppendLatticeIn(lat1, lat2)
 
-				//look for op tag
-				//SetLatticeInAndOutTag(c)
-				//double op
-				break
 
 			case *ssa.Phi:
-				edges := valtype.Edges
-				latout := LatticeTable.GetLattice(valtype)
+				edges := instrWithVal.Edges
 				for _, edge := range edges {
 					lat := LatticeTable.GetLattice(edge)
 					latout.LeastUpperBound(lat)
 				}
 
-				//SetLatticeInAndOutTag(c)
-				//cfg phi
-				break
+
 
 			case *ssa.Call:
 				//call function
-				//valtype.Common().
-				//args := valtype.Call.Args
-				//method := valtype.Call.Method
-				//value := valtype.Call.Value
-				callcom := valtype.Common()
-				ret := valtype.Call.Value
-				args := valtype.Call.Args
-				retlat := LatticeTable.GetLattice(ret)
+				callcom := instrWithVal.Call
+				//ret := instrWithVal.Call.Value
+				args := instrWithVal.Call.Args
+				//log.Debug("callcom:",callcom.String())
+				//log.Debugf("instrWithVal - val:%s, parent:%s, name:%s, string:%s",instrWithVal.Value(),instrWithVal.Parent(),instrWithVal.Name(),instrWithVal.String())
+				//log.Debugf("ret val:%s",instrWithVal.Parent())
 				//check source and sink
 				issource,types := CheckSource(instrCtx)
 				if issource {
-					lat := LatticeTable.GetLattice(instr)
-					lat.SetTag(latticer.Tainted)
-					lat.SetMsg(types)
+					latout.SetTag(latticer.Tainted)
+					latout.SetMsg(types)
+					Errors.NewErrMessage(instrWithVal, callcom,latout.GetMsg())
+					log.Debug(latout.String())
 					continue
 				}
 
 				issink := CheckSink(instrCtx)
 				if issink {
 					//sink throw error
-					handleSinkDetection(callcom)
+					handleSinkDetection(instrWithVal,callcom)
 					continue
 				}
 
@@ -136,24 +122,27 @@ func (c *CallGraph) LoopInstr() {
 				issdkfunc := CheckSDK(instrCtx)
 
 				if issdkfunc{
+					log.Debug("sdk function")
 					for _,arg := range args{
 						arglat := LatticeTable.GetLattice(arg)
-						retlat.LeastUpperBound(arglat)
+						latout.LeastUpperBound(arglat)
 					}
+					log.Debug(latout.String())
 					continue
 				}
 
 				if callcom.IsInvoke() {
 					//todo invoke mode call
 				} else {
-					staiccallee := valtype.Common().StaticCallee()
+					staiccallee := instrWithVal.Common().StaticCallee()
 
 					fc,_ := GetFunctionContext(staiccallee, false, true)
 					fc.LoopInstr()
 					retlattice := fc.GetReturnLattice()
 					for _,rets := range retlattice {
-						retlat.LeastUpperBound(rets)
+						latout.LeastUpperBound(rets)
 					}
+					log.Debug(latout.String())
 				}
 				break
 
@@ -163,17 +152,16 @@ func (c *CallGraph) LoopInstr() {
 
 			case *ssa.UnOp:
 				//
-				log.Warningf("unop ctx:%s",valtype.String())
-				//if valtype.Op != token.ARROW && valtype.Op != token.MUL {
-				//	log.Warning("un op but not pointer")
-				//	valx := valtype.X
-				//	latx := LatticeTable.GetLattice(valx)
-				//
-				//} else {
-				//	log.Warning("un op with pointer")
-				//	LatticeTable.GetLattice(valtype)
-				//	UnOpPtr(valtype,config.WorkingProject.PtrResult)
-				//}
+				log.Warningf("unop ctx:%s", instrWithVal.String())
+				if instrWithVal.Op != token.ARROW && instrWithVal.Op != token.MUL {
+					log.Warning("un op but not pointer")
+					//valx := instrWithVal.X
+					//latx := LatticeTable.GetLattice(valx)
+
+				} else {
+					UnOpPtr(latout, instrWithVal,config.WorkingProject.PtrResult)
+					log.Debug("un op with pointer:",latout.String())
+				}
 			}
 
 		case *ssa.Send:
@@ -184,41 +172,40 @@ func (c *CallGraph) LoopInstr() {
 			latout := LatticeTable.GetLattice(val1)
 			instrCtx.SetLatticeIn(latin)
 			latout.LeastUpperBound(latin)
-			break
 
 		case *ssa.Go, *ssa.Defer:
 			switch valtype := instr.(type) {
 			case *ssa.Go:
-				msg := Errors.NewErrMessage(valtype.Call,Errors.USE_GOROUTINE)
+				msg := Errors.NewErrMessage(valtype,valtype.Call,Errors.USE_GOROUTINE)
 				log.Warningf("%s",msg)
 			}
 
-			break
 
 		case *ssa.DebugRef, *ssa.RunDefers:
-			break
 
 		case *ssa.Jump:
 			//jump
-			break
+
 		case *ssa.Return:
 			//return
 			rets := instr.Results
 			for _,ret := range rets{
 				c.retLattice = append(c.retLattice,LatticeTable.GetLattice(ret))
 			}
-			break
 		case *ssa.Panic:
 			break
 
 		case *ssa.Store:
+			//*x = y
 			addr := instr.Addr
 			val := instr.Val
 
 			latval := LatticeTable.GetLattice(val)
 			lataddr := LatticeTable.GetLattice(addr)
 			valtag := latval.GetTag()
+			valmsg := latval.GetMsg()
 			lataddr.SetTag(valtag)
+			lataddr.SetMsg(valmsg)
 			if ok, addrp := utils.IsPointerVal(addr); ok {
 				var lataddr = lataddr.(*latticer.LatticePointer)
 				q := config.WorkingProject.PtrResult.Queries[addrp]
@@ -227,17 +214,20 @@ func (c *CallGraph) LoopInstr() {
 				//指针指向的value的tag要改
 				for _, l := range labels {
 					labelvalue := l.Value()
+					log.Debugf("labelvalue:%s",labelvalue.Name())
 					LatticeTable.GetLattice(labelvalue).SetTag(valtag)
+					LatticeTable.GetLattice(labelvalue).SetMsg(valmsg)
 				}
 				//是别名的指针，它对应的value的tag也要改
 				for ssav, p := range config.WorkingProject.ValToPtrs {
 					if p.MayAlias(*lataddr.GetPtr()) {
+						log.Debugf("aliasvalue:%s",ssav.Name())
 						LatticeTable.GetLattice(ssav).SetTag(valtag)
+						LatticeTable.GetLattice(ssav).SetMsg(valmsg)
 					}
 				}
 			}
-
-			break
+			log.Debug("after store ptr ",LatticeTable.String())
 
 		case *ssa.MapUpdate:
 			valmap := instr.Map
@@ -248,12 +238,15 @@ func (c *CallGraph) LoopInstr() {
 			vallat := LatticeTable.GetLattice(val)
 			keylat.LeastUpperBound(vallat)
 			maplat.LeastUpperBound(keylat)
-			break
 
+		default:
+			if instrCtx.GetLatticeOut() != nil{
+				log.Debug(instrCtx.GetLatticeOut().String())
+			}
 		}
 	}
-	log.Info(c.String())
-	log.Info(LatticeTable.String())
+	//log.Debug(c.String())
+	//log.Debug(LatticeTable.String())
 }
 
 func(c *CallGraph) analyzeInstructions(ssaFun *ssa.Function, isPtr bool)  {
@@ -281,54 +274,3 @@ ctxtfor:
 		}
 	}
 }
-
-func UnOpPtr(e *ssa.UnOp, ptrResult *pointer.Result) {
-	addr := e.X
-	latticeVal := LatticeTable.GetLattice(addr)
-	valtag := latticeVal.GetTag()
-	//qset := q.PointsTo()
-	//				labels := qset.Labels()
-	//				//指针指向的value的tag要改
-	//				for _, l := range labels {
-	//					labelvalue := l.Value()
-	//					LatticeTable.GetLattice(labelvalue).SetTag(valtag)
-	//				}
-	//				//是别名的指针，它对应的value的tag也要改
-	//				for ssav, p := range config.WorkingProject.ValToPtrs {
-	//					if p.MayAlias(*lataddr.GetPtr()) {
-	//						LatticeTable.GetLattice(ssav).SetTag(valtag)
-	//					}
-	//				}
-
-	if ptrResult != nil{
-		if ok, valr := utils.IsPointerVal(addr); ok {
-			q := ptrResult.Queries[valr]
-			labels := q.PointsTo().Labels()
-			for _, label := range labels {
-				labelval := label.Value()
-				LatticeTable.GetLattice(labelval).SetTag(valtag)
-			}
-			//for ssav, p := range config.WorkingProject.ValToPtrs {
-			//	if p.MayAlias(*lataddr.GetPtr()) {
-			//		LatticeTable.GetLattice(ssav).SetTag(valtag)
-			//	}
-			//}
-		}
-
-		if ok, valr := utils.IsIndirectPtr(addr); ok {
-			q := ptrResult.Queries[valr]
-			labels := q.PointsTo().Labels()
-			for _, label := range labels {
-				labelval := label.Value()
-				LatticeTable.GetLattice(labelval).SetTag(valtag)
-			}
-			//for ssav, p := range config.WorkingProject.ValToPtrs {
-			//	if p.MayAlias(*lataddr.GetPtr()) {
-			//		LatticeTable.GetLattice(ssav).SetTag(valtag)
-			//	}
-			//}
-		}
-	}
-}
-
-

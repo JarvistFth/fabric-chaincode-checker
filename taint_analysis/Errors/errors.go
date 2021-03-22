@@ -3,6 +3,7 @@ package Errors
 import (
 	"chaincode-checker/taint_analysis/logger"
 	"fmt"
+	"go/token"
 	"golang.org/x/tools/go/ssa"
 )
 
@@ -18,16 +19,18 @@ const (
 )
 
 type ErrorMessage struct {
-	Call ssa.CallCommon
-	Args []ssa.Value
-	Msg	 string
+	SSAInstr ssa.Instruction
+	Call     ssa.CallCommon
+	Args     []ssa.Value
+	Msg      string
 }
 
-func NewErrMessage(callcommon ssa.CallCommon, msg string) ErrorMessage {
+func NewErrMessage(ssaval ssa.Instruction, callcommon ssa.CallCommon, msg string) ErrorMessage {
 	ret := ErrorMessage{
-		Call: callcommon,
-		Args: callcommon.Args,
-		Msg:  msg,
+		SSAInstr: ssaval,
+		Call:     callcommon,
+		Args:     callcommon.Args,
+		Msg:      msg,
 	}
 	ErrMsgPool = append(ErrMsgPool,ret)
 	return ret
@@ -44,20 +47,21 @@ func(m ErrorMessages) Empty() bool{
 func(e ErrorMessage) String() string {
 	var s string
 	callCom := e.Call
+	var fset *token.FileSet
 	if callCom.StaticCallee() != nil {
 		s += callCom.StaticCallee().Name() + "-"
+
 	}else{
 		s += callCom.Method.FullName() + "-"
 	}
-
+	fset = e.SSAInstr.Parent().Prog.Fset
 	if callCom.Signature() != nil {
 		s += callCom.Signature().String()
 	}
 
 
 	pos := callCom.Pos()
-
-	fset := e.Args[0].Parent().Prog.Fset
+	log.Debugf("call fail:%s", e.Call.String())
 	if fset != nil{
 		location := fset.File(pos).Line(pos)
 		f := fset.File(pos)

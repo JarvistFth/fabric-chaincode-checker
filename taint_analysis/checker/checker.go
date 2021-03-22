@@ -35,7 +35,7 @@ func Init(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs b
 func StartAnalyzing()  {
 	entryf := InitFunctionContext(config.WorkingProject.InvokeFunc)
 	entryf.LoopInstr()
-
+	log.Info(context.LatticeTable.String())
 	if !Errors.ErrMsgPool.Empty() {
 		fmt.Print(Errors.ErrMsgPool.String())
 	}

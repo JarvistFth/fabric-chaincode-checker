@@ -7,7 +7,9 @@ import (
 	"chaincode-checker/taint_analysis/taint_config"
 	"chaincode-checker/taint_analysis/utils"
 	"fmt"
+	"github.com/emirpasic/gods/sets/hashset"
 	"go/types"
+	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 	"strings"
 	"unicode"
@@ -81,7 +83,7 @@ func CheckSDK(c *InstructionContext) bool {
 		callcom := call.Common()
 		sig,callee,isig := getSignature(callcom)
 		for _, source := range taint_config.SSConfig.SDKFunctions{
-			//log.Debugf("getSig: %s, call:%s, source.Sig:%s, source.callee:%s",sig,call,source.GetSignature(),source.GetCallee())
+			//log.Debugf("getSig: %s, call:%s, source.Sig:%s, source.callee:%s",sig,call,source.Signature,source.Callee)
 			if source.IsInterface {
 				//log.Debugf("source interface source, getSig: %s, source.Sig: %s",iSig,source.GetSignature())
 				if isig == source.Signature {
@@ -101,7 +103,7 @@ func CheckSDK(c *InstructionContext) bool {
 	}
 }
 
-func handleSinkDetection(c *ssa.CallCommon)  {
+func handleSinkDetection(i ssa.Instruction,c ssa.CallCommon)  {
 	val := c.Value
 	var taintArgs []ssa.Value
 	lat := LatticeTable.GetLattice(val)
@@ -112,15 +114,18 @@ func handleSinkDetection(c *ssa.CallCommon)  {
 
 	args := c.Args
 	var msg string
+	set := hashset.New()
+
 	for _,arg := range args{
 		lat := LatticeTable.GetLattice(arg)
 		if lat.GetTag() == latticer.Tainted || lat.GetTag() == latticer.Both{
 			taintArgs = append(taintArgs,arg)
-			tmp := msg
-			if tmp == msg{
+			argLatMsg := lat.GetMsg()
+			if set.Contains(argLatMsg) {
 				continue
 			}
-			msg += fmt.Sprintf("arg:%s with: %s\n",arg.Name(),lat.GetMsg())
+			set.Add(argLatMsg)
+			msg += fmt.Sprintf("arg:%s with: %s\n",arg.Name(),argLatMsg)
 		}
 		if config.Config.WithPtr{
 			if latptr,ok := lat.(*latticer.LatticePointer);ok{
@@ -131,7 +136,12 @@ func handleSinkDetection(c *ssa.CallCommon)  {
 							tag,_ := LatticeTable.GetTag(utils.GenKeyFromSSAValue(ssav))
 							if tag == latticer.Tainted || tag == latticer.Both{
 								taintArgs = append(taintArgs,arg)
-								msg += fmt.Sprintf("arg:%s with: %s\n",arg.Name(),lat.GetMsg())
+								argLatMsg := lat.GetMsg()
+								if set.Contains(argLatMsg) {
+									continue
+								}
+								set.Add(argLatMsg)
+								msg += fmt.Sprintf("arg:%s with: %s\n",arg.Name(),argLatMsg)
 							}
 						}
 					}
@@ -143,10 +153,8 @@ func handleSinkDetection(c *ssa.CallCommon)  {
 
 	if len(taintArgs) > 0{
 		log.Errorf("sink function with tainted flag!!")
-		Errors.NewErrMessage(*c,msg)
+		Errors.NewErrMessage(i,c,msg)
 	}
-
-
 
 }
 
@@ -230,5 +238,96 @@ func getSignature(c *ssa.CallCommon) (signature, callee, iSignature string) {
 	}
 	return
 }
+
+
+func UnOpPtr(latout latticer.Lattice, e *ssa.UnOp, ptrResult *pointer.Result) {
+	addr := e.X
+	if _,ok:=addr.(*ssa.Global);ok{
+		latout.SetTag(latticer.Tainted)
+		latout.SetMsg(TAINT_GLOBAL)
+		return
+	}
+	latticeVal := LatticeTable.GetLattice(addr)
+	valtag := latticeVal.GetTag()
+	//qset := q.PointsTo()
+	//				labels := qset.Labels()
+	//				//指针指向的value的tag要改
+	//				for _, l := range labels {
+	//					labelvalue := l.Value()
+	//					LatticeTable.GetLattice(labelvalue).SetTag(valtag)
+	//				}
+	//				//是别名的指针，它对应的value的tag也要改
+	//				for ssav, p := range config.WorkingProject.ValToPtrs {
+	//					if p.MayAlias(*lataddr.GetPtr()) {
+	//						LatticeTable.GetLattice(ssav).SetTag(valtag)
+	//					}
+	//				}
+
+	if ptrResult != nil{
+		if ok, valr := utils.IsPointerVal(addr); ok {
+			q := ptrResult.Queries[valr]
+			labels := q.PointsTo().Labels()
+			for _, label := range labels {
+				labelval := label.Value()
+				LatticeTable.GetLattice(labelval).SetTag(valtag)
+			}
+			//for ssav, p := range config.WorkingProject.ValToPtrs {
+			//	if p.MayAlias(*lataddr.GetPtr()) {
+			//		LatticeTable.GetLattice(ssav).SetTag(valtag)
+			//	}
+			//}
+		}
+
+		if ok, valr := utils.IsIndirectPtr(addr); ok {
+			q := ptrResult.Queries[valr]
+			labels := q.PointsTo().Labels()
+			for _, label := range labels {
+				labelval := label.Value()
+				LatticeTable.GetLattice(labelval).SetTag(valtag)
+			}
+			//for ssav, p := range config.WorkingProject.ValToPtrs {
+			//	if p.MayAlias(*lataddr.GetPtr()) {
+			//		LatticeTable.GetLattice(ssav).SetTag(valtag)
+			//	}
+			//}
+		}
+	}
+}
+
+func UpdatePtrSet(addr ssa.Value, value ssa.Value){
+	ptrResult := config.WorkingProject.PtrResult
+	latval := LatticeTable.GetLattice(value)
+	//valtag := latval.GetTag()
+	//valmsg := latval.GetMsg()
+	if ok, valr := utils.IsPointerVal(addr); ok {
+		q := ptrResult.Queries[valr]
+		labels := q.PointsTo().Labels()
+		for _, label := range labels {
+			labelval := label.Value()
+			latlab := LatticeTable.GetLattice(labelval)
+			latlab.LeastUpperBound(latval)
+		}
+		//for ssav, p := range config.WorkingProject.ValToPtrs {
+		//	if p.MayAlias(*lataddr.GetPtr()) {
+		//		LatticeTable.GetLattice(ssav).SetTag(valtag)
+		//	}
+		//}
+	}
+
+	if ok, valr := utils.IsIndirectPtr(addr); ok {
+		q := ptrResult.Queries[valr]
+		labels := q.PointsTo().Labels()
+		for _, label := range labels {
+			labelval := label.Value()
+			LatticeTable.GetLattice(labelval).LeastUpperBound(latval)
+		}
+		//for ssav, p := range config.WorkingProject.ValToPtrs {
+		//	if p.MayAlias(*lataddr.GetPtr()) {
+		//		LatticeTable.GetLattice(ssav).SetTag(valtag)
+		//	}
+		//}
+	}
+}
+
 
 

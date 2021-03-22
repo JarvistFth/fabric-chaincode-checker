@@ -21,8 +21,8 @@ func HandleError(err error, msg string) error {
 
 
 func IsPointerVal(i ssa.Value) (canPoint bool, val ssa.Value) {
-	if call, ok := i.(*ssa.Call); ok {
-		val = call.Common().Value
+	if _, ok := i.(*ssa.Call); ok {
+		val = i
 	} else {
 		val = i
 	}
@@ -32,8 +32,9 @@ func IsPointerVal(i ssa.Value) (canPoint bool, val ssa.Value) {
 // IsIndirectPtr checks whether the value is an indirect pointer value
 // In the positive case the function returns the ssa.Value.
 func IsIndirectPtr(i ssa.Value) (canPoint bool, val ssa.Value) {
-	if call, ok := i.(*ssa.Call); ok {
-		val = call.Common().Value
+	//TODO: call ptr analysis?
+	if _, ok := i.(*ssa.Call); ok {
+		val = i
 	} else {
 		val = i
 	}

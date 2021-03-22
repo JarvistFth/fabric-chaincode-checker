@@ -86,7 +86,7 @@ func (c *CallGraph) String() string {
 		ret += latarg.String()
 	}
 
-	ret += "return latticer"
+	ret += "\nreturn latticer"
 	for _, retval := range c.retLattice{
 		ret += retval.String()
 	}
