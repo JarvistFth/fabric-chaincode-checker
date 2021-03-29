@@ -11,7 +11,7 @@ import (
 
 type LatticeMap map[string]latticer.Lattice
 type stringslice []string
-var LatticeTable LatticeMap
+//var LatticeTable LatticeMap
 
 
 
@@ -21,9 +21,9 @@ func (v LatticeMap) GetLattice(value ssa.Value) latticer.Lattice {
 		return ret
 	}else{
 		if config.Config.WithPtr{
-			v[key] = latticer.NewLatticePointer(key,value, config.WorkingProject.ValToPtrs)
+			v[key] = latticer.NewLatticePointer(value, config.WorkingProject.ValToPtrs)
 		}else{
-			v[key] = latticer.NewLatticeValue(key,value)
+			v[key] = latticer.NewLatticeValue(value)
 		}
 	}
 

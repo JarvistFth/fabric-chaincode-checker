@@ -18,7 +18,7 @@ type InstructionContext struct {
 func NewInstructionContext(vc *CallGraph, instr ssa.Instruction, isPtr bool) *InstructionContext {
 	var out latticer.Lattice
 	if val,ok := instr.(ssa.Value);ok{
-		out = LatticeTable.GetLattice(val)
+		out = vc.LatticeTable.GetLattice(val)
 	}
 
 	ret := &InstructionContext{
@@ -70,6 +70,9 @@ func (c *InstructionContext) String() string {
 	//}else{
 	//	return fmt.Sprintf("name:%s, function:%s\n ",c.name,c.functionContext.GetName())
 	//}
+	if val,ok := c.instruction.(ssa.Value);ok{
+		str += val.Name() + " = "
+	}
 	str += c.instruction.String()
 	return str
 }

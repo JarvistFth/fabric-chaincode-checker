@@ -13,6 +13,7 @@ import (
 func (p *Project) SetPtrResult() {
 	var err error
 	p.PtrResult,err = pointer.Analyze(p.PtrConfig)
+
 	if err != nil{
 		log.Fatalf("pointer analyze failed. %s",err.Error())
 	}

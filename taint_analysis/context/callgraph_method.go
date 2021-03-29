@@ -11,6 +11,9 @@ import (
 )
 
 func (c *CallGraph) LoopInstr() {
+	if c.instrs == nil{
+		panic("null instrs list")
+	}
 	for !c.instrs.Empty(){
 		instrCtx := c.instrs.RemoveFront()
 		instruction := instrCtx.GetInstr()
@@ -18,7 +21,7 @@ func (c *CallGraph) LoopInstr() {
 		switch instr := instruction.(type) {
 		case ssa.Value:
 			//flow
-			latout := LatticeTable.GetLattice(instr)
+			latout := c.LatticeTable.GetLattice(instr)
 			instrCtx.SetLatticeOut(latout)
 			switch instrWithVal := instr.(type) {
 			case *ssa.Alloc, *ssa.MakeChan, *ssa.MakeMap, *ssa.MakeSlice:
@@ -57,7 +60,7 @@ func (c *CallGraph) LoopInstr() {
 					op = valtype.X
 				}
 				//new lattice in
-				latin := LatticeTable.GetLattice(op)
+				latin := c.LatticeTable.GetLattice(op)
 				latout.LeastUpperBound(latin)
 				log.Debug(latout.String())
 
@@ -74,8 +77,8 @@ func (c *CallGraph) LoopInstr() {
 					op1 = valtype.X
 					op2 = valtype.Index
 				}
-				lat1 := LatticeTable.GetLattice(op1)
-				lat2 := LatticeTable.GetLattice(op2)
+				lat1 := c.LatticeTable.GetLattice(op1)
+				lat2 := c.LatticeTable.GetLattice(op2)
 				lat1.LeastUpperBound(lat2)
 				latout.LeastUpperBound(lat1)
 
@@ -83,7 +86,7 @@ func (c *CallGraph) LoopInstr() {
 			case *ssa.Phi:
 				edges := instrWithVal.Edges
 				for _, edge := range edges {
-					lat := LatticeTable.GetLattice(edge)
+					lat := c.LatticeTable.GetLattice(edge)
 					latout.LeastUpperBound(lat)
 				}
 
@@ -102,15 +105,15 @@ func (c *CallGraph) LoopInstr() {
 				if issource {
 					latout.SetTag(latticer.Tainted)
 					latout.SetMsg(types)
-					Errors.NewErrMessage(instrWithVal, callcom,latout.GetMsg())
-					log.Debug(latout.String())
+					//Errors.NewErrMessage(instrWithVal, callcom,latout.GetMsg())
+					//log.Debug(latout.String())
 					continue
 				}
 
 				issink := CheckSink(instrCtx)
 				if issink {
 					//sink throw error
-					handleSinkDetection(instrWithVal,callcom)
+					handleSinkDetection(c.LatticeTable,instrWithVal,callcom)
 					continue
 				}
 
@@ -124,7 +127,7 @@ func (c *CallGraph) LoopInstr() {
 				if issdkfunc{
 					log.Debug("sdk function")
 					for _,arg := range args{
-						arglat := LatticeTable.GetLattice(arg)
+						arglat := c.LatticeTable.GetLattice(arg)
 						latout.LeastUpperBound(arglat)
 					}
 					log.Debug(latout.String())
@@ -133,10 +136,20 @@ func (c *CallGraph) LoopInstr() {
 
 				if callcom.IsInvoke() {
 					//todo invoke mode call
-				} else {
-					staiccallee := instrWithVal.Common().StaticCallee()
+				} else if staticcallee := callcom.StaticCallee(); staticcallee != nil{
+					//staticcallee := instrWithVal.Common().StaticCallee()
+					//fmt.Println(staticcallee.Name())
+					inLattice := latticer.GetInLatticesFromParams(callcom.StaticCallee(),false)
+					callargs := callcom.Args
 
-					fc,_ := GetFunctionContext(staiccallee, false, true)
+					for i,lat := range inLattice{
+						log.Debugf("callargs:%s, inlat:%s",callargs[i].String(),lat.String())
+						lat.LeastUpperBound(c.LatticeTable.GetLattice(callargs[i]))
+					}
+					fc,err := GetFunctionContext(staticcallee, false, true,inLattice)
+					if err != nil{
+						panic(err.Error())
+					}
 					fc.LoopInstr()
 					retlattice := fc.GetReturnLattice()
 					for _,rets := range retlattice {
@@ -159,7 +172,7 @@ func (c *CallGraph) LoopInstr() {
 					//latx := LatticeTable.GetLattice(valx)
 
 				} else {
-					UnOpPtr(latout, instrWithVal,config.WorkingProject.PtrResult)
+					UnOpPtr(c.LatticeTable, latout, instrWithVal,config.WorkingProject.PtrResult)
 					log.Debug("un op with pointer:",latout.String())
 				}
 			}
@@ -168,8 +181,8 @@ func (c *CallGraph) LoopInstr() {
 			// val1 <- val2
 			val1 := instr.Chan
 			val2 := instr.X
-			latin := LatticeTable.GetLattice(val2)
-			latout := LatticeTable.GetLattice(val1)
+			latin := c.LatticeTable.GetLattice(val2)
+			latout := c.LatticeTable.GetLattice(val1)
 			instrCtx.SetLatticeIn(latin)
 			latout.LeastUpperBound(latin)
 
@@ -190,7 +203,7 @@ func (c *CallGraph) LoopInstr() {
 			//return
 			rets := instr.Results
 			for _,ret := range rets{
-				c.retLattice = append(c.retLattice,LatticeTable.GetLattice(ret))
+				c.retLattice = append(c.retLattice,c.LatticeTable.GetLattice(ret))
 			}
 		case *ssa.Panic:
 			break
@@ -200,8 +213,8 @@ func (c *CallGraph) LoopInstr() {
 			addr := instr.Addr
 			val := instr.Val
 
-			latval := LatticeTable.GetLattice(val)
-			lataddr := LatticeTable.GetLattice(addr)
+			latval := c.LatticeTable.GetLattice(val)
+			lataddr := c.LatticeTable.GetLattice(addr)
 			valtag := latval.GetTag()
 			valmsg := latval.GetMsg()
 			lataddr.SetTag(valtag)
@@ -215,27 +228,27 @@ func (c *CallGraph) LoopInstr() {
 				for _, l := range labels {
 					labelvalue := l.Value()
 					log.Debugf("labelvalue:%s",labelvalue.Name())
-					LatticeTable.GetLattice(labelvalue).SetTag(valtag)
-					LatticeTable.GetLattice(labelvalue).SetMsg(valmsg)
+					c.LatticeTable.GetLattice(labelvalue).SetTag(valtag)
+					c.LatticeTable.GetLattice(labelvalue).SetMsg(valmsg)
 				}
 				//是别名的指针，它对应的value的tag也要改
 				for ssav, p := range config.WorkingProject.ValToPtrs {
 					if p.MayAlias(*lataddr.GetPtr()) {
 						log.Debugf("aliasvalue:%s",ssav.Name())
-						LatticeTable.GetLattice(ssav).SetTag(valtag)
-						LatticeTable.GetLattice(ssav).SetMsg(valmsg)
+						c.LatticeTable.GetLattice(ssav).SetTag(valtag)
+						c.LatticeTable.GetLattice(ssav).SetMsg(valmsg)
 					}
 				}
 			}
-			log.Debug("after store ptr ",LatticeTable.String())
+			log.Debug("after store ptr ",c.LatticeTable.String())
 
 		case *ssa.MapUpdate:
 			valmap := instr.Map
 			valkey := instr.Key
 			val := instr.Value
-			maplat := LatticeTable.GetLattice(valmap)
-			keylat := LatticeTable.GetLattice(valkey)
-			vallat := LatticeTable.GetLattice(val)
+			maplat := c.LatticeTable.GetLattice(valmap)
+			keylat := c.LatticeTable.GetLattice(valkey)
+			vallat := c.LatticeTable.GetLattice(val)
 			keylat.LeastUpperBound(vallat)
 			maplat.LeastUpperBound(keylat)
 
@@ -246,7 +259,7 @@ func (c *CallGraph) LoopInstr() {
 		}
 	}
 	//log.Debug(c.String())
-	//log.Debug(LatticeTable.String())
+	log.Debug(c.LatticeTable.String())
 }
 
 func(c *CallGraph) analyzeInstructions(ssaFun *ssa.Function, isPtr bool)  {
@@ -263,14 +276,36 @@ ctxtfor:
 	// only add the blocks and instructions if the package should be analyzed.
 	if analyze {
 		ssaFun.WriteTo(logger.LogFile)
-		for _, block := range ssaFun.Blocks {
-			block.Dominees()
-			for _, instr := range block.Instrs {
-				// build a new context call site for every instruction within the main value context
-				ic := NewInstructionContext(c, instr,isPtr)
-				//log.Debug(c.String())
-				c.instrs.PushBack(ic)
+		fblock := ssaFun.Blocks[0]
+		queue := NewQueue()
+		queue.Push(fblock)
+
+		for !queue.Empty(){
+			size := queue.Size()
+
+			for i:=0; i<size; i++{
+				blk := queue.Pop().(*ssa.BasicBlock)
+				for _,instr := range blk.Instrs{
+					ic := NewInstructionContext(c,instr,isPtr)
+					c.instrs.PushBack(ic)
+				}
+				for _,succs := range blk.Succs{
+					queue.Push(succs)
+				}
 			}
 		}
+
+		log.Info(c.instrs.String())
+
+
+		//for _, block := range ssaFun.Blocks {
+		//	block.Dominees()
+		//	for _, instr := range block.Instrs {
+		//		// build a new context call site for every instruction within the main value context
+		//		ic := NewInstructionContext(c, instr,isPtr)
+		//		//log.Debug(c.String())
+		//		c.instrs.PushBack(ic)
+		//	}
+		//}
 	}
 }

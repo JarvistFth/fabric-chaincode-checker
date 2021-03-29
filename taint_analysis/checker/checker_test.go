@@ -19,9 +19,9 @@ var ptr = true
 var pkgs = ""
 
 type sourcefiles []string
-//var sourceFilesFlag = []string{"../../chaincodes/ptr/ptr.go"}
+var sourceFilesFlag = []string{"../../chaincodes/gocc/gocc.go"}
 
-var sourceFilesFlag = []string{"../../chaincodes/timerandom/timerandomcc.go"}
+//var sourceFilesFlag = []string{"../../chaincodes/timerandom/timerandomcc.go"}
 
 func TestBuild(t *testing.T) {
 	//mainpkgs, err := TryBuild("chaincode-checker", []string{"../../chaincodes/simple.go"})

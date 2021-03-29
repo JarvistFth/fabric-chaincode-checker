@@ -2,8 +2,6 @@ package context
 
 import (
 	"chaincode-checker/taint_analysis/latticer"
-	"chaincode-checker/taint_analysis/config"
-	"chaincode-checker/taint_analysis/utils"
 	"fmt"
 	"github.com/emirpasic/gods/maps/hashmap"
 	"github.com/pkg/errors"
@@ -28,16 +26,15 @@ type CallGraph struct {
 	retLattice []latticer.Lattice
 
 	instrs *TaskList
+
+	LatticeTable LatticeMap
 }
 
 
-func GetCallGraph(callee string, method *ssa.Function, args []ssa.Value, argLattice []latticer.Lattice) *CallGraph {
-	if CallGraphs == nil{
-		CallGraphs = hashmap.New()
-	}
+func GetCallGraph(callee string, method *ssa.Function, args []ssa.Value) *CallGraph {
 
 
-	id := genid(method.Pkg.String(),method.Name())
+	id := genid(method)
 	if callgraph,ok := CallGraphs.Get(id); ok{
 		return callgraph.(*CallGraph)
 	}
@@ -47,10 +44,10 @@ func GetCallGraph(callee string, method *ssa.Function, args []ssa.Value, argLatt
 		caller: method.Name(),
 		method: method,
 		args:   args,
-		//argLattice: make([]latticer.Lattice,0),
-		argLattice: argLattice,
+		argLattice: make(latticer.Lattices,0),
 		retLattice: make([]latticer.Lattice,0),
 		instrs: NewTaskList(),
+		LatticeTable: make(LatticeMap),
 	}
 
 	CallGraphs.Put(id,c)
@@ -101,7 +98,9 @@ func (c *CallGraph) SetArgLattice(argLattices []latticer.Lattice) {
 	c.argLattice = argLattices
 }
 
-func GetFunctionContext(ssaFunc *ssa.Function,isClosure, isPtr bool) (*CallGraph,error) {
+
+//here ssa.function.params are the called function args.. inLattice means the actual arg's lattice
+func GetFunctionContext(ssaFunc *ssa.Function,isClosure, isPtr bool, inLattice latticer.Lattices) (*CallGraph,error) {
 	if ssaFunc == nil{
 		return nil,errors.New("error, function is nil with context")
 	}
@@ -119,39 +118,46 @@ func GetFunctionContext(ssaFunc *ssa.Function,isClosure, isPtr bool) (*CallGraph
 			args[i] = p
 		}
 	}
-	argLattice := getLatticeFromParams(args,isPtr)
 
+	fc := GetCallGraph(ssaFunc.Name(),ssaFunc,args)
 
-	fc := GetCallGraph(ssaFunc.Name(),ssaFunc,args,argLattice)
+	log.Debugf("ssafunc:%s ,argslen:",len(args))
+	//1. get args
+	//2. table args -> init
+	argLattice := make(latticer.Lattices,len(args))
+	if len(args) != 0  {
+		fc.initParamsLattice(args,argLattice)
+		for i:=0 ;i<len(argLattice);i++{
+			argLattice[i].LeastUpperBound(inLattice[i])
+		}
+	}
+	fc.SetArgLattice(argLattice)
+
+	//TODO :same function may need not analyze instruction again?
 	fc.analyzeInstructions(ssaFunc,isPtr)
-
 	return fc,nil
 
 
 }
 
-func genid(pkgname, funcname string) string{
-	return pkgname+"."+funcname
-}
 
 
-func getLatticeFromParams(args []ssa.Value, isPtr bool) latticer.Lattices {
-	var ret latticer.Lattices
 
-	for _,arg := range args{
-		var lat latticer.Lattice
-		if isPtr {
-			lat = latticer.NewLatticePointer(utils.GenKeyFromSSAValue(arg),arg, config.WorkingProject.ValToPtrs)
-		}else{
-			lat = latticer.NewLatticeValue(utils.GenKeyFromSSAValue(arg),arg)
-		}
-		ret = append(ret,lat)
+func(c *CallGraph) initParamsLattice(args []ssa.Value, argLattice latticer.Lattices) {
+
+	for i,arg := range args{
+		argLattice[i] = c.LatticeTable.GetLattice(arg)
 	}
 
-	return ret
 
 }
 
 func (c *CallGraph) Id() string {
 	return c.id
+}
+
+func genid(method *ssa.Function) string {
+	//pos := method.Pos()
+	//location := method.Prog.Fset.File(pos).Line(pos)
+	return fmt.Sprintf("%s.%s:%d",method.Pkg.Pkg.Name(),method.Name())
 }

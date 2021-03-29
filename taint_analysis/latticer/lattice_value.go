@@ -1,6 +1,7 @@
 package latticer
 
 import (
+	"chaincode-checker/taint_analysis/utils"
 	"fmt"
 	"github.com/pkg/errors"
 	"golang.org/x/tools/go/ssa"
@@ -22,7 +23,8 @@ type LatticeValue struct {
 //	return len(v) <= 0
 //}
 
-func NewLatticeValue(key string, value ssa.Value) *LatticeValue {
+func NewLatticeValue(value ssa.Value) *LatticeValue {
+	key := utils.GenKeyFromSSAValue(value)
 	var tag LatticeTag
 	if _,cnst := value.(*ssa.Const); cnst{
 		tag = Untainted

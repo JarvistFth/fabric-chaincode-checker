@@ -8,6 +8,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -42,14 +43,15 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 // method may create a new asset by specifying a new key-value pair.
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and args from the transaction proposal
-	fn, args := stub.GetFunctionAndParameters()
+	fn, _ := stub.GetFunctionAndParameters()
 
 	var result string
 	var err error
+	tim := time.Now().Format("2006-01-02 15:04:05")
 	if fn == "set" {
-		result, err = set(stub, args)
+		result, err = set(stub, []string{tim})
 	} else { // assume 'get' even if fn is nil
-		result, err = get(stub, args)
+		result, err = get(stub, []string{tim})
 	}
 	if err != nil {
 		return shim.Error(err.Error())
@@ -66,7 +68,7 @@ func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
 
-	err := stub.PutState(args[0], []byte(args[1]))
+	err := stub.PutState(args[0], []byte(args[0]))
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
 	}

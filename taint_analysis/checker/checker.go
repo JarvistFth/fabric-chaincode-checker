@@ -4,7 +4,6 @@ import (
 	"chaincode-checker/taint_analysis/Errors"
 	"chaincode-checker/taint_analysis/config"
 	"chaincode-checker/taint_analysis/context"
-	"chaincode-checker/taint_analysis/latticer"
 	"chaincode-checker/taint_analysis/logger"
 	"chaincode-checker/taint_analysis/utils"
 	"fmt"
@@ -19,7 +18,7 @@ func Init(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs b
 	InitSSConfig()
 	context.CallGraphs = context.NewCallGraphMap()
 	Errors.ErrMsgPool = Errors.NewErrMessages()
-	context.LatticeTable = make(map[string]latticer.Lattice)
+
 	mainpkg := BuildSSA()
 	mains := []*ssa.Package{mainpkg}
 
@@ -34,8 +33,32 @@ func Init(path string, sourcefiles []string, sourceAndSinkFile string, allpkgs b
 
 func StartAnalyzing()  {
 	entryf := InitFunctionContext(config.WorkingProject.InvokeFunc)
+
+	//invokefn := config.WorkingProject.InvokeFunc
+
+
+
+	//for _,block := range invokefn.Blocks{
+	//
+	//	preds := block.Preds
+	//	succs := block.Succs
+	//	var str string
+	//	str += fmt.Sprintf("block:%d - preds: ",block.Index)
+	//	for _,pred := range preds{
+	//		str += fmt.Sprintf("block:%d ",pred.Index)
+	//	}
+	//	str += "\n"
+	//	str += fmt.Sprintf("block:%d - succs: ",block.Index)
+	//	for _,succ := range succs{
+	//		str += fmt.Sprintf("block:%d ",succ.Index)
+	//	}
+	//	str += "\n"
+	//	fmt.Println(str)
+	//}
+
+
+
 	entryf.LoopInstr()
-	log.Info(context.LatticeTable.String())
 	if !Errors.ErrMsgPool.Empty() {
 		fmt.Print(Errors.ErrMsgPool.String())
 	}

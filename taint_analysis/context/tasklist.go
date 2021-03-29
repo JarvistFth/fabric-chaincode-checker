@@ -1,51 +1,50 @@
 package context
 
 import (
-	"container/list"
+	dll "github.com/emirpasic/gods/lists/doublylinkedlist"
 )
 
 type TaskList struct {
 	//map[]
-	list *list.List
+	list *dll.List
 
 }
 
 func NewTaskList() *TaskList {
-	t := &TaskList{}
-	t.list = list.New()
+	t := &TaskList{list: dll.New()}
 	return t
 }
 
-func (l *TaskList) PushFront(value *InstructionContext) {
- 	l.list.PushFront(value)
-}
-
 func (l *TaskList) PushBack(value *InstructionContext) {
-	l.list.PushBack(value)
+	l.list.Add(value)
 }
 
 func (l *TaskList) RemoveFront() *InstructionContext {
-	ret := l.list.Front()
-	if ret != nil{
-		l.list.Remove(ret)
-		return ret.Value.(*InstructionContext)
+	ret,found := l.list.Get(0)
+	if found{
+		l.list.Remove(0)
+		return ret.(*InstructionContext)
 	}
 	return nil
 }
 
-func (l *TaskList) PopBack() *InstructionContext {
-	ret := l.list.Back()
-	if ret != nil{
-		l.list.Remove(ret)
-		return ret.Value.(*InstructionContext)
-	}
-	return nil
-}
 
 func (l *TaskList) Len() int  {
-	return l.list.Len()
+	return l.list.Size()
 }
 
 func (l *TaskList) Empty() bool {
-	return l.list.Len() == 0
+	return l.list.Empty()
+}
+
+func (l *TaskList) String() string {
+	var ret string
+
+	instrs := l.list.Values()
+
+	for _,val := range instrs{
+		instrs := val.(*InstructionContext)
+		ret +=  instrs.String() + " \n"
+	}
+	return ret
 }
