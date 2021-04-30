@@ -1,0 +1,14 @@
+panic: runtime error: index out of range [1] with length 1
+
+goroutine 1 [running]:
+chaincode-checker/chaincodes/globalcc.(*SimpleAsset).Invoke(0x18216a0, 0x117afe0, 0xc0002d6820, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, ...)
+	/home/jarvist/go/src/chaincode-checker/chaincodes/globalcc/globalcc.go:52 +0x2fc
+github.com/hyperledger/fabric/core/chaincode/shim.(*MockStub).MockInvoke(0xc0002d6820, 0x109d67b, 0x1, 0xc00013d2c0, 0x2, 0x2, 0x0, 0x0, 0x0, 0x0, ...)
+	/home/jarvist/go/pkg/mod/github.com/hyperledger/fabric@v1.4.4/core/chaincode/shim/mockstub.go:139 +0xf1
+chaincode-checker/dynamic-mockenv/mock.Fuzz(0x7f85165fd000, 0x0, 0x0, 0x4)
+	/home/jarvist/go/src/chaincode-checker/dynamic-mockenv/mock/mock.go:21 +0x228
+go-fuzz-dep.Main(0xc0000c7f70, 0x1, 0x1)
+	go-fuzz-dep/main.go:36 +0x1b8
+main.main()
+	chaincode-checker/dynamic-mockenv/mock/go.fuzz.main/main.go:15 +0x52
+exit status 2

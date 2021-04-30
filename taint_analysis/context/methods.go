@@ -2,11 +2,10 @@ package context
 
 import (
 	"chaincode-checker/taint_analysis/Errors"
-	"chaincode-checker/taint_analysis/latticer"
 	"chaincode-checker/taint_analysis/config"
+	"chaincode-checker/taint_analysis/latticer"
 	"chaincode-checker/taint_analysis/taint_config"
 	"chaincode-checker/taint_analysis/utils"
-	"fmt"
 	"github.com/emirpasic/gods/sets/hashset"
 	"go/types"
 	"golang.org/x/tools/go/pointer"
@@ -17,11 +16,20 @@ import (
 )
 
 const(
-	TAINT_RANDOM = "RANDOM_FUNCTION"
-	TAINT_TIME = "TIME_FUNCTION"
 	TAINT_GLOBAL = "GLOBAL"
-	TAINT_FILE = "OUTSIDE_FILE_OPEN"
-	TIANT_CMD = "OUTSIDE_COMMAND_EXEC"
+	TAINT_RANDOM = "RANDOM_FUNCTION"
+	TAINT_TIME   = "TIME_FUNCTION"
+
+	TAINT_FILE   = "OUTSIDE_FILE_OPEN"
+	TAINT_CMD    = "OUTSIDE_COMMAND_EXEC"
+	TAINT_THIRDPARTY = "USE THIRD-PARTY LIB"
+
+	TAINT_GOROUTINE = "USE GOROUTINE"
+
+	TAINT_CROSSCHANNEL = "CROSS CHANNEL"
+	TAINT_READYOURWRITE = "READ AFTER WRITE"
+
+	TAINT_UNHANDLED_ERROR = "UNHANDLED ERROR"
 
 )
 
@@ -103,6 +111,58 @@ func CheckSDK(c *InstructionContext) bool {
 	}
 }
 
+func checkWarningFunc(c *InstructionContext) (bool,string){
+	if c.IsCall(){
+		call := c.GetInstr().(ssa.CallInstruction)
+		callcom := call.Common()
+		sig,callee,isig := getSignature(callcom)
+		for _, source := range taint_config.SSConfig.WarningFunctions{
+			//log.Debugf("getSig: %s, call:%s, source.Sig:%s, source.callee:%s",sig,call,source.Signature,source.Callee)
+			if source.IsInterface {
+				//log.Debugf("source interface source, getSig: %s, source.Sig: %s",iSig,source.GetSignature())
+				if isig == source.Signature {
+					return true,source.Type
+				}
+			}
+			if sig == source.Signature {
+				if callee == source.Callee {
+					return true,source.Type
+				}
+			}
+		}
+		return false,""
+	}else{
+		log.Panicf("error!! instr:%s is not call instr",c.GetInstr().String())
+		return false,""
+	}
+}
+
+func checkReadWriteFunc(c *InstructionContext) (bool,string){
+	if c.IsCall(){
+		call := c.GetInstr().(ssa.CallInstruction)
+		callcom := call.Common()
+		sig,callee,isig := getSignature(callcom)
+		for _, source := range taint_config.SSConfig.ReadWriteFunctions{
+			//log.Debugf("getSig: %s, call:%s, source.Sig:%s, source.callee:%s",sig,call,source.Signature,source.Callee)
+			if source.IsInterface {
+				//log.Debugf("source interface source, getSig: %s, source.Sig: %s",iSig,source.GetSignature())
+				if isig == source.Signature {
+					return true,source.Type
+				}
+			}
+			if sig == source.Signature {
+				if callee == source.Callee {
+					return true,source.Type
+				}
+			}
+		}
+		return false,""
+	}else{
+		log.Panicf("error!! instr:%s is not call instr",c.GetInstr().String())
+		return false,""
+	}
+}
+
 func handleSinkDetection(table LatticeMap, i ssa.Instruction,c ssa.CallCommon)  {
 	val := c.Value
 	var taintArgs []ssa.Value
@@ -125,13 +185,14 @@ func handleSinkDetection(table LatticeMap, i ssa.Instruction,c ssa.CallCommon)  
 				continue
 			}
 			set.Add(argLatMsg)
-			msg += fmt.Sprintf("arg:%s with: %s\n",arg.Name(),argLatMsg)
+			msg += argLatMsg
+			//msg += fmt.Sprintf("arg:%s with: %s",arg.Name(),argLatMsg)
 		}
 		if config.Config.WithPtr{
 			if latptr,ok := lat.(*latticer.LatticePointer);ok{
 				ptr := latptr.GetPtr()
 				if ptr != nil{
-					for ssav,p := range config.WorkingProject.ValToPtrs{
+					for ssav,p := range config.ValToPtrs{
 						if p.MayAlias(*ptr){
 							tag,_ := table.GetTag(utils.GenKeyFromSSAValue(ssav))
 							if tag == latticer.Tainted || tag == latticer.Both{
@@ -141,7 +202,8 @@ func handleSinkDetection(table LatticeMap, i ssa.Instruction,c ssa.CallCommon)  
 									continue
 								}
 								set.Add(argLatMsg)
-								msg += fmt.Sprintf("arg:%s with: %s\n",arg.Name(),argLatMsg)
+								msg += argLatMsg
+								//msg += fmt.Sprintf("arg:%s with: %s",arg.Name(),argLatMsg)
 							}
 						}
 					}
@@ -171,7 +233,7 @@ func getSignature(c *ssa.CallCommon) (signature, callee, iSignature string) {
 		objname := relativepkgs[len(relativepkgs) - 1]
 		callee = objname + "." + c.Method.Name()
 		signature = c.Signature().String()
-		log.Debugf("invoke call comm : callee: %s signature: %s",callee,signature)
+		//log.Debugf("invoke call comm : callee: %s signature: %s",callee,signature)
 		return
 	}
 
@@ -239,16 +301,31 @@ func getSignature(c *ssa.CallCommon) (signature, callee, iSignature string) {
 	return
 }
 
-
+// *x = y
+// Queries : value -> pointer
 func UnOpPtr(table LatticeMap,latout latticer.Lattice, e *ssa.UnOp, ptrResult *pointer.Result) {
 	addr := e.X
 	if _,ok:=addr.(*ssa.Global);ok{
 		latout.SetTag(latticer.Tainted)
-		latout.SetMsg(TAINT_GLOBAL)
+		latout.SetMsg(Errors.ERR_GLOBALVALUE)
 		return
 	}
 	latticeVal := table.GetLattice(addr)
 	valtag := latticeVal.GetTag()
+	latout.SetTag(valtag)
+	latout.SetMsg(latticeVal.GetMsg())
+
+	if ptrResult != nil{
+		if ok,val := utils.IsPointerVal(addr);ok{
+			addrp := ptrResult.Queries[val]
+			for ssaval,ptr := range config.ValToPtrs{
+				if ptr.MayAlias(addrp){
+					table.GetLattice(ssaval).SetTag(valtag)
+				}
+		}
+
+
+	}
 
 
 
@@ -266,34 +343,35 @@ func UnOpPtr(table LatticeMap,latout latticer.Lattice, e *ssa.UnOp, ptrResult *p
 	//					}
 	//				}
 
-	if ptrResult != nil{
-		if ok, valr := utils.IsPointerVal(addr); ok {
-			q := ptrResult.Queries[valr]
-			labels := q.PointsTo().Labels()
-			for _, label := range labels {
-				labelval := label.Value()
-				table.GetLattice(labelval).SetTag(valtag)
-			}
+	//if ptrResult != nil{
+		//if ok, valr := utils.IsPointerVal(addr); ok {
+		//	q := ptrResult.Queries[valr]
+		//	labels := q.PointsTo().Labels()
+		//	for _, label := range labels {
+		//		labelval := label.Value()
+		//		table.GetLattice(labelval).SetTag(valtag)
+		//	}
 			//for ssav, p := range config.WorkingProject.ValToPtrs {
 			//	if p.MayAlias(*lataddr.GetPtr()) {
 			//		LatticeTable.GetLattice(ssav).SetTag(valtag)
 			//	}
 			//}
-		}
+		//}
 
-		if ok, valr := utils.IsIndirectPtr(addr); ok {
-			q := ptrResult.Queries[valr]
-			labels := q.PointsTo().Labels()
-			for _, label := range labels {
-				labelval := label.Value()
-				table.GetLattice(labelval).SetTag(valtag)
-			}
+
+		//if ok, valr := utils.IsIndirectPtr(addr); ok {
+		//	q := ptrResult.Queries[valr]
+		//	labels := q.PointsTo().Labels()
+		//	for _, label := range labels {
+		//		labelval := label.Value()
+		//		table.GetLattice(labelval).SetTag(valtag)
+		//	}
 			//for ssav, p := range config.WorkingProject.ValToPtrs {
 			//	if p.MayAlias(*lataddr.GetPtr()) {
 			//		LatticeTable.GetLattice(ssav).SetTag(valtag)
 			//	}
 			//}
-		}
+		//}
 	}
 }
 

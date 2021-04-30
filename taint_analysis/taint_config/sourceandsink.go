@@ -13,6 +13,8 @@ type Config struct {
 	Sources []Source            `json:"sources"`
 	Sinks []Sink                `json:"sinks"`
 	SDKFunctions []*SDKFunction `json:"sdk_functions"`
+	WarningFunctions []*WarningFunction `json:"warning_functions"`
+	ReadWriteFunctions []*ReadWriteFunction `json:"readwrite_functions"`
 }
 
 type Source struct {
@@ -35,6 +37,20 @@ type SDKFunction struct {
 	IsInterface bool `json:"is_interface"`
 }
 
+type WarningFunction struct {
+	Signature string `json:"signature"`
+	Callee string `json:"callee"`
+	IsInterface bool `json:"is_interface"`
+	Type	string `json:"type"`
+}
+
+type ReadWriteFunction struct {
+	Signature string `json:"signature"`
+	Callee string `json:"callee"`
+	IsInterface bool `json:"is_interface"`
+	Type	string `json:"type"`
+}
+
 func NewSinkAndSourceCfgFromFile(path string) (*Config,error) {
 	bytes,err := ioutil.ReadFile(path)
 	if err != nil{
@@ -50,6 +66,7 @@ func NewSinkAndSourceCfgFromFile(path string) (*Config,error) {
 		return nil,nil
 	}
 	SSConfig = &config
+	log.Debug(config.String())
 	return SSConfig,nil
 }
 
@@ -65,6 +82,14 @@ func (c *Config) String() string {
 
 	for _,s := range c.SDKFunctions{
 		ret += "sdk functions:" + s.Callee + " " + s.Signature + "\n"
+	}
+
+	for _,s := range c.WarningFunctions{
+		ret += "warning functions:" + s.Callee + " " + s.Signature + "\n"
+	}
+
+	for _,s := range c.ReadWriteFunctions{
+		ret += "ReadWriteFunctions:" + s.Callee + " " + s.Signature + "\n"
 	}
 	return ret
 

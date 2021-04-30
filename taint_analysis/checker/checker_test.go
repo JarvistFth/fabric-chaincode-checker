@@ -1,8 +1,16 @@
 package checker
 
 import (
+	"chaincode-checker/taint_analysis/Errors"
+	"chaincode-checker/taint_analysis/config"
+	"chaincode-checker/taint_analysis/context"
 	"chaincode-checker/taint_analysis/logger"
+	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"go/types"
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/ssa"
@@ -33,9 +41,9 @@ func TestBuild(t *testing.T) {
 
 	mainpkg.WriteTo(os.Stdout)
 
-	mains := []*ssa.Package{mainpkg}
+	//mains := []*ssa.Package{mainpkg}
 	setPkgsList(mainpkg)
-	SetupPtrs(mains)
+	SetupPtrs(mainpkg)
 
 	//mainpkg.WriteTo(os.Stdout)
 
@@ -93,3 +101,63 @@ func TestStart(t *testing.T) {
 	Main(path,sourceFilesFlag,ssf,allpkgs,pkgs,ptr)
 
 }
+
+func TestBuildSSA(t *testing.T){
+	config.NewCmdConfig(path,sourceFilesFlag,ssf,allpkgs,pkgs,ptr)
+	InitSSConfig()
+	context.CallGraphs = context.NewCallGraphMap()
+	Errors.InitLevelMap()
+	BuildSSA()
+	//mains := []*ssa.Package{mainpkg}
+	//
+	//setPkgsList(mainpkg)
+	//SetupPtrs(mains)
+	//utils.ReplaceSend(mains)
+	if !Errors.ErrorMsgPool.Empty() {
+		Errors.ErrorMsgPool.Output()
+	}
+}
+
+func TestAST(t *testing.T){
+	fset := token.NewFileSet()
+
+	f, err := parser.ParseFile(fset, "../../chaincodes/gocc/gocc.go", nil, parser.ParseComments)
+	if err != nil {
+		panic(err)
+	}
+
+	ast.Inspect(f, func(n ast.Node) bool {
+		// Find Return Statements
+		ret, ok := n.(*ast.ReturnStmt)
+		if ok {
+			fmt.Printf("return statement found on line %v:\n", fset.Position(ret.Pos()))
+			return true
+		}
+		return true
+	})
+}
+
+func TestJson(t *testing.T){
+	out := Errors.ErrorMsgOut{
+		Pos:   "1",
+		Level: "2",
+		Rules: "33",
+	}
+	out2 := Errors.ErrorMsgOut{
+		Pos:   "1",
+		Level: "22",
+		Rules: "33",
+	}
+
+	outs := new(Errors.ErrorMsgOuts)
+	outs.Outs = append(outs.Outs,out,out2)
+
+	jsonres,err := json.MarshalIndent(outs,"","\t")
+	if err != nil{
+		fmt.Println(err.Error())
+	}else{
+		fmt.Println(string(jsonres))
+	}
+
+}
+

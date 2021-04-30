@@ -41,7 +41,7 @@ func NewLatticePointer(value ssa.Value, valToPtr map[ssa.Value]pointer.Pointer) 
 			ptr: &ptr,
 		}
 	}else{
-		log.Warningf("can't find ptr for value:%s = %s",value.Name(),value.String())
+		//log.Warningf("can't find ptr for value:%s = %s",value.Name(),value.String())
 		return &LatticePointer{
 			val: v,
 			ptr: nil,
@@ -157,7 +157,7 @@ func GetInLatticesFromParams(function *ssa.Function, isClosure bool) Lattices{
 		ret = make(Lattices,len(fs))
 		for i,f := range args{
 			args[i] = f
-			lat:= NewLatticePointer(f,config.WorkingProject.ValToPtrs)
+			lat:= NewLatticePointer(f,config.ValToPtrs)
 			ret = append(ret,lat)
 		}
 	}else{
@@ -165,7 +165,7 @@ func GetInLatticesFromParams(function *ssa.Function, isClosure bool) Lattices{
 		args = make([]ssa.Value,len(ps))
 		for i,p := range ps{
 			args[i] = p
-			lat:= NewLatticePointer(p,config.WorkingProject.ValToPtrs)
+			lat:= NewLatticePointer(p,config.ValToPtrs)
 			ret = append(ret,lat)
 		}
 	}

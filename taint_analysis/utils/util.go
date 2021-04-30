@@ -126,8 +126,14 @@ func findChannels(mains []*ssa.Package) map[ssa.Value][]ssa.CallInstruction {
 
 func GenKeyFromSSAValue(value ssa.Value) string{
 	if value.Parent() == nil{
-		log.Infof("const value: %s",value.Type().String())
+		//log.Infof("const value: %s",value.Type().String())
 		return fmt.Sprintf("%s.%s",value.Type().String(),value.Name())
 	}
 	return fmt.Sprintf("%s.%s.%s",value.Parent().Pkg.String(),value.Parent().Name(),value.Name())
+}
+
+func GenFuncID(method *ssa.Function) string {
+	//pos := method.Pos()
+	//location := method.Prog.Fset.File(pos).Line(pos)
+	return fmt.Sprintf("%s.%s",method.Pkg.Pkg.Name(),method.Name())
 }

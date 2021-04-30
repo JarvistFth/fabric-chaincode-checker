@@ -8,25 +8,58 @@ import (
 
 var log = logging.MustGetLogger("Main")
 
-var WorkingProject *Project
+//var WorkingProject *Project
 
-type Project struct {
 
-	//MainFunc *ssa.Function
+var (
 	Program *ssa.Program
 	Packages []*ssa.Package
-
-	InvokeFunc *ssa.Function
+ 	InvokeFunc *ssa.Function
 	InitFunc *ssa.Function
 	Methods []*ssa.Function
-
+	//PtrResults map[string]*pointer.Result
 	PtrResult *pointer.Result
-	PtrConfig *pointer.Config
-
+	//PtrConfig *pointer.Config
 	ValToPtrs map[ssa.Value]pointer.Pointer
+	PtrCfg *pointer.Config
+	MainPkg *ssa.Package
+)
 
+
+
+func NewProjecet(prog *ssa.Program, initfn,invokefn *ssa.Function){
+	Program = prog
+	InitFunc = initfn
+	InvokeFunc = invokefn
+
+	//PtrResults =
+	ValToPtrs = make(map[ssa.Value]pointer.Pointer)
 }
-type valToPoints map[string]string
+
+
+func SetPkgs(pkgs []*ssa.Package) {
+	Packages = pkgs
+}
+//
+//type Project struct {
+//
+//	//MainFunc *ssa.Function
+//	Program *ssa.Program
+//	Packages []*ssa.Package
+//
+//	InvokeFunc *ssa.Function
+//	InitFunc *ssa.Function
+//	Methods []*ssa.Function
+//
+//	PtrResult *pointer.Result
+//	PtrConfig *pointer.Config
+//
+//	ValToPtrs map[ssa.Value]pointer.Pointer
+//}
+
+
+
+
 type stringslice []string
 
 func (v stringslice) Len() int {
@@ -54,34 +87,34 @@ func (v stringslice) Less(i, j int) bool {
 	}
 }
 
+//
+//func GetProject(invokefn, initfn *ssa.Function) *Project {
+//	var methods []*ssa.Function
+//	methods = append(methods,initfn,invokefn)
+//
+//	p := &Project{
+//		//MainFunc:   nil,
+//		Program: nil,
+//		Packages:   nil,
+//		InvokeFunc: invokefn,
+//		InitFunc:   initfn,
+//		PtrResult:  nil,
+//		PtrConfig:  nil,
+//		ValToPtrs:  nil,
+//		Methods: methods,
+//	}
+//	p.malloc()
+//	return p
+//}
+//
+//func (p *Project) malloc() {
+//	p.ValToPtrs = make(map[ssa.Value]pointer.Pointer)
+//}
+//
+//func (p *Project) SetProgram(prog *ssa.Program) {
+//	p.Program = prog
+//}
 
-func GetProject(invokefn, initfn *ssa.Function) *Project {
-	var methods []*ssa.Function
-	methods = append(methods,initfn,invokefn)
-
-	p := &Project{
-		//MainFunc:   nil,
-		Program: nil,
-		Packages:   nil,
-		InvokeFunc: invokefn,
-		InitFunc:   initfn,
-		PtrResult:  nil,
-		PtrConfig:  nil,
-		ValToPtrs:  nil,
-		Methods: methods,
-	}
-	p.malloc()
-	return p
-}
-
-func (p *Project) malloc() {
-	p.ValToPtrs = make(map[ssa.Value]pointer.Pointer)
-}
-
-func (p *Project) SetProgram(prog *ssa.Program) {
-	p.Program = prog
-}
-
-func (p *Project) Setpkgs(pkgs []*ssa.Package)  {
-	p.Packages = pkgs
-}
+//func (p *Project) Setpkgs(pkgs []*ssa.Package)  {
+//	p.Packages = pkgs
+//}

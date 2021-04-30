@@ -1,8 +1,8 @@
 package ssautils
 
 import (
+	"chaincode-checker/taint_analysis/Errors"
 	"chaincode-checker/taint_analysis/logger"
-	"fmt"
 	"github.com/pkg/errors"
 	"go/token"
 	"go/types"
@@ -13,9 +13,10 @@ import (
 )
 
 var log = logger.GetLogger("./debuglogs/test")
-
+var internalPkgs map[string]struct{}
 
 func Build(path string, sourcefiles []string) (*ssa.Package, error, *ssa.Function, *ssa.Function, *ssa.Program){
+	initInternalPkg()
 	var conf loader.Config
 	//srcfs := strings.Join(sourcefiles, ", ")
 	conf.CreateFromFilenames(path, sourcefiles...)
@@ -24,28 +25,69 @@ func Build(path string, sourcefiles []string) (*ssa.Package, error, *ssa.Functio
 	if err != nil {
 		return nil, errors.Errorf("fail to load config of path: %s and sourcefiles: %s", path, sourcefiles),nil,nil,nil
 	}
-
 	prog := ssautil.CreateProgram(lprog, ssa.SanityCheckFunctions)
+	checkAst(lprog.Fset,lprog.Created[0].Files[0],lprog.Created[0].Info)
 
+	//os.Exit(0)
+
+	//pkginfo := lprog.Created[0]
 
 	mainPkg := prog.Package(lprog.Created[0].Pkg)
 
+
+	imports := mainPkg.Pkg.Imports()
+	//fmt.Println("main imports:")
+	for _,imp := range imports{
+		ok := isInternalPkg(imp.Name())
+		if !ok {
+			Errors.NewErrorMsgOut(Errors.ERR_EXTERNAL_LIB,imp.Path())
+			//log.Warningf("this chaincode may introduce an external pkg:%s",imp.Path())
+		}
+	}
+
+
+
 	prog.Build()
-
+	//
+	//
+	//
 	var initf *ssa.Function
+	var invokef *ssa.Function
+	for _,member := range mainPkg.Members{
+		if ty,ok := member.(*ssa.Type); ok{
+			t := ty.Type()
+			p := types.NewPointer(t)
+			initf = prog.LookupMethod(p,mainPkg.Pkg,"Init")
+			invokef = prog.LookupMethod(p,mainPkg.Pkg,"Invoke")
+			if initf == nil || invokef == nil{
+				continue
+			}else {
+				break
+			}
+		}
+	}
+	if initf!= nil{
+		log.Debugf("initf:%s \n",initf.Name())
+	}
 
-	s := mainPkg.Type("SimpleAsset")
-	t := s.Type()
+	if initf == nil || invokef == nil{
+		log.Fatalf("chaincode file not implement function Init() and Invoke()\n")
+	}
+	//todo chaincode struct type name
+	//s := mainPkg.Type("SimpleAsset")
+	//t := s.Type()
+	////
+	//p := types.NewPointer(t)
+	//
+	//
 
-	p := types.NewPointer(t)
-
-
-	initf = prog.LookupMethod(p,mainPkg.Pkg,"Init")
-	invokef := prog.LookupMethod(p,mainPkg.Pkg,"Invoke")
+	//initf = prog.LookupMethod(p,mainPkg.Pkg,"Init")
+	//invokef := prog.LookupMethod(p,mainPkg.Pkg,"Invoke")
 	//initf.WriteTo(os.Stdout)
-
-	fmt.Println("end build ssa pkgs")
+	//
+	//fmt.Println("end build ssa pkgs")
 	return mainPkg, nil, initf, invokef,prog
+	//return nil,nil,nil,nil,nil
 
 }
 
@@ -121,3 +163,59 @@ func findChannels(mains []*ssa.Package) map[ssa.Value][]ssa.CallInstruction {
 	}
 	return chfuncs
 }
+
+func isInternalPkg(name string)bool{
+	_,ok := internalPkgs[name]
+	return ok
+}
+
+func initInternalPkg() {
+	internalPkgs = make(map[string]struct{})
+
+	internalPkgs["archive"] = struct{}{}
+	internalPkgs["bufio"] = struct{}{}
+	internalPkgs["builtin"] = struct{}{}
+	internalPkgs["bytes"] = struct{}{}
+	internalPkgs["cmd"] = struct{}{}
+	internalPkgs["compress"] = struct{}{}
+	internalPkgs["container"] = struct{}{}
+	internalPkgs["context"] = struct{}{}
+	internalPkgs["crypto"] = struct{}{}
+	internalPkgs["database"] = struct{}{}
+	internalPkgs["debug"] = struct{}{}
+	internalPkgs["encoding"] = struct{}{}
+	internalPkgs["errors"] = struct{}{}
+	internalPkgs["expvar"] = struct{}{}
+	internalPkgs["flag"] = struct{}{}
+	internalPkgs["fmt"] = struct{}{}
+	internalPkgs["hash"] = struct{}{}
+	internalPkgs["html"] = struct{}{}
+	internalPkgs["image"] = struct{}{}
+	internalPkgs["index"] = struct{}{}
+	internalPkgs["internal"] = struct{}{}
+	internalPkgs["io"] = struct{}{}
+	internalPkgs["log"] = struct{}{}
+	internalPkgs["math"] = struct{}{}
+	internalPkgs["mime"] = struct{}{}
+	internalPkgs["net"] = struct{}{}
+	internalPkgs["os"] = struct{}{}
+	internalPkgs["path"] = struct{}{}
+	internalPkgs["plugin"] = struct{}{}
+	internalPkgs["reflect"] = struct{}{}
+	internalPkgs["regexp"] = struct{}{}
+	internalPkgs["runtime"] = struct{}{}
+	internalPkgs["sort"] = struct{}{}
+	internalPkgs["strconv"] = struct{}{}
+	internalPkgs["strings"] = struct{}{}
+	internalPkgs["sync"] = struct{}{}
+	internalPkgs["syscall"] = struct{}{}
+	internalPkgs["testing"] = struct{}{}
+	internalPkgs["text"] = struct{}{}
+	internalPkgs["time"] = struct{}{}
+	internalPkgs["unicode"] = struct{}{}
+	internalPkgs["unsafe"] = struct{}{}
+	internalPkgs["shim"] = struct{}{}
+	internalPkgs["peer"] = struct{}{}
+
+}
+

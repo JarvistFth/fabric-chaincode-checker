@@ -43,33 +43,30 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 // method may create a new asset by specifying a new key-value pair.
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and Args from the transaction proposal
-	_, args := stub.GetFunctionAndParameters()
-	//var result string
-	//var err error
-
-
-	//if fn == "set" {
-	//	g = g + "2"
-	//	args[1] += g
-	//	result, err = set(stub, args)
-	//} else { // assume 'get' even if fn is nil
-	//	result, err = get(stub, args)
-	//}
-	//if err != nil {
-	//	return shim.Error(err.Error())
-	//}
-	stub.PutState(args[0],[]byte(g))
+	fn, args := stub.GetFunctionAndParameters()
+	var result string
+	var err error
+	if fn == "set" {
+		//g = g + "2"
+		//args[1] += g
+		result, err = t.set(stub, args)
+	} else { // assume 'get' even if fn is nil
+		result, err = get(stub, args)
+	}
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	//stub.PutState(args[0],[]byte{result})
 	// Return the result as success payload
-	return shim.Success([]byte(g))
+	return shim.Success([]byte(result))
 }
 
 // Set stores the asset (both key and value) on the ledger. If the key exists,
 // it will override the value with the new one
-func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+func(t *SimpleAsset) set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) < 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
-
 	err := stub.PutState(args[0], []byte(args[1]))
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
@@ -79,10 +76,10 @@ func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 // Get returns the value of the specified asset key
 func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	if len(args) != 1 {
+	if len(args) < 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
 	}
-
+	stub.GetFunctionAndParameters()
 	value, err := stub.GetState(args[0])
 	if err != nil {
 		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)

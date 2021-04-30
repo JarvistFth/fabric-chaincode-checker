@@ -1,0 +1,6 @@
+panic: runtime error: index out of range [1] with length 1
+chaincode-checker/chaincodes/globalcc.(*SimpleAsset).Invoke
+github.com/hyperledger/fabric/core/chaincode/shim.(*MockStub).MockInvoke
+chaincode-checker/dynamic-mockenv/mock.Fuzz
+go-fuzz-dep.Main
+main.main

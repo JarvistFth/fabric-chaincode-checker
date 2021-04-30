@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/Knetic/govaluate v3.0.0+incompatible // indirect
 	github.com/Shopify/sarama v1.27.2 // indirect
+	github.com/brahma-adshonor/gohook v1.1.9
 	github.com/emirpasic/gods v1.12.0
 	github.com/fsouza/go-dockerclient v1.6.6 // indirect
 	github.com/golang/protobuf v1.4.3

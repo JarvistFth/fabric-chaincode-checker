@@ -2,70 +2,48 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="721597a4-5724-4571-b5f0-a5c3cb8b78de" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/chaincodes/ptr/ptr.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/Errors/errors.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/checker/checker.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_method.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_utils.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/checker/init.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/config/program.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/config/ptrs.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/callgrapgh_map.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/callgraph.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/callgraph_method.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/context_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/instruction.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/lattice_table.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/methods.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/operation.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/context/tasklist.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice_pointer.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice_value.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/ssautils/one.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/taint_config/sourceandsink.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/taint_analysis/taint_config/sourceandsink_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/chaincodes/timerandom/go-callvis" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mock/corpus/da39a3ee5e6b4b0d3255bfef95601890afd80709" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mock/crashers/da39a3ee5e6b4b0d3255bfef95601890afd80709" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mock/crashers/da39a3ee5e6b4b0d3255bfef95601890afd80709.output" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mock/crashers/da39a3ee5e6b4b0d3255bfef95601890afd80709.quoted" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mock/go-fuzz" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mock/go-fuzz-build" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mock/mock-fuzz.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mock/mock.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mock/suppressions/311e7fde636b514cdab519f851955fd7b01e46d4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mockutil/hook_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic-mockenv/mockutil/proxy_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taint_analysis/context/pointers.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taint_analysis/output/out.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ast.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chaincodes/globalcc/globalcc.go" beforeDir="false" afterPath="$PROJECT_DIR$/chaincodes/globalcc/globalcc.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chaincodes/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/chaincodes/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chaincodes/simple.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chaincodes/gocc/gocc.go" beforeDir="false" afterPath="$PROJECT_DIR$/chaincodes/gocc/gocc.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chaincodes/timerandom/timerandomcc.go" beforeDir="false" afterPath="$PROJECT_DIR$/chaincodes/timerandom/timerandomcc.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/examplecc/example.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/examplecc/example.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/sourceandsink.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sourceandsink.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker_config.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/config/cmd_config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker_init.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/checker_method.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/tasklist.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/checker/tasklist_utils.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/callSuite.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/transition.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/valueContext.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/valueContextIndent.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/context/valueContextMap.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/handle_flows.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_flow.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice_flow.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_pointer.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/lattice_value.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/semantics.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/semantics.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/lattice/taintTag.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/taintTag.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/logger/logging.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/logger/logging.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/one.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/ssaChannelSend.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssaChannelSend.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/ssabuilder.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/ssabuilder_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/ssautils/ssahelper.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssahelper.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/taint/taintData.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/utils/channel_send.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/utils/channel_send.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/utils/parser.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/utils/parser_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/utils/parser_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/utils/sourceandsink.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go-taint/utils/util.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/utils/util.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dynamic-mockenv/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/dynamic-mockenv/mockutil/mock_util.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/Errors/errors.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/Errors/errors.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/checker/checker.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/checker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/checker/checker_method.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_method.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/checker/checker_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/checker_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/checker/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/checker/init.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/config/program.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/config/program.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/config/ptrs.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/config/ptrs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/context/callgraph.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/context/callgraph.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/context/callgraph_method.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/context/callgraph_method.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/context/instruction.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/context/instruction.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/context/lattice_table.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/context/lattice_table.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/context/methods.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/context/methods.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/context/operation.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/latticer/lattice_pointer.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice_pointer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/latticer/lattice_value.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/latticer/lattice_value.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/taint_config/sourceandsink.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/taint_config/sourceandsink.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/utils/parser_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/utils/parser_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taint_analysis/utils/util.go" beforeDir="false" afterPath="$PROJECT_DIR$/taint_analysis/utils/util.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,24 +87,24 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
     <property name="go.vendoring.notification.had.been.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/chaincodes/timerandom" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/dynamic-mockenv/mock" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="com.goide.configuration.GoLibrariesConfigurableProvider" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/dynamic-mockenv/mockutil" />
+      <recent name="$PROJECT_DIR$/dynamic-mockenv/mock" />
+      <recent name="$PROJECT_DIR$/dynamic-mockenv" />
+      <recent name="$PROJECT_DIR$/dynamic-mockenv/mock/src" />
       <recent name="$PROJECT_DIR$/chaincodes/ptr" />
-      <recent name="$PROJECT_DIR$/taint_analysis/project_config" />
-      <recent name="$PROJECT_DIR$/taint_analysis/context" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/taint_analysis/checker" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/dynamic-mockenv/mock" />
       <recent name="$PROJECT_DIR$/chaincodes/timerandom" />
       <recent name="$PROJECT_DIR$/taint_analysis" />
       <recent name="$PROJECT_DIR$/taint_analysis/checker" />
       <recent name="$PROJECT_DIR$/taint_analysis/lattice" />
-      <recent name="$PROJECT_DIR$/dynamic-mockenv/utils" />
     </key>
   </component>
   <component name="RunManager" selected="Go Test.TestStart in chaincode-checker/taint_analysis/checker">
@@ -170,48 +148,48 @@
       <directory value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestBuild in chaincode-checker/taint_analysis/checker" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestHook in chaincode-checker/dynamic-mockenv/mockutil" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="chaincode-checker" />
-      <working_directory value="$PROJECT_DIR$/taint_analysis/checker" />
+      <working_directory value="$PROJECT_DIR$/dynamic-mockenv/mockutil" />
       <framework value="gotest" />
       <kind value="PACKAGE" />
-      <package value="chaincode-checker/taint_analysis/checker" />
+      <package value="chaincode-checker/dynamic-mockenv/mockutil" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestBuild\E$" />
+      <pattern value="^\QTestHook\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestBuild in chaincode-checker/taint_analysis/ssautils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestHook1 in chaincode-checker/dynamic-mockenv/mockutil" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="chaincode-checker" />
-      <working_directory value="$PROJECT_DIR$/taint_analysis/ssautils" />
+      <working_directory value="$PROJECT_DIR$/dynamic-mockenv/mockutil" />
       <framework value="gotest" />
       <kind value="PACKAGE" />
-      <package value="chaincode-checker/taint_analysis/ssautils" />
+      <package value="chaincode-checker/dynamic-mockenv/mockutil" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestBuild\E$" />
+      <pattern value="^\QTestHook1\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestCheckMapSort in chaincode-checker/taint_analysis/context" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestNow in chaincode-checker/dynamic-mockenv/mockutil" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="chaincode-checker" />
-      <working_directory value="$PROJECT_DIR$/taint_analysis/context" />
+      <working_directory value="$PROJECT_DIR$/dynamic-mockenv/mockutil" />
       <framework value="gotest" />
       <kind value="PACKAGE" />
-      <package value="chaincode-checker/taint_analysis/context" />
+      <package value="chaincode-checker/dynamic-mockenv/mockutil" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestCheckMapSort\E$" />
+      <pattern value="^\QTestNow\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestNewCfgFromFile in chaincode-checker/taint_analysis/taint_config" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestProxy in chaincode-checker/dynamic-mockenv/mockutil" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="chaincode-checker" />
-      <working_directory value="$PROJECT_DIR$/taint_analysis/taint_config" />
+      <working_directory value="$PROJECT_DIR$/dynamic-mockenv/mockutil" />
       <framework value="gotest" />
       <kind value="PACKAGE" />
-      <package value="chaincode-checker/taint_analysis/taint_config" />
+      <package value="chaincode-checker/dynamic-mockenv/mockutil" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestNewCfgFromFile\E$" />
+      <pattern value="^\QTestProxy\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestStart in chaincode-checker/taint_analysis/checker" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -230,19 +208,19 @@
       <item itemvalue="Go Build.go build chaincode-checker - globalcc" />
       <item itemvalue="Go Build.go build chaincode-checker - example" />
       <item itemvalue="Go Build.go build chaincode-checker - randomcc" />
-      <item itemvalue="Go Test.TestBuild in chaincode-checker/taint_analysis/ssautils" />
-      <item itemvalue="Go Test.TestBuild in chaincode-checker/taint_analysis/checker" />
-      <item itemvalue="Go Test.TestNewCfgFromFile in chaincode-checker/taint_analysis/taint_config" />
+      <item itemvalue="Go Test.TestHook in chaincode-checker/dynamic-mockenv/mockutil" />
+      <item itemvalue="Go Test.TestProxy in chaincode-checker/dynamic-mockenv/mockutil" />
+      <item itemvalue="Go Test.TestNow in chaincode-checker/dynamic-mockenv/mockutil" />
+      <item itemvalue="Go Test.TestHook1 in chaincode-checker/dynamic-mockenv/mockutil" />
       <item itemvalue="Go Test.TestStart in chaincode-checker/taint_analysis/checker" />
-      <item itemvalue="Go Test.TestCheckMapSort in chaincode-checker/taint_analysis/context" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Test.TestStart in chaincode-checker/taint_analysis/checker" />
-        <item itemvalue="Go Test.TestCheckMapSort in chaincode-checker/taint_analysis/context" />
-        <item itemvalue="Go Test.TestNewCfgFromFile in chaincode-checker/taint_analysis/taint_config" />
-        <item itemvalue="Go Test.TestBuild in chaincode-checker/taint_analysis/checker" />
-        <item itemvalue="Go Test.TestBuild in chaincode-checker/taint_analysis/ssautils" />
+        <item itemvalue="Go Test.TestHook in chaincode-checker/dynamic-mockenv/mockutil" />
+        <item itemvalue="Go Test.TestHook1 in chaincode-checker/dynamic-mockenv/mockutil" />
+        <item itemvalue="Go Test.TestNow in chaincode-checker/dynamic-mockenv/mockutil" />
+        <item itemvalue="Go Test.TestProxy in chaincode-checker/dynamic-mockenv/mockutil" />
       </list>
     </recent_temporary>
   </component>
@@ -261,10 +239,6 @@
     <auto-vendoring-mode>false</auto-vendoring-mode>
   </component>
   <component name="WindowStateProjectService">
-    <state x="755" y="390" width="400" height="328" key="#Go_Modules" timestamp="1608256800198">
-      <screen x="0" y="28" width="1920" height="1052" />
-    </state>
-    <state x="755" y="390" width="400" height="328" key="#Go_Modules/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608256800198" />
     <state x="605" y="327" width="701" height="624" key="#Log_Highlighting_(ideolog)" timestamp="1611743768539">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
@@ -273,107 +247,78 @@
     <state x="555" y="198" width="800" height="713" key="#Plugins" timestamp="1611743208222">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state x="555" y="198" width="800" height="713" key="#Plugins/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609341232969" />
     <state x="555" y="198" width="800" height="713" key="#Plugins/0.28.1920.1052@0.28.1920.1052" timestamp="1611743208222" />
-    <state x="585" y="45" width="1084" height="1035" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1615712247228">
+    <state x="585" y="62" width="1084" height="1035" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1616978830391">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state x="585" y="62" width="1084" height="893" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1610347343300" />
+    <state x="585" y="62" width="1084" height="893" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616978830391" />
     <state x="585" y="45" width="1084" height="1035" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.28.1920.1052@0.28.1920.1052" timestamp="1615712247228" />
-    <state x="457" y="347" width="996" height="415" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1608188859359">
+    <state x="457" y="347" width="903" height="415" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1617243915800">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state x="457" y="347" width="996" height="415" key="#com.intellij.fileTypes.FileTypeChooser/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608188859359" />
-    <state x="720" y="256" width="479" height="596" key="#com.intellij.ide.util.MemberChooser" timestamp="1608905357294">
-      <screen x="0" y="28" width="1920" height="1052" />
-    </state>
-    <state x="720" y="256" width="479" height="596" key="#com.intellij.ide.util.MemberChooser/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1608905357294" />
-    <state x="720" y="256" width="469" height="596" key="#com.intellij.ide.util.MemberChooser/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608476042761" />
-    <state x="692" y="391" width="525" height="326" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1609413606952">
-      <screen x="0" y="28" width="1920" height="1052" />
-    </state>
-    <state x="692" y="391" width="525" height="326" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609413606952" />
+    <state x="457" y="347" width="903" height="415" key="#com.intellij.fileTypes.FileTypeChooser/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1617243915800" />
     <state x="742" y="312" width="424" height="485" key="FileChooserDialogImpl" timestamp="1616033045075">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
     <state x="742" y="312" width="424" height="485" key="FileChooserDialogImpl/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616033045075" />
-    <state x="742" y="312" width="424" height="485" key="FileChooserDialogImpl/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608257546761" />
-    <state width="1866" height="270" key="GridCell.Tab.0.bottom" timestamp="1616320842365">
+    <state width="1866" height="258" key="GridCell.Tab.0.bottom" timestamp="1619511181638">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state width="1866" height="270" key="GridCell.Tab.0.bottom/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616320842365" />
-    <state width="1866" height="328" key="GridCell.Tab.0.bottom/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
+    <state width="1866" height="258" key="GridCell.Tab.0.bottom/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619511181638" />
     <state width="1866" height="254" key="GridCell.Tab.0.bottom/0.28.1920.1052@0.28.1920.1052" timestamp="1615741325110" />
-    <state width="1866" height="270" key="GridCell.Tab.0.center" timestamp="1616320842365">
+    <state width="1866" height="258" key="GridCell.Tab.0.center" timestamp="1619511181638">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state width="1866" height="270" key="GridCell.Tab.0.center/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616320842365" />
-    <state width="1866" height="328" key="GridCell.Tab.0.center/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
+    <state width="1866" height="258" key="GridCell.Tab.0.center/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619511181638" />
     <state width="1866" height="254" key="GridCell.Tab.0.center/0.28.1920.1052@0.28.1920.1052" timestamp="1615741325109" />
-    <state width="1866" height="270" key="GridCell.Tab.0.left" timestamp="1616320842365">
+    <state width="1866" height="258" key="GridCell.Tab.0.left" timestamp="1619511181638">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state width="1866" height="270" key="GridCell.Tab.0.left/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616320842365" />
-    <state width="1866" height="328" key="GridCell.Tab.0.left/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
+    <state width="1866" height="258" key="GridCell.Tab.0.left/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619511181638" />
     <state width="1866" height="254" key="GridCell.Tab.0.left/0.28.1920.1052@0.28.1920.1052" timestamp="1615741325109" />
-    <state width="1866" height="270" key="GridCell.Tab.0.right" timestamp="1616320842365">
+    <state width="1866" height="258" key="GridCell.Tab.0.right" timestamp="1619511181638">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state width="1866" height="270" key="GridCell.Tab.0.right/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616320842365" />
-    <state width="1866" height="328" key="GridCell.Tab.0.right/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622147" />
+    <state width="1866" height="258" key="GridCell.Tab.0.right/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619511181638" />
     <state width="1866" height="254" key="GridCell.Tab.0.right/0.28.1920.1052@0.28.1920.1052" timestamp="1615741325110" />
-    <state width="1866" height="270" key="GridCell.Tab.1.bottom" timestamp="1616320842366">
+    <state width="1866" height="258" key="GridCell.Tab.1.bottom" timestamp="1619511205215">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state width="1866" height="270" key="GridCell.Tab.1.bottom/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616320842366" />
-    <state width="1866" height="328" key="GridCell.Tab.1.bottom/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622148" />
+    <state width="1866" height="258" key="GridCell.Tab.1.bottom/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619511205215" />
     <state width="1866" height="320" key="GridCell.Tab.1.bottom/0.28.1920.1052@0.28.1920.1052" timestamp="1611743571116" />
-    <state width="1866" height="270" key="GridCell.Tab.1.center" timestamp="1616320842366">
+    <state width="1866" height="258" key="GridCell.Tab.1.center" timestamp="1619511205215">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state width="1866" height="270" key="GridCell.Tab.1.center/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616320842366" />
-    <state width="1866" height="328" key="GridCell.Tab.1.center/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622148" />
+    <state width="1866" height="258" key="GridCell.Tab.1.center/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619511205215" />
     <state width="1866" height="320" key="GridCell.Tab.1.center/0.28.1920.1052@0.28.1920.1052" timestamp="1611743571115" />
-    <state width="1866" height="270" key="GridCell.Tab.1.left" timestamp="1616320842365">
+    <state width="1866" height="258" key="GridCell.Tab.1.left" timestamp="1619511205215">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state width="1866" height="270" key="GridCell.Tab.1.left/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616320842365" />
-    <state width="1866" height="328" key="GridCell.Tab.1.left/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622148" />
+    <state width="1866" height="258" key="GridCell.Tab.1.left/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619511205215" />
     <state width="1866" height="320" key="GridCell.Tab.1.left/0.28.1920.1052@0.28.1920.1052" timestamp="1611743571114" />
-    <state width="1866" height="270" key="GridCell.Tab.1.right" timestamp="1616320842366">
+    <state width="1866" height="258" key="GridCell.Tab.1.right" timestamp="1619511205215">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state width="1866" height="270" key="GridCell.Tab.1.right/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616320842366" />
-    <state width="1866" height="328" key="GridCell.Tab.1.right/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608553622148" />
+    <state width="1866" height="258" key="GridCell.Tab.1.right/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619511205215" />
     <state width="1866" height="320" key="GridCell.Tab.1.right/0.28.1920.1052@0.28.1920.1052" timestamp="1611743571115" />
-    <state x="529" y="228" width="1037" height="731" key="SettingsEditor" timestamp="1616033048434">
+    <state x="529" y="228" width="1037" height="731" key="SettingsEditor" timestamp="1619172105038">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state x="529" y="228" width="1037" height="731" key="SettingsEditor/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616033048434" />
-    <state x="190" y="150" width="1037" height="731" key="SettingsEditor/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608360161842" />
+    <state x="529" y="228" width="1037" height="731" key="SettingsEditor/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619172105038" />
     <state x="529" y="228" width="1037" height="731" key="SettingsEditor/0.28.1920.1052@0.28.1920.1052" timestamp="1613116795271" />
-    <state width="960" height="526" key="XDebugger.FullValuePopup" timestamp="1609602845567">
+    <state x="483" y="154" width="944" height="800" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1619189559119">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state width="960" height="526" key="XDebugger.FullValuePopup/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609602845567" />
-    <state x="483" y="154" width="944" height="800" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1610346093094">
+    <state x="483" y="154" width="944" height="800" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619189559119" />
+    <state x="713" y="134" width="672" height="678" key="search.everywhere.popup" timestamp="1619180520500">
       <screen x="0" y="28" width="1920" height="1052" />
     </state>
-    <state x="483" y="154" width="944" height="800" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1610346093094" />
-    <state x="485" y="215" width="940" height="679" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1608276792188">
-      <screen x="0" y="28" width="1920" height="1052" />
-    </state>
-    <state x="485" y="215" width="940" height="679" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608276792188" />
-    <state x="652" y="242" width="615" height="624" key="find.popup" timestamp="1609609559974">
-      <screen x="0" y="28" width="1920" height="1052" />
-    </state>
-    <state x="652" y="242" width="615" height="624" key="find.popup/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1609609559974" />
-    <state x="713" y="134" width="672" height="678" key="search.everywhere.popup" timestamp="1616133985919">
-      <screen x="0" y="28" width="1920" height="1052" />
-    </state>
-    <state x="713" y="134" width="672" height="678" key="search.everywhere.popup/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1616133985919" />
-    <state x="623" y="260" width="672" height="678" key="search.everywhere.popup/0.28.1920.1052/1920.17.1680.1050@0.28.1920.1052" timestamp="1608188420394" />
+    <state x="713" y="134" width="672" height="678" key="search.everywhere.popup/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1619180520500" />
     <state x="713" y="134" width="674" height="681" key="search.everywhere.popup/0.28.1920.1052@0.28.1920.1052" timestamp="1615640857430" />
+    <state x="685" y="461" width="540" height="186" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1618366923715">
+      <screen x="0" y="28" width="1920" height="1052" />
+    </state>
+    <state x="685" y="461" width="540" height="186" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/0.28.1920.1052/1920.17.1280.720@0.28.1920.1052" timestamp="1618366923715" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -429,19 +374,29 @@
           <option name="timeStamp" value="60" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder.go</url>
-          <line>36</line>
-          <option name="timeStamp" value="61" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/taint_analysis/utils/util.go</url>
           <line>2</line>
           <option name="timeStamp" value="62" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/taint_analysis/checker/checker_test.go</url>
-          <line>91</line>
-          <option name="timeStamp" value="63" />
+          <url>file://$PROJECT_DIR$/taint_analysis/checker/init.go</url>
+          <line>67</line>
+          <option name="timeStamp" value="73" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/../../pkg/mod/github.com/brahma-adshonor/gohook@v1.1.9/hook.go</url>
+          <line>139</line>
+          <option name="timeStamp" value="74" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/../../pkg/mod/github.com/brahma-adshonor/gohook@v1.1.9/hook.go</url>
+          <line>92</line>
+          <option name="timeStamp" value="75" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/taint_analysis/ssautils/ssabuilder.go</url>
+          <line>69</line>
+          <option name="timeStamp" value="77" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -3,25 +3,25 @@
     {
       "signature": "func() int",
       "callee": "math/rand.Int",
-      "type": "RANDOM_FUNCTION",
+      "type": "use random value here",
       "is_interface": false
     },
     {
       "signature": "func() time.Time",
       "callee": "time.Now",
-      "type": "TIME_FUNCTION",
+      "type": "use timestamp here",
       "is_interface": false
     },
     {
       "signature": "func() string",
       "callee": "(time.Time).String",
-      "type": "TIME_FUNCTION",
+      "type": "use timestamp here",
       "is_interface": false
     },
     {
       "signature": "func(layout string) string",
       "callee": "(time.Time).Format",
-      "type": "TIME_FUNCTION",
+      "type": "use timestamp here",
       "is_interface": false
     },
     {
@@ -80,6 +80,27 @@
       "signature": "func(b []byte) (n int, err error)",
       "callee": "(*os.File).Read",
       "is_interface": false
+    }
+  ],
+  "warning_functions": [
+    {
+      "signature": "func(chaincodeName string, args [][]byte, channel string) pb.Response",
+      "callee": "shim.ChaincodeStubInterface.InvokeChaincode",
+      "is_interface": false
+    }
+  ],
+  "readwrite_functions": [
+    {
+      "signature": "func(key string) ([]byte, error)",
+      "callee": "shim.ChaincodeStubInterface.GetState",
+      "is_interface": false,
+      "type": "READ_STATE_FUNCTION"
+    },
+    {
+      "signature": "func(key string, value []byte) error",
+      "callee": "shim.ChaincodeStubInterface.PutState",
+      "is_interface": false,
+      "type": "WRITE_STATE_FUNCTION"
     }
   ]
 }

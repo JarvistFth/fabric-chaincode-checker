@@ -1,15 +1,22 @@
 package utils
 
 import (
-	"fmt"
 	"testing"
 )
 
+type F struct {
+	f int
+}
+
 func TestParseSourceAndSinkFile(t *testing.T) {
 
+	ptr := get(1)
+	ptr.f = 1
+}
 
-	ParseSourceAndSinkFile("sourceandsink.json")
-
-	fmt.Println(SS.String())
-	fmt.Println(FunctionConfig.SDKFunctionString())
+func get(p int) *F{
+	if p == 1{
+		return nil
+	}
+	return &F{}
 }

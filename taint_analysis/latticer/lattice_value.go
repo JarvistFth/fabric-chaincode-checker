@@ -55,9 +55,15 @@ func (v *LatticeValue) LeastUpperBound(l2 Lattice) error {
 		errors.Wrap(err,"failed get taint val")
 	}
 	v.tag = v.tag.LeastUpperBound(l2taint.tag)
+
+	//if !strings.Contains(v.msg,l2.GetMsg()){
+	//	v.msg += " " + l2.GetMsg()
+	//}
+
 	if l2.GetMsg() != ""{
-		v.msg += l2.GetMsg()
+		v.msg = l2.GetMsg()
 	}
+
 	return nil
 }
 

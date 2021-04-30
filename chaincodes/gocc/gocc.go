@@ -7,13 +7,15 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"time"
-
+	"github.com/emirpasic/gods/maps/hashmap"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
 )
 
+var k = "1"
+var m hashmap.Map
 // SimpleAsset implements a simple chaincode to manage an asset
 type SimpleAsset struct {
 }
@@ -43,27 +45,49 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 // method may create a new asset by specifying a new key-value pair.
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and args from the transaction proposal
-	fn, _ := stub.GetFunctionAndParameters()
+	_, _ = stub.GetFunctionAndParameters()
+	//fn, _ := stub.GetFunctionAndParameters()
 
-	var result string
+	//var result string
 	var err error
-	tim := time.Now().Format("2006-01-02 15:04:05")
-	if fn == "set" {
-		result, err = set(stub, []string{tim})
-	} else { // assume 'get' even if fn is nil
-		result, err = get(stub, []string{tim})
-	}
+	//tim := time.Now().Format("2006-01-02 15:04:05")
+	//if fn == "set" {
+	//	result, _ = t.set(stub, []string{tim})
+	//} else { // assume 'get' even if fn is nil
+	//	result, _ = get(stub, []string{tim})
+	//}
+
+	d := "2"
+	e,_ := add(k,d)
+	err = stub.PutState(d,[]byte(e))
+	val,err := stub.GetState(d)
+
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
 	// Return the result as success payload
-	return shim.Success([]byte(result))
+	return shim.Success([]byte(val))
 }
 
+func add(a,b string) (string,error) {
+	c := a+b
+	if c == "0"{
+		return c,errors.New("zero")
+	}
+	return c,nil
+}
+
+func(t SimpleAsset) add(a,b string) (string,error) {
+	c := a+b
+	if c == "0"{
+		return c,errors.New("zero")
+	}
+	return c,nil
+}
 // Set stores the asset (both key and value) on the ledger. If the key exists,
 // it will override the value with the new one
-func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+func(t *SimpleAsset) set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}

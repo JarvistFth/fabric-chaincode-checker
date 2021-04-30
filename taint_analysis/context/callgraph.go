@@ -2,9 +2,11 @@ package context
 
 import (
 	"chaincode-checker/taint_analysis/latticer"
+	"chaincode-checker/taint_analysis/utils"
 	"fmt"
 	"github.com/emirpasic/gods/maps/hashmap"
 	"github.com/pkg/errors"
+	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 )
 
@@ -27,28 +29,34 @@ type CallGraph struct {
 
 	instrs *TaskList
 
-	LatticeTable LatticeMap
+	//LatticeTable LatticeMap
+
+	ptrResult *pointer.Result
+
 }
 
 
 func GetCallGraph(callee string, method *ssa.Function, args []ssa.Value) *CallGraph {
 
 
-	id := genid(method)
+	id := utils.GenFuncID(method)
 	if callgraph,ok := CallGraphs.Get(id); ok{
 		return callgraph.(*CallGraph)
 	}
+	//result := checkPtrAnalyzeBefore(method)
 	c := &CallGraph{
-		id:     id,
-		callee: callee,
-		caller: method.Name(),
-		method: method,
-		args:   args,
-		argLattice: make(latticer.Lattices,0),
-		retLattice: make([]latticer.Lattice,0),
-		instrs: NewTaskList(),
-		LatticeTable: make(LatticeMap),
+		id:           id,
+		callee:       callee,
+		caller:       method.Name(),
+		method:       method,
+		args:         args,
+		argLattice:   make(latticer.Lattices,0),
+		retLattice:   make([]latticer.Lattice,0),
+		instrs:       NewTaskList(),
+		//LatticeTable: make(LatticeMap),
+		//ptrResult:    result,
 	}
+
 
 	CallGraphs.Put(id,c)
 	return c
@@ -121,7 +129,7 @@ func GetFunctionContext(ssaFunc *ssa.Function,isClosure, isPtr bool, inLattice l
 
 	fc := GetCallGraph(ssaFunc.Name(),ssaFunc,args)
 
-	log.Debugf("ssafunc:%s ,argslen:",len(args))
+	log.Debugf("ssafunc:%s ,argslen:%d", ssaFunc.Name(),len(args))
 	//1. get args
 	//2. table args -> init
 	argLattice := make(latticer.Lattices,len(args))
@@ -146,18 +154,22 @@ func GetFunctionContext(ssaFunc *ssa.Function,isClosure, isPtr bool, inLattice l
 func(c *CallGraph) initParamsLattice(args []ssa.Value, argLattice latticer.Lattices) {
 
 	for i,arg := range args{
-		argLattice[i] = c.LatticeTable.GetLattice(arg)
+		argLattice[i] = LatticeTable.GetLattice(arg)
 	}
-
-
 }
 
 func (c *CallGraph) Id() string {
 	return c.id
 }
 
-func genid(method *ssa.Function) string {
-	//pos := method.Pos()
-	//location := method.Prog.Fset.File(pos).Line(pos)
-	return fmt.Sprintf("%s.%s:%d",method.Pkg.Pkg.Name(),method.Name())
-}
+//func checkPtrAnalyzeBefore(fn *ssa.Function) *pointer.Result{
+//	result,ok := config.PtrResult[utils.GenFuncID(fn)]
+//	if ok{
+//		return result
+//	}else{
+//		fmt.Println(fn.Package().String())
+//		cfg := config.GetPtrCfg(fn,fn.Package())
+//		result := config.UpdatePtrResultAndMap(cfg,fn)
+//		return result
+//	}
+//}
